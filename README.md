@@ -1,5 +1,10 @@
-TODO
-====
+AniMachine
+==========
+
+
+
+GuideLine
+---------
 
 - add new trigger like element visible on scroll
 - add trigger like mouse near
