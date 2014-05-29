@@ -1,0 +1,24 @@
+{
+  "name": "reveal",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jfroffice/reveal",
+  "authors": [
+    "jfroffice <me@jfroffice.me>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.16",
+    "animate.css": "*"
+  }
+}

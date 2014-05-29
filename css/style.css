@@ -1,0 +1,39 @@
+body {
+	padding: 0 50px;
+	color: #AAA;
+	font: 22px 'Helvetica';
+	background-color: #f5e8d7;
+	overflow: hidden;
+}
+
+h2 {
+	text-shadow: 1px 1px 1px #666;
+}
+
+.container {
+	width: 500px;
+	box-sizing: border-box;
+	padding: 10px;
+	margin: 0 auto;
+	margin-top: 160px;
+}
+
+.element {
+ 	background-color: #fe006b;
+ 	width: 50px;
+	height: 50px;
+	margin: 0;
+	padding: 0;
+	float: left;
+	opacity: 0.8;
+	border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.element--white {
+	background-color: #FFF;
+}
+
+.element span {
+	font-size: 2em;
+	margin-left: 6px;
+}
