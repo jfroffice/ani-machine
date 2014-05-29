@@ -14,6 +14,9 @@ angular.module('myApp', [])
 
 			function changeState(value) {
 				var actions = scope.actions[value];
+				if (!actions) {
+					return;
+				}
 				for (var i=0; i<actions.length; i++) {
 					initAction(actions[i]);
 				}

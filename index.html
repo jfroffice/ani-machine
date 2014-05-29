@@ -19,7 +19,8 @@
 </head>
 <body ng-app="myApp">
 	<div class="container">
-		<h2>AniMachine.JS</h2>
+		<h2 am-element enter="top move 200px over 0.8s">AniMachine.JS</h2>
+		<span class="subtitle" am-element enter="wait 1.5s left move 200px over 1.2s">Declarative animation and machine state</span>
 		<div class="element" am-element enter="left move 800px over 2.0s">
 			<am-state value="default">
 				<am-event on="enter" animate="pulse"></am-event>
