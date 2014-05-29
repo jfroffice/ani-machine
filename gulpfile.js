@@ -3,7 +3,6 @@ var gulp = require("gulp"),
 	jshint = require("gulp-jshint"),
 	csslint = require('gulp-csslint'),
 	livereload = require('gulp-livereload'),
-	open = require("gulp-open"),
 	port = 6003;
 
 gulp.task('jshint', function() {
