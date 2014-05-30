@@ -1,4 +1,4 @@
-function processOn(on) {
+function parseOn(on) {
 	if (on === 'enter') {
 		on = 'mouseenter';
 	} else if (on === 'leave') {
@@ -20,6 +20,8 @@ angular.module('myApp', [])
 		link: function(scope, elm, options) {
 
 			var element = elm,
+				events = scope.events,
+				triggers = scope.triggers,
 				unregisters,
 				currentState;
 
@@ -30,12 +32,12 @@ angular.module('myApp', [])
 					}
 				}
 				currentState = state;
-				unregisters = initEvents(scope.events[state]);
+				unregisters = initEvents(events[state]);
 			}
 
 			function initTriggers() {
-				for(var state in scope.triggers) {
-					var trigger = scope.triggers[state];
+				for(var state in triggers) {
+					var trigger = triggers[state];
 					if (!trigger) {
 						continue;
 					}
@@ -46,7 +48,7 @@ angular.module('myApp', [])
 			function initTrigger(state, trigger) {
 				var tmp = trigger.split(' '),
 					selector = tmp[0],
-					on = processOn(tmp[1]);
+					on = parseOn(tmp[1]);
 
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
 					el.addEventListener(on, function() {
@@ -147,7 +149,7 @@ angular.module('myApp', [])
 		require: '^amState',
 		link: function(scope, elm, options, stateCtrl) {
 
-			var on = processOn(scope.on),
+			var on = parseOn(scope.on),
 				type, param;
 
 			if (scope.enter) {

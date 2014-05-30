@@ -24,6 +24,12 @@ var animator = (function() {
 
 			var s, run, initial;
 
+			if (elm.hasClass('animated')) { // catch only animated state
+				//console.log('animation already running...');
+				// should plan to execute animate when current one is finish
+				return function() {};
+			}
+
 			if (type === 'enter') {
 				s = enter.genCSS(param);
 				initial = s.initial;
@@ -31,23 +37,18 @@ var animator = (function() {
 				initial = param + ' animated';
 			}
 
-			if (elm.hasClass('animated')) {
-				//console.log('animation already running...');
-				// should plan to execute animate when current one is finish
-				return function() {};
-			}
 			elm.addClass(initial);
 			//console.log('animation start ' + initial);
 
 			if (type === 'enter') {
-				run = function(cb) {
+				return function(cb) {
 					doTransition(elm, initial, null, s.transition, function() {
 						//console.log('animation end ' + initial);
 						cb && cb();
 					});
 				};
-			} else {
-				run = function(cb) {
+			} else { // only animate for now
+				return function(cb) {
 					elm.one(prefix.ANIMATION_END_EVENT, function() {
 						//console.log('animation end : ' + initial);
 						elm.removeClass(initial);
@@ -55,8 +56,6 @@ var animator = (function() {
 					});
 				};
 			}
-
-			return run;
 		}
 	};
 
