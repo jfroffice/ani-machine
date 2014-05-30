@@ -1,3 +1,12 @@
+function processOn(on) {
+	if (on === 'enter') {
+		on = 'mouseenter';
+	} else if (on === 'leave') {
+		on = 'mouseleave';
+	}
+	return on;
+}
+
 angular.module('myApp', [])
 .directive('amElement', ['$rootScope', '$timeout', function($rootScope, $timeout) {
 
@@ -10,42 +19,84 @@ angular.module('myApp', [])
 		},
 		link: function(scope, elm, options) {
 
-			var element = elm;
+			var element = elm,
+				unregisters,
+				currentState;
 
-			function changeState(value) {
-				var actions = scope.actions[value];
-				if (!actions) {
-					return;
+			function changeState(state) {
+				if (currentState && currentState !== state) {
+					for (var i=0; i<unregisters.length; i++) {
+						unregisters[i]();
+					}
+					unregisters = null;
 				}
-				for (var i=0; i<actions.length; i++) {
-					initAction(actions[i]);
+				currentState = state;
+				unregisters = initEvents(scope.events[state]);
+			}
+
+			function initTriggers() {
+				for(var state in scope.triggers) {
+					var trigger = scope.triggers[state];
+					if (!trigger) {
+						continue;
+					}
+					initTrigger(state, trigger);
 				}
 			}
 
-			function initAction(action) {
-				var goto = action.goto,
-					on = action.on;
+			function initTrigger(state, trigger) {
+				var tmp = trigger.split(' '),
+					selector = tmp[0],
+					on = processOn(tmp[1]);
 
-				var actionFn = function() {
-					animator.build(element, action.type, action.param).run(finish);
+				// TODO: remove jQuery dependency
+				angular.element(selector).on(on, function(e) {
+					changeState(state);
+				});
+			}
+
+			function initEvents(events) {
+				if (!events) {
+					return;
+				}
+
+				var unregisters = [];
+				for (var i=0; i<events.length; i++) {
+					unregisters.push(initEvent(events[i]));
+				}
+				return unregisters;
+			}
+
+			function initEvent(event) {
+				var goto = event.goto,
+					on = event.on;
+
+				var eventFn = function() {
+					animator.build(element, event.type, event.param).run(finish);
 				};
 
 				function finish() {
 					// change state
 					if (goto) {
 						if (on !== NEXT) {
-							element.off(on, actionFn);
+							element.off(on, eventFn);
 						}
 						changeState(goto);
 					}
 				}
 
 				if (on === NEXT) {
-					$timeout(actionFn, 0);
+					$timeout(eventFn, 0);
 				} else {
-					element.on(on, actionFn);
+					element.on(on, eventFn);
+				}
+
+				return function() {
+					element.off(on, eventFn);
 				}
 			}
+
+			initTriggers();
 
 			animator.build(elm, 'enter', options.enter).run(function() {
 				changeState('default');
@@ -53,10 +104,12 @@ angular.module('myApp', [])
 		},
 		controller: ['$scope', '$element', function($scope, $element) {
 
-			$scope.actions = {};
+			$scope.events = {};
+			$scope.triggers = {};
 
-			this.setActions = function(state, actions) {
-				$scope.actions[state] = actions;
+			this.setEvents = function(state, trigger, events) {
+				$scope.events[state] = events;
+				$scope.triggers[state] = trigger;
 			};
 		}]
 	};
@@ -65,18 +118,19 @@ angular.module('myApp', [])
 	return {
 		restrict: 'E',
 		scope: {
-			value: '@'
+			value: '@',
+			trigger: '@'
 		},
 		require: '^amElement',
 		link: function (scope, element, attrs, elementCtrl) {
-	      	elementCtrl.setActions(scope.value, scope.actions);
+	      	elementCtrl.setEvents(scope.value, scope.trigger, scope.events);
 	    },
 		controller: ['$scope', '$element', function($scope, $element) {
 
-			$scope.actions = [];
+			$scope.events = [];
 
-			this.addAction = function(action) {
-				$scope.actions.push(action);
+			this.addEvent = function(event) {
+				$scope.events.push(event);
 			};
 		}]
 	};
@@ -93,14 +147,8 @@ angular.module('myApp', [])
 		require: '^amState',
 		link: function(scope, elm, options, stateCtrl) {
 
-			var on = scope.on,
+			var on = processOn(scope.on),
 				type, param;
-
-			if (on === 'enter') {
-				on = 'mouseenter';
-			} else if (on === 'leave') {
-				on = 'mouseleave';
-			}
 
 			if (scope.enter) {
 				type = 'enter';
@@ -110,7 +158,7 @@ angular.module('myApp', [])
 				param = scope.animate;
 			}
 
-			stateCtrl.addAction({
+			stateCtrl.addEvent({
 				on: on,
 				type: type,
 				param: param,
