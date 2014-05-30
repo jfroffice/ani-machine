@@ -29,6 +29,7 @@
 			</am-state>
 			<am-state value="bounce" trigger=".trigger click">
 				<am-event on="enter" animate="bounce" goto="default"></am-event>
+				<am-event on="active" animate="rubberBand"></am-event>
 			</am-state>
 		</div>
 		<div class="element" am-element enter="top move 800px over 2.0s">

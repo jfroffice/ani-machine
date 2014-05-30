@@ -10,7 +10,7 @@ function processOn(on) {
 angular.module('myApp', [])
 .directive('amElement', ['$timeout', function($timeout) {
 
-	var NEXT = 'next';
+	var ACTIVE = 'active';
 
 	return {
 		restrict: 'A',
@@ -24,7 +24,7 @@ angular.module('myApp', [])
 				currentState;
 
 			function changeState(state) {
-				if (currentState && currentState !== state) {
+				if (currentState && unregisters && currentState !== state) {
 					for (var i=0; i<unregisters.length; i++) {
 						unregisters[i]();
 					}
@@ -59,11 +59,11 @@ angular.module('myApp', [])
 					return;
 				}
 
-				var unregisters = [];
+				var tmp = [];
 				for (var i=0; i<events.length; i++) {
-					unregisters.push(initEvent(events[i]));
+					tmp.push(initEvent(events[i]));
 				}
-				return unregisters;
+				return tmp;
 			}
 
 			function initEvent(event) {
@@ -77,14 +77,14 @@ angular.module('myApp', [])
 				function finish() {
 					// change state
 					if (goto) {
-						if (on !== NEXT) {
+						if (on !== ACTIVE) {
 							element.off(on, eventFn);
 						}
 						changeState(goto);
 					}
 				}
 
-				if (on === NEXT) {
+				if (on === ACTIVE) { // autostart animation
 					$timeout(eventFn, 0);
 				} else {
 					element.on(on, eventFn);
