@@ -32,11 +32,9 @@ var animator = (function() {
 			}
 
 			if (elm.hasClass('animated')) {
-				console.log('animation already running...');
+				//console.log('animation already running...');
 				// should plan to execute animate when current one is finish
-				return {
-					run: function() {}
-				};
+				return function() {};
 			}
 			elm.addClass(initial);
 			//console.log('animation start ' + initial);
@@ -58,9 +56,7 @@ var animator = (function() {
 				};
 			}
 
-			return {
-				run: run
-			};
+			return run;
 		}
 	};
 

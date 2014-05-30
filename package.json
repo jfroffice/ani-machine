@@ -1,5 +1,5 @@
 {
-  "name": "reveal",
+  "name": "ani-machine",
   "version": "0.1.0",
   "description": "",
   "main": "gulpfile.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
 	"type": "git",
-	"url": "https://github.com/jfroffice/reveal.git"
+	"url": "https://github.com/jfroffice/ani-machine.git"
   },
   "author": "jfroffice",
   "license": "MIT",
   "bugs": {
-	"url": "https://github.com/jfroffice/reveal/issues"
+	"url": "https://github.com/jfroffice/ani-machine/issues"
   },
-  "homepage": "https://github.com/jfroffice/reveal",
+  "homepage": "https://github.com/jfroffice/ani-machine",
 	"dependencies": {
 	"gulp": "~3.6.0",
 	"gulp-jshint": "~1.5.1",

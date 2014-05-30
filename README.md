@@ -1,7 +1,7 @@
 AniMachine
 ==========
 
-Declarative animation and machine state
+Declarative animation and machine state build on top of AngularJS
 
 Entering
 --------
@@ -42,13 +42,13 @@ State can be change from a trigger
 
 In this case, when user click on element selector by class ".trigger" element can change is state to __special__
 
-Chaining Animation
-------------------
+Chaining
+--------
 
 You can chain animation by changing current __state__ using special word __goto__
 
-Autostart animation
--------------------
+Autostart
+---------
 
 You can play animation on state activation using special on word __active__
 
@@ -61,3 +61,6 @@ Roadmap
 - change dynamically state property on element to know current state
 - add possibility to chain animation in current one is not finish
 - add move and rotate animation
+- remove jQuery dependency
+- refactor angular directives in order to minimize coupling
+- vanilla JS version

@@ -48,10 +48,11 @@ angular.module('myApp', [])
 					selector = tmp[0],
 					on = processOn(tmp[1]);
 
-				// TODO: remove jQuery dependency
-				angular.element(selector).on(on, function(e) {
-					changeState(state);
-				});
+				[].forEach.call(document.querySelectorAll(selector), function(el) {
+					el.addEventListener(on, function() {
+						changeState(state);
+					})
+				})
 			}
 
 			function initEvents(events) {
@@ -71,7 +72,7 @@ angular.module('myApp', [])
 					on = event.on;
 
 				var eventFn = function() {
-					animator.build(element, event.type, event.param).run(finish);
+					animator.build(element, event.type, event.param)(finish);
 				};
 
 				function finish() {
@@ -97,7 +98,7 @@ angular.module('myApp', [])
 
 			initTriggers();
 
-			animator.build(elm, 'enter', options.enter).run(function() {
+			animator.build(elm, 'enter', options.enter)(function() {
 				changeState('default');
 			});
 		},
@@ -122,8 +123,8 @@ angular.module('myApp', [])
 		},
 		require: '^amElement',
 		link: function (scope, element, attrs, elementCtrl) {
-	      	elementCtrl.setEvents(scope.value, scope.trigger, scope.events);
-	    },
+			elementCtrl.setEvents(scope.value, scope.trigger, scope.events);
+		},
 		controller: ['$scope', function($scope) {
 
 			$scope.events = [];
