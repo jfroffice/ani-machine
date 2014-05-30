@@ -14,7 +14,6 @@ gulp.task('jshint', function() {
 
 gulp.task('csslint', function() {
 	gulp.src('css/*.css')
-	/*	.pipe(csslint('csslintrc.json'))*/
 		.pipe(csslint.reporter());
 });
 
