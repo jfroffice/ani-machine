@@ -55,8 +55,8 @@ angular.module('myApp', [])
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
 					el.addEventListener(on, function() {
 						changeState(state);
-					})
-				})
+					});
+				});
 			}
 
 			function initEvents(events) {
@@ -123,7 +123,7 @@ angular.module('myApp', [])
 
 				return function() {
 					element.off(on, eventFn);
-				}
+				};
 			}
 
 			initTriggers();
