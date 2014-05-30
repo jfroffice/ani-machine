@@ -61,6 +61,5 @@ Roadmap
 - change dynamically state property on element to know current state
 - add possibility to chain animation in current one is not finish
 - add move and rotate animation
-- remove jQuery dependency
 - refactor angular directives in order to minimize coupling
 - vanilla JS version
