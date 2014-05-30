@@ -9,6 +9,7 @@ body {
 h2 {
 	font-size: 1.7em;
 	text-shadow: 1px 1px 1px #666;
+	letter-spacing: 2px;
 }
 
 .subtitle {
@@ -59,10 +60,10 @@ p {
 .link {
 text-decoration: none;
 color: #FFF;
-text-shadow: 1px 1px 4px #333;
+text-shadow: 1px 1px 3px #333;
 }
 
 .link:hover {
-	color: #666;
-	text-shadow: 1px 1px 4px #888;
+color: #666;
+text-shadow: 1px 1px 3px #888;
 }

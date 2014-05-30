@@ -7,13 +7,14 @@ var gulp = require("gulp"),
 
 gulp.task('jshint', function() {
 	return gulp.src('js/*.js')
-	.pipe(jshint())
-	.pipe(jshint.reporter('default'));
+		.pipe(jshint())
+		.pipe(jshint.reporter('default'))
+		.pipe(server);
 });
 
 gulp.task('csslint', function() {
 	gulp.src('css/*.css')
-		.pipe(csslint('csslintrc.json'))
+	/*	.pipe(csslint('csslintrc.json'))*/
 		.pipe(csslint.reporter());
 });
 
@@ -35,16 +36,17 @@ gulp.task('default', ['connect'], function() {
 
 	var server = livereload();
 
-	gulp.watch('js/*.js', ['jshint'], function(file) {
+	gulp.watch('js/*.js').on('change', function(file) {
 		gulp.run('jshint');
 		server.changed(file.path);
 	});
+
 	gulp.watch('css/*.css').on('change', function(file) {
 		gulp.run('csslint');
 		server.changed(file.path);
 	});
 
-	gulp.watch('*.html').on('change', function(file) {
+	gulp.watch('*.html').on('change', [function(file) {
 		server.changed(file.path);
-	});
+	}]);
 });
