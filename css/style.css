@@ -48,6 +48,7 @@ h2 {
 }
 
 .trigger {
+	cursor: pointer;
 	margin-left: 20px;
 }
 
