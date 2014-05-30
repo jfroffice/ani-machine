@@ -32,7 +32,7 @@
 				<am-event on="leave" animate="tada" goto="default"></am-event>
 			</am-state>
 		</div>
-		<!-- <div class="element" am-element enter="top move 800px over 2.0s">
+		<div class="element" am-element enter="top move 800px over 2.0s">
 			<am-state value="default">
 				<am-event on="enter" animate="pulse"></am-event>
 				<am-event on="leave" animate="tada"></am-event>
@@ -43,8 +43,13 @@
 				<am-event on="enter" animate="pulse"></am-event>
 				<am-event on="leave" animate="tada"></am-event>
 			</am-state>
-		</div> -->
-		<div class="element trigger" am-element enter="bottom move 800px over 2.0s"></div>
+		</div>
+		<div class="element trigger" am-element enter="bottom move 800px over 2.0s">
+			<am-state value="default">
+				<am-event on="enter" animate="pulse"></am-event>
+				<am-event on="leave" animate="tada"></am-event>
+			</am-state>
+		</div>
 	</div>
 </body>
 </html>
