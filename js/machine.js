@@ -8,7 +8,7 @@ function processOn(on) {
 }
 
 angular.module('myApp', [])
-.directive('amElement', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+.directive('amElement', ['$timeout', function($timeout) {
 
 	var NEXT = 'next';
 
@@ -28,7 +28,6 @@ angular.module('myApp', [])
 					for (var i=0; i<unregisters.length; i++) {
 						unregisters[i]();
 					}
-					unregisters = null;
 				}
 				currentState = state;
 				unregisters = initEvents(scope.events[state]);
@@ -114,7 +113,7 @@ angular.module('myApp', [])
 		}]
 	};
 }])
-.directive('amState', ['$rootScope', function($rootScope) {
+.directive('amState', function() {
 	return {
 		restrict: 'E',
 		scope: {
@@ -125,7 +124,7 @@ angular.module('myApp', [])
 		link: function (scope, element, attrs, elementCtrl) {
 	      	elementCtrl.setEvents(scope.value, scope.trigger, scope.events);
 	    },
-		controller: ['$scope', '$element', function($scope, $element) {
+		controller: ['$scope', function($scope) {
 
 			$scope.events = [];
 
@@ -134,7 +133,7 @@ angular.module('myApp', [])
 			};
 		}]
 	};
-}])
+})
 .directive('amEvent', function() {
 	return {
 		restrict: 'E',
