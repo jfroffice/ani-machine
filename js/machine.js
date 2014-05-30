@@ -22,6 +22,8 @@ angular.module('myApp', [])
 			var element = elm,
 				events = scope.events,
 				triggers = scope.triggers,
+				jobs = [],
+				running = false,
 				unregisters,
 				currentState;
 
@@ -69,12 +71,38 @@ angular.module('myApp', [])
 				return tmp;
 			}
 
+			function addQueue(job) {
+				jobs.push(job);
+				run();
+			}
+
+			function run() {
+				if (running) {
+					return;
+				}
+				var job = jobs[0];
+				if (!job) {
+					return;
+				}
+				running = true;
+				job.run(function() {
+					job.finish();
+					// remove job from array here !
+					jobs.splice(0, 1);
+					running = false;
+					run();
+				});
+			}
+
 			function initEvent(event) {
 				var goto = event.goto,
 					on = event.on;
 
 				var eventFn = function() {
-					animator.build(element, event.type, event.param)(finish);
+					addQueue({
+						run: animator.build(element, event.type, event.param),
+						finish: finish
+					});
 				};
 
 				function finish() {
@@ -100,8 +128,11 @@ angular.module('myApp', [])
 
 			initTriggers();
 
-			animator.build(elm, 'enter', options.enter)(function() {
-				changeState('default');
+			addQueue({
+				run: animator.build(elm, 'enter', options.enter),
+				finish: function() {
+					changeState('default');
+				}
 			});
 		},
 		controller: ['$scope', '$element', function($scope, $element) {
