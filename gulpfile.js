@@ -45,7 +45,7 @@ gulp.task('default', ['connect'], function() {
 		server.changed(file.path);
 	});
 
-	gulp.watch('*.html').on('change', [function(file) {
+	gulp.watch('*.html').on('change', function(file) {
 		server.changed(file.path);
-	}]);
+	});
 });
