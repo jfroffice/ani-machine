@@ -5,6 +5,8 @@ var gulp = require("gulp"),
 	livereload = require('gulp-livereload'),
 	port = 6003;
 
+var server = livereload();
+
 gulp.task('jshint', function() {
 	return gulp.src('js/*.js')
 		.pipe(jshint())
@@ -33,8 +35,6 @@ gulp.task('connect', function(next) {
 
 gulp.task('default', ['connect'], function() {
 
-	var server = livereload();
-
 	gulp.watch('js/*.js').on('change', function(file) {
 		gulp.run('jshint');
 		server.changed(file.path);
@@ -49,3 +49,21 @@ gulp.task('default', ['connect'], function() {
 		server.changed(file.path);
 	});
 });
+
+/*
+gulp.task('build', ['connect'], function() {
+
+	gulp.watch('js/*.js').on('change', function(file) {
+		gulp.run('jshint');
+		server.changed(file.path);
+	});
+
+	gulp.watch('css/*.css').on('change', function(file) {
+		gulp.run('csslint');
+		server.changed(file.path);
+	});
+
+	gulp.watch('*.html').on('change', function(file) {
+		server.changed(file.path);
+	});
+});*/

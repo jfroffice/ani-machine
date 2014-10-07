@@ -1,6 +1,7 @@
 var tt = (function() {
+	"use strict";
 
-	function genStyles(lang) {
+	/*function genStyles(lang) {
 		return enter.genCSS(lang);
 	}
 
@@ -22,11 +23,19 @@ var tt = (function() {
 			event: event,
 			selector: selector
 		};
-	}
+	}*/
 
 	return {
-		parseAction: parseAction,
-		genStyles: genStyles
+		/*parseAction: parseAction,
+		genStyles: genStyles,*/
+		parseOn: function(on) {
+			if (on === 'enter') {
+				on = 'mouseenter';
+			} else if (on === 'leave') {
+				on = 'mouseleave';
+			}
+			return on;
+		}
 	};
 
 })();
