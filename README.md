@@ -56,6 +56,7 @@ You can play animation on state activation using special on word __active__
 Roadmap
 -------
 
+- generate dist/ directory
 - add trigger like element visible on scroll
 - add css generator function like shake.css
 - change dynamically state property on element to know current state

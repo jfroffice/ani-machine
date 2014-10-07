@@ -1,12 +1,3 @@
-function parseOn(on) {
-	if (on === 'enter') {
-		on = 'mouseenter';
-	} else if (on === 'leave') {
-		on = 'mouseleave';
-	}
-	return on;
-}
-
 angular.module('myApp', [])
 .directive('amElement', ['$timeout', function($timeout) {
 
@@ -17,13 +8,12 @@ angular.module('myApp', [])
 		scope: {
 			enter: '@'
 		},
-		link: function(scope, elm, options) {
+		link: function(scope, element, options) {
 
-			var element = elm,
-				events = scope.events,
+			var events = scope.events,
 				triggers = scope.triggers,
 				jobs = [],
-				running = false,
+				running,
 				unregisters,
 				currentState;
 
@@ -50,7 +40,7 @@ angular.module('myApp', [])
 			function initTrigger(state, trigger) {
 				var tmp = trigger.split(' '),
 					selector = tmp[0],
-					on = parseOn(tmp[1]);
+					on = tt.parseOn(tmp[1]);
 
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
 					el.addEventListener(on, function() {
@@ -129,7 +119,7 @@ angular.module('myApp', [])
 			initTriggers();
 
 			addQueue({
-				run: animator.build(elm, 'enter', options.enter),
+				run: animator.build(element, 'enter', options.enter),
 				finish: function() {
 					changeState('default');
 				}
@@ -180,7 +170,7 @@ angular.module('myApp', [])
 		require: '^amState',
 		link: function(scope, elm, options, stateCtrl) {
 
-			var on = parseOn(scope.on),
+			var on = tt.parseOn(scope.on),
 				type, param;
 
 			if (scope.enter) {
