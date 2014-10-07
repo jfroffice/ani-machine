@@ -27,3 +27,4 @@ node_modules
 .bowerrc
 bower_components
 components
+dist
