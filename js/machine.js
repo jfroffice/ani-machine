@@ -1,4 +1,4 @@
-angular.module('myApp', [])
+angular.module('aniMachine', [])
 .directive('amElement', ['$timeout', function($timeout) {
 
 	var ACTIVE = 'active';
@@ -18,6 +18,10 @@ angular.module('myApp', [])
 				currentState;
 
 			function changeState(state) {
+				if (!state) {
+					state = 'default';
+				}
+
 				if (currentState && unregisters && currentState !== state) {
 					for (var i=0; i<unregisters.length; i++) {
 						unregisters[i]();
@@ -118,10 +122,15 @@ angular.module('myApp', [])
 
 			initTriggers();
 
+			if (!options.enter) {
+				changeState();
+				return;
+			}
+
 			addQueue({
 				run: animator.build(element, 'enter', options.enter),
 				finish: function() {
-					changeState('default');
+					changeState();
 				}
 			});
 		},
