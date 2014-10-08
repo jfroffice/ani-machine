@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>AniMachine</title>
+	<link rel="stylesheet" href="/css/demo02.css">
+	<link rel="stylesheet" href="/bower_components/animate.css/animate.css">
+	<script src='/bower_components/angular/angular.js'></script>
+	<script src='/js/prefix.js'></script>
+	<script src="/js/tt.js"></script>
+	<script src='/js/styles.js'></script>
+	<script src='/js/translate.js'></script>
+	<script src='/js/transition.js'></script>
+	<script src='/js/enter.js'></script>
+	<script src='/js/animator.js'></script>
+	<script src="/js/machine.js"></script>
+	<script>
+	angular.module('app', ['aniMachine']);
+	</script>
+</head>
+<body ng-app="app">
+	<div class="container">
+		<span class="subtitle">Trigger Animation</span>
+		<div class="element" am-element>
+			<am-state value="tada" trigger=".btn--tada click">
+				<am-event on="active" animate="tada"></am-event>
+			</am-state>
+		</div>
+		<p><a class="btn btn--tada">Tada</a></p>
+		<span class="subtitle">Trigger Chained Animation</span>
+		<div class="element element--blue" am-element>
+			<am-state value="tadaandbounce" trigger=".btn--tadaandbounce click">
+				<am-event on="active" animate="tada bounce"></am-event>
+			</am-state>
+		</div>
+		<p><a class="btn btn--tadaandbounce">Tada and Bounce</a></p>
+		<span class="subtitle">Trigger Multiple Animation</span>
+		<div class="element" am-element>
+			<am-state trigger=".btn--multitrigger click">
+				<am-event on="active" animate="tada"></am-event>
+			</am-state>
+		</div>
+		<div class="element element--blue" am-element>
+			<am-state trigger=".btn--multitrigger click">
+				<am-event on="active" animate="bounce"></am-event>
+			</am-state>
+		</div>
+		<p><a class="btn btn--multitrigger">Tada + Bounce</a></p>
+	</div>
+</body>
+</html>

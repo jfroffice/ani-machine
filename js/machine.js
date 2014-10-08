@@ -22,13 +22,20 @@ angular.module('aniMachine', [])
 					state = 'default';
 				}
 
-				if (currentState && unregisters && currentState !== state) {
+				var sameState = currentState === state;
+
+				if (currentState && unregisters && !sameState) {
 					for (var i=0; i<unregisters.length; i++) {
 						unregisters[i]();
 					}
 				}
-				currentState = state;
-				unregisters = initEvents(events[state]);
+
+				if (sameState) {
+					initEvents(events[state]);
+				} else {
+					currentState = state;
+					unregisters = initEvents(events[state]);
+				}
 			}
 
 			function initTriggers() {
@@ -59,9 +66,9 @@ angular.module('aniMachine', [])
 				}
 
 				var tmp = [];
-				for (var i=0; i<events.length; i++) {
-					tmp.push(initEvent(events[i]));
-				}
+				events.forEach(function(e) {
+					tmp.push(initEvent(e));
+				});
 				return tmp;
 			}
 
@@ -93,13 +100,28 @@ angular.module('aniMachine', [])
 					on = event.on;
 
 				var eventFn = function() {
-					addQueue({
-						run: animator.build(element, event.type, event.param),
-						finish: finish
-					});
+
+					var params = event.param.split(' ');
+					event.currentStep += 1;
+
+					if (event.currentStep >= params.length) {
+						console.warn('try to relaunch animation that is not finished');
+					} else {
+						addQueue({
+							run: animator.build(element, event.type, params[event.currentStep]),
+							finish: finish
+						});						
+					}
 				};
 
 				function finish() {
+
+					if (event.currentStep < (event.param.split(' ').length-1)) {
+						$timeout(eventFn, 0);
+					} else {
+						event.currentStep = -1;
+					}
+
 					// change state
 					if (goto) {
 						if (on !== ACTIVE) {
@@ -114,7 +136,7 @@ angular.module('aniMachine', [])
 				} else {
 					element.on(on, eventFn);
 				}
-
+			
 				return function() {
 					element.off(on, eventFn);
 				};
@@ -129,9 +151,7 @@ angular.module('aniMachine', [])
 
 			addQueue({
 				run: animator.build(element, 'enter', options.enter),
-				finish: function() {
-					changeState();
-				}
+				finish: changeState
 			});
 		},
 		controller: ['$scope', '$element', function($scope, $element) {
@@ -140,6 +160,7 @@ angular.module('aniMachine', [])
 			$scope.triggers = {};
 
 			this.setEvents = function(state, trigger, events) {
+				state = state || 'default';
 				$scope.events[state] = events;
 				$scope.triggers[state] = trigger;
 			};
@@ -194,6 +215,7 @@ angular.module('aniMachine', [])
 				on: on,
 				type: type,
 				param: param,
+				currentStep: -1,
 				goto: scope.goto
 			});
 		}

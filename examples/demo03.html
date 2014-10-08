@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>AniMachine</title>
+	<link rel="stylesheet" href="/css/demo02.css">
+	<link rel="stylesheet" href="/bower_components/animate.css/animate.css">
+	<script src='/bower_components/angular/angular.js'></script>
+	<script src='/js/prefix.js'></script>
+	<script src="/js/tt.js"></script>
+	<script src='/js/styles.js'></script>
+	<script src='/js/translate.js'></script>
+	<script src='/js/transition.js'></script>
+	<script src='/js/enter.js'></script>
+	<script src='/js/animator.js'></script>
+	<script src="/js/machine.js"></script>
+	<script>
+	angular.module('app', ['aniMachine']);
+	</script>
+</head>
+<body ng-app="app">
+	<div class="container">
+		<span class="subtitle">Trigger Animation</span>
+		<div class="element" am-element>
+			<am-state value="tada" trigger=".btn--tada click">
+				<am-event on="active" animate="tada"></am-event>
+			</am-state>
+		</div>
+		<p><a class="btn btn--tada">Tada</a></p>
+	</div>
+</body>
+</html>
