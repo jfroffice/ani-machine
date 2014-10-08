@@ -147,7 +147,9 @@ angular.module('aniMachine', [])
 
 			addQueue({
 				run: animator.build(element, 'enter', options.enter),
-				finish: changeState
+				finish: function() {
+					changeState('default');
+				}
 			});
 		},
 		controller: ['$scope', '$element', function($scope, $element) {
