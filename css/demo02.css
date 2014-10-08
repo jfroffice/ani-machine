@@ -1,0 +1,39 @@
+body {
+	padding: 50px;
+	color: #AAA;
+	font: 22px 'Helvetica';
+	background-color: #f5e8d7;
+}
+
+.subtitle {
+	width: 100%;
+	margin-bottom: 12px;
+	font-size: 19px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	display: block;
+}
+
+.element {
+ 	background-color: #fe006b;
+ 	width: 100px;
+	height: 100px;
+	padding: 0;
+	margin: 0 30px 0 0;
+	display: inline-block;
+	border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.element--blue {
+	background-color: #17c9f6;
+}
+
+.btn {
+	background-color: #555;
+	border: none;
+	padding: 6px 8px;
+	border-radius: 4px;
+	font-size: 14px;
+	color: #EEE;
+	cursor: pointer;
+}

@@ -1,9 +1,13 @@
 var animator = (function() {
 	"use strict";
 
+	function hackStyle(elm) {
+		getComputedStyle(elm[0], null).display;
+	}
+
 	function doTransition(elm, initial, target, transition, cb) {
 		// hack: access style to apply transition
-		getComputedStyle(elm[0], null).display;
+		hackStyle(elm);
 
 		if (target) {
 			elm.addClass(target);
@@ -38,7 +42,11 @@ var animator = (function() {
 				};
 			} else { // only animate for now
 				return function(cb) {
+
+					hackStyle(elm);
+
 					var initial = param + ' animated';
+
 					elm
 						.addClass(initial)
 						.one(prefix.ANIMATION_END_EVENT, function() {
