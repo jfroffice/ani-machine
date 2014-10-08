@@ -2,6 +2,7 @@ var animator = (function() {
 	"use strict";
 
 	function doTransition(elm, initial, target, transition, cb) {
+		// hack: access style to apply transition
 		getComputedStyle(elm[0], null).display;
 
 		if (target) {

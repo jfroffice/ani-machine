@@ -53,9 +53,17 @@ h2 {
 	margin-left: 20px;
 }
 
+.demolink {
+	margin-top: 140px;
+}
+
+.demolink--nice {
+	margin-top: 40px;	
+}
+/*
 p {
 	margin-top: 160px;
-}
+}*/
 
 .link {
 text-decoration: none;
@@ -66,4 +74,14 @@ text-shadow: 1px 1px 3px #333;
 .link:hover {
 color: #666;
 text-shadow: 1px 1px 3px #888;
+}
+
+.btn {
+	background-color: #555;
+	border: none;
+	padding: 6px 8px;
+	border-radius: 4px;
+	font-size: 14px;
+	color: white;
+	cursor: pointer;
 }
