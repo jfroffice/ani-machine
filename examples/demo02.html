@@ -22,18 +22,20 @@
 	<div class="container">
 		<span class="subtitle">Trigger Animation</span>
 		<div class="element" am-element>
-			<am-state value="tada" trigger=".btn--tada click">
+			<am-state trigger=".btn--tada click">
 				<am-event on="active" animate="tada"></am-event>
 			</am-state>
 		</div>
 		<p><a class="btn btn--tada">Tada</a></p>
+
 		<span class="subtitle">Trigger Chained Animation</span>
 		<div class="element element--blue" am-element>
-			<am-state value="tadaandbounce" trigger=".btn--tadaandbounce click">
+			<am-state trigger=".btn--tadaandbounce click">
 				<am-event on="active" animate="tada bounce"></am-event>
 			</am-state>
 		</div>
 		<p><a class="btn btn--tadaandbounce">Tada and Bounce</a></p>
+
 		<span class="subtitle">Trigger Multiple Animation</span>
 		<div class="element" am-element>
 			<am-state trigger=".btn--multitrigger click">

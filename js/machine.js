@@ -18,10 +18,6 @@ angular.module('aniMachine', [])
 				currentState;
 
 			function changeState(state) {
-				if (!state) {
-					state = 'default';
-				}
-
 				var sameState = currentState === state;
 
 				if (currentState && unregisters && !sameState) {
@@ -145,7 +141,7 @@ angular.module('aniMachine', [])
 			initTriggers();
 
 			if (!options.enter) {
-				changeState();
+				changeState('default');
 				return;
 			}
 
