@@ -1,6 +1,6 @@
 /**
  * ani-machine - Declarative animation and machine state
- * @version v0.1.1
+ * @version v0.1.2
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
@@ -46,33 +46,7 @@ var prefix = (function() {
 var tt = (function() {
 	"use strict";
 
-	/*function genStyles(lang) {
-		return enter.genCSS(lang);
-	}
-
-	function parseAction(options) {
-		var tmp = options.split(' '),
-			selector = tmp[0],
-			event = tmp[1],
-			over = tmp[2],
-			duration = tmp[3];
-
-		// might use map to translate this
-		if (event === 'hover') {
-			event = 'mouseover';
-		} else if (event === 'leave') {
-			event = 'mouseleave';
-		}
-
-		return {
-			event: event,
-			selector: selector
-		};
-	}*/
-
 	return {
-		/*parseAction: parseAction,
-		genStyles: genStyles,*/
 		parseOn: function(on) {
 			if (on === 'enter') {
 				on = 'mouseenter';
@@ -80,6 +54,52 @@ var tt = (function() {
 				on = 'mouseleave';
 			}
 			return on;
+		}
+	};
+
+})();
+var am = am || {};
+am.viewport = (function() {
+	"use strict";
+
+	function getOffset(elm) {
+		var offsetTop = 0,
+		  	offsetLeft = 0;
+
+		do {
+			if (!isNaN(elm.offsetTop)) {
+		  		offsetTop += elm.offsetTop;
+			}	
+			if (!isNaN(elm.offsetLeft)) {
+			  	offsetLeft += elm.offsetLeft;
+			}
+		} while (elm = elm.offsetParent)
+
+		return {
+			top: offsetTop,
+			left: offsetLeft
+		};
+	}
+
+	function getViewportH() {
+	  	var client = window.document.documentElement.clientHeight,
+	  		inner = window.innerHeight;
+
+	  	return (client < inner) ? inner : client;
+	}
+
+	return {
+		isInside: function(elm, h) {
+			var scrolled = window.pageYOffset,
+				viewed = scrolled + getViewportH(),
+				elH = elm.offsetHeight,
+				elTop = getOffset(elm).top,
+				elBottom = elTop + elH,
+				h = h || 0.5;
+
+			return (elTop + elH * h) <= viewed
+				&& (elBottom) >= scrolled
+				|| (elm.currentStyle? elm.currentStyle : window.getComputedStyle(elm, null)).position == 'fixed';
 		}
 	};
 
@@ -274,7 +294,7 @@ var animator = (function() {
 
 })();
 angular.module('aniMachine', [])
-.directive('amElement', ['$timeout', function($timeout) {
+.directive('amElement', ['$timeout', '$window', function($timeout, $window) {
 
 	var ACTIVE = 'active';
 
@@ -414,6 +434,32 @@ angular.module('aniMachine', [])
 			}
 
 			initTriggers();
+
+			if (events['enter'] || events['leave']) {
+
+				if (am.viewport.isInside(element[0])) {
+					if (!events['default']) {
+						changeState('enter');
+					}
+				}
+
+				scope.$watch(function() {
+						return am.viewport.isInside(element[0]);
+					}, function(newValue, oldValue) {
+			           	if (newValue !== oldValue) {
+			           		changeState(newValue ? 'enter' : 'leave');
+			           }
+				}, true);
+
+				// should be outside !?
+			    angular.element($window)
+			    	.bind('resize', function () {
+	                	scope.$apply();
+	            	})
+			    	.bind('scroll', function () {
+	                	scope.$apply();
+	            	});
+			}
 
 			if (!options.enter) {
 				changeState('default');
