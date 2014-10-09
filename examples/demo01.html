@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>AniMachine</title>
+	<title>AniMachine - Demo1</title>
 	<link rel="stylesheet" href="../css/style.css">
-	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
-	<script src='../bower_components/angular/angular.min.js'></script>
-	<script src='../dist/ani-machine.js'></script>
+	<link rel="stylesheet" href="../dist/animate.min.css">
+	<script src='../dist/angular.min.js'></script>
+	<script src='../dist/ani-machine.min.js'></script>
 	<script>
 	angular.module('app', ['aniMachine']);
 	</script>
 </head>
 <body ng-app="app">
 	<div class="container">
+		<h2 am-element enter="top move 200px over 0.8s">Enter animation</h2>
+		<span class="subtitle" am-element enter="wait 1.0s left move 200px over 1.2s">default state with enter and leave animation</span>
+
 		<div class="element" am-element enter="left move 800px over 2.0s">
 			<am-state value="default">
 				<am-event on="enter" animate="flipInX"></am-event>

@@ -20,18 +20,21 @@ h2 {
 	margin-top: -26px;
 }
 
+.special-header {
+	margin-top: 100px;
+}
+
 .container {
 	width: 580px;
 	box-sizing: border-box;
-	padding: 10px;
+	padding: 0 10px;
 	margin: 0 auto;
-	margin-top: 100px;
 }
 
 .element {
  	background-color: #fe006b;
- 	width: 60px;
-	height: 60px;
+ 	width: 55px;
+	height: 55px;
 	margin: 0;
 	padding: 0;
 	float: left;

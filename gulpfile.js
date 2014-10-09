@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
     $ = require('gulp-load-plugins')(),
-    path = require('./package.json').path,
+    pkg = require('./package.json'),
     stylish = require('jshint-stylish'),
+    path = pkg.path,
     port = 6003;
 
 gulp.task('js', function() {
@@ -48,15 +49,31 @@ gulp.task('default', ['connect', 'watch']);
 
 /* build tasks */
 
+var banner = ['/**',
+  ' * <%= pkg.name %> - <%= pkg.description %>',
+  ' * @version v<%= pkg.version %>',
+  ' * @link <%= pkg.homepage %>',
+  ' * @license <%= pkg.license %>',
+  ' */',
+  ''].join('\n');
+
+
+gulp.task('deps', function(){
+    gulp.src(path.deps)
+        .pipe(gulp.dest('dist'));
+});
+
 gulp.task('concat', function() {
     gulp.src(path.js)
         .pipe($.concat('ani-machine.js'))
+        .pipe($.header(banner, { pkg : pkg } ))
         .pipe(gulp.dest('dist'));
 });
 
 gulp.task('uglify', function() {
     gulp.src(['dist/ani-machine.js'])
         .pipe($.uglify())
+        .pipe($.header(banner, { pkg : pkg } ))
         .pipe($.rename(function (path) {
             if(path.extname === '.js') {
                 path.basename += '.min';
@@ -65,4 +82,4 @@ gulp.task('uglify', function() {
         .pipe(gulp.dest('dist'))
 });
 
-gulp.task('build', ['concat', 'uglify']);
+gulp.task('build', ['concat', 'uglify', 'deps']);
