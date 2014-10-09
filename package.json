@@ -1,7 +1,7 @@
 {
   "name": "ani-machine",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.1.1",
+  "description": "Declarative animation and machine state",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,6 +22,7 @@
     "gulp-concat": "^2.4.1",
     "gulp-connect": "^2.0.6",
     "gulp-csslint": "^0.1.5",
+    "gulp-header": "^1.1.1",
     "gulp-jshint": "*",
     "gulp-load-plugins": "~0.5.0",
     "gulp-rename": "^1.2.0",
@@ -40,6 +41,12 @@
       "js/enter.js",
       "js/animator.js",
       "js/machine.js"
+    ],
+    "deps": [
+      "bower_components/angular/angular.js",
+      "bower_components/angular/angular.min.js",
+      "bower_components/angular/angular.min.js.map",
+      "bower_components/animate.css/animate.min.css"
     ]
   }
 }

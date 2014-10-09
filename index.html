@@ -4,23 +4,16 @@
 	<meta charset="UTF-8">
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="bower_components/animate.css/animate.min.css">
-	<script src='bower_components/angular/angular.min.js'></script>
-	<script src='js/prefix.js'></script>
-	<script src="js/tt.js"></script>
-	<script src='js/styles.js'></script>
-	<script src='js/translate.js'></script>
-	<script src='js/transition.js'></script>
-	<script src='js/enter.js'></script>
-	<script src='js/animator.js'></script>
-	<script src="js/machine.js"></script>
+	<link rel="stylesheet" href="dist/animate.min.css">
+	<script src='dist/angular.min.js'></script>
+	<script src='dist/ani-machine.min.js'></script>
 	<script>
 	angular.module('myApp', ['aniMachine']);
 	</script>
 </head>
 <body ng-app="myApp">
 	<div class="container">
-		<h2 am-element enter="top move 200px over 0.8s">Ani Machine</h2>
+		<h2 am-element class="special-header" enter="top move 200px over 0.8s">Ani Machine</h2>
 		<span class="subtitle" am-element enter="wait 1.0s left move 200px over 1.2s">Declarative animation and machine state</span>
 		<div class="element" am-element enter="left move 800px over 2.0s">
 			<am-state value="default">

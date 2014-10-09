@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>AniMachine</title>
+	<title>AniMachine - Demo2</title>
 	<link rel="stylesheet" href="/css/demo02.css">
-	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
-	<script src='../bower_components/angular/angular.min.js'></script>
-	<script src='../dist/ani-machine.js'></script>
+	<link rel="stylesheet" href="../dist/animate.min.css">
+	<script src='../dist/angular.min.js'></script>
+	<script src='../dist/ani-machine.min.js'></script>
 	<script>
 	angular.module('app', ['aniMachine']);
 	</script>
 </head>
 <body ng-app="app">
 	<div class="container">
-		<span class="subtitle">Trigger Animation</span>
+		<h2 am-element enter="top move 200px over 0.8s">Trigger animation</h2>
+		<span class="subtitle">Simple Animation</span>
 		<div class="element" am-element>
 			<am-state trigger=".btn--tada click">
 				<am-event on="active" animate="tada"></am-event>
@@ -21,7 +22,7 @@
 		</div>
 		<p><a class="btn btn--tada">Tada</a></p>
 
-		<span class="subtitle">Trigger Chained Animation</span>
+		<span class="subtitle">Simple Chained Animation</span>
 		<div class="element element--blue" am-element>
 			<am-state trigger=".btn--tadaandbounce click">
 				<am-event on="active" animate="tada bounce"></am-event>
@@ -29,7 +30,7 @@
 		</div>
 		<p><a class="btn btn--tadaandbounce">Tada and Bounce</a></p>
 
-		<span class="subtitle">Trigger Multiple Animation</span>
+		<span class="subtitle">Multiple Animation</span>
 		<div class="element" am-element>
 			<am-state trigger=".btn--multitrigger click">
 				<am-event on="active" animate="tada"></am-event>
