@@ -59,7 +59,6 @@ Roadmap
 - add trigger like element visible on scroll
 - add css generator function like shake.css
 - change dynamically state property on element to know current state
-- add possibility to chain animation in current one is not finish
 - add move and rotate animation
 - refactor angular directives in order to minimize coupling
 - vanilla JS version
