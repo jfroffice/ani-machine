@@ -1,5 +1,5 @@
 angular.module('aniMachine', [])
-.directive('amElement', ['$timeout', function($timeout) {
+.directive('amElement', ['$timeout', '$window', function($timeout, $window) {
 
 	var ACTIVE = 'active';
 
@@ -139,6 +139,32 @@ angular.module('aniMachine', [])
 			}
 
 			initTriggers();
+
+			if (events['enter'] || events['leave']) {
+
+				if (am.viewport.isInside(element[0])) {
+					if (!events['default']) {
+						changeState('enter');
+					}
+				}
+
+				scope.$watch(function() {
+						return am.viewport.isInside(element[0]);
+					}, function(newValue, oldValue) {
+			           	if (newValue !== oldValue) {
+			           		changeState(newValue ? 'enter' : 'leave');
+			           }
+				}, true);
+
+				// should be outside !?
+			    angular.element($window)
+			    	.bind('resize', function () {
+	                	scope.$apply();
+	            	})
+			    	.bind('scroll', function () {
+	                	scope.$apply();
+	            	});
+			}
 
 			if (!options.enter) {
 				changeState('default');

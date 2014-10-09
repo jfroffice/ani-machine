@@ -1,8 +1,20 @@
 body {
-	padding: 50px;
+	padding: 0 50px;
 	color: #AAA;
 	font: 22px 'Helvetica';
 	background-color: #f5e8d7;
+}
+
+
+.container {
+	width: 580px;
+	box-sizing: border-box;
+	padding: 0 10px;
+	margin: 0 auto;
+}
+
+.title {
+	margin-top: 70px;
 }
 
 .subtitle {
@@ -36,4 +48,9 @@ body {
 	font-size: 14px;
 	color: #EEE;
 	cursor: pointer;
+}
+
+.btn:hover {
+	background-color: #333;
+	color: #FFF;
 }
