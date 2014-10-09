@@ -1,7 +1,7 @@
 AniMachine
 ==========
 
-Declarative animation and machine state build on top of AngularJS
+Declarative animation and machine state build on top of AngularJS.
 
 Entering
 --------
@@ -84,7 +84,6 @@ You can play animation on state activation using keyword __active__
 Roadmap
 -------
 - add css generator function like shake.css
-- change dynamically state property on element to know current state
 - add move and rotate animation
 - refactor angular directives in order to minimize coupling
 - vanilla JS version
