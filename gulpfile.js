@@ -49,6 +49,7 @@ gulp.task('default', ['connect', 'watch']);
 
 /* build tasks */
 
+var rimraf = require('rimraf');
 var banner = ['/**',
   ' * <%= pkg.name %> - <%= pkg.description %>',
   ' * @version v<%= pkg.version %>',
@@ -57,6 +58,9 @@ var banner = ['/**',
   ' */',
   ''].join('\n');
 
+gulp.task('clean', function(cb){
+    rimraf('./dist', cb);
+});
 
 gulp.task('deps', function(){
     gulp.src(path.deps)
@@ -82,4 +86,4 @@ gulp.task('uglify', function() {
         .pipe(gulp.dest('dist'))
 });
 
-gulp.task('dist', ['concat', 'uglify', 'deps']);
+gulp.task('build', ['clean', 'concat', 'uglify', 'deps']);
