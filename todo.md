@@ -1,4 +1,6 @@
 use Crowford new recommandation
+	for in
+	for
 
-for in
-for
+gulp
+	cleaning dist directory before
