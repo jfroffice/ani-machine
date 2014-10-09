@@ -30,7 +30,7 @@ inside you declare you would like to bind and special animation you would like t
 
 (Here is animation from animate.css)
 
-Changing State
+Trigger Event
 --------------
 
 State can be change from a trigger
@@ -42,21 +42,47 @@ State can be change from a trigger
 
 In this case, when user click on element selector by class ".trigger" element can change is state to __special__
 
+Reveal Animation
+----------------
+
+Special state name are use to specify what animation you would like to play when entering or leaving the viewport.
+
+You can trigger animation with state __enter__
+```
+<am-state value="enter">
+	<am-event on="active" animate="bounceInLeft"></am-event>
+</am-state>
+```
+
+or state __leave__
+```
+<am-state value="enter">
+	<am-event on="active" animate="bounceOutRight"></am-event>
+</am-state>
+```
+
 Chaining
 --------
 
 You can chain animation by changing current __state__ using special word __goto__
 
+or you can join animation name in the animate attribute
+
+```
+<am-state value="special" trigger=".trigger click">
+	<am-event on="enter" animate="bounce rollOut"></am-event>
+</am-state>
+```
+
+
 Autostart
 ---------
 
-You can play animation on state activation using special on word __active__
+You can play animation on state activation using keyword __active__
 
 
 Roadmap
 -------
-
-- add trigger like element visible on scroll
 - add css generator function like shake.css
 - change dynamically state property on element to know current state
 - add move and rotate animation
