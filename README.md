@@ -83,7 +83,6 @@ You can play animation on state activation using keyword __active__
 
 Roadmap
 -------
-- launch __enter__ animation using trigger
 - add css generator function like shake.css
 - add move and rotate animation
 - refactor angular directives in order to minimize coupling

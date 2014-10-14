@@ -42,6 +42,7 @@
       "js/transition.js",
       "js/enter.js",
       "js/animator.js",
+      "js/maestro.js",
       "js/machine.js"
     ],
     "deps": [
