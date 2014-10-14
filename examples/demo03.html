@@ -22,15 +22,20 @@
 <body ng-app="app">
 	<div class="container">
 		<div class="container">
-				<h2 class="title">Trigger animation</h2>
-				<span class="subtitle">Simple</span>
-				<div class="element" am-element>
-					<am-state value="default" trigger=".btn--tada click">
-						<am-event on="active" animate=":enter bottom move 400px over 0.8s"></am-event>
-					</am-state>
-				</div>
-				<p><a class="btn btn--tada">Tada</a></p>
+			<h2 class="title">Trigger Reveal animation</h2>
+			<span class="subtitle">Enter Left</span>
+			<div class="element" am-element>
+				<am-state value="trigger" trigger=".btn--reveal click">
+					<am-event on="active" animate=":enter left move 400px over 0.8s"></am-event>
+				</am-state>
 			</div>
+			<span class="subtitle">Enter Right</span>
+			<div class="element" am-element>
+				<am-state value="trigger" trigger=".btn--reveal click">
+					<am-event on="active" animate=":enter right move 400px over 0.8s"></am-event>
+				</am-state>
+			</div>
+			<p><a class="btn btn--reveal">Reveal</a></p>
 		</div>
 </body>
 </html>
