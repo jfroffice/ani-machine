@@ -12,6 +12,7 @@ angular.module('aniMachine', [])
 
 			var events = scope.events,
 				triggers = scope.triggers,
+				timeoutFn = $timeout,
 				jobs = [],
 				running,
 				unregisters,
@@ -94,7 +95,7 @@ angular.module('aniMachine', [])
 				var goto = event.goto,
 					on = event.on;
 
-				var eventFn = function() {
+				function eventFn() {
 
 					var params = event.param.split(' ');
 					
@@ -136,7 +137,7 @@ angular.module('aniMachine', [])
 				}
 
 				if (on === ACTIVE) { // autostart animation
-					$timeout(eventFn, 0);
+					timeoutFn(eventFn, 0);
 				} else {
 					element.on(on, eventFn);
 				}
@@ -159,19 +160,19 @@ angular.module('aniMachine', [])
 				scope.$watch(function() {
 						return am.viewport.isInside(element[0]);
 					}, function(newValue, oldValue) {
-			           	if (newValue !== oldValue) {
-			           		changeState(newValue ? 'enter' : 'leave');
-			           }
+						if (newValue !== oldValue) {
+							changeState(newValue ? 'enter' : 'leave');
+					   }
 				}, true);
 
 				// should be outside !?
-			    angular.element($window)
-			    	.bind('resize', function () {
-	                	scope.$apply();
-	            	})
-			    	.bind('scroll', function () {
-	                	scope.$apply();
-	            	});
+				angular.element($window)
+					.bind('resize', function () {
+						scope.$apply();
+					})
+					.bind('scroll', function () {
+						scope.$apply();
+					});
 			}
 
 			if (!options.enter) {
@@ -211,9 +212,7 @@ angular.module('aniMachine', [])
 			elementCtrl.setEvents(scope.value, scope.trigger, scope.events);
 		},
 		controller: ['$scope', function($scope) {
-
 			$scope.events = [];
-
 			this.addEvent = function(event) {
 				$scope.events.push(event);
 			};
@@ -226,7 +225,6 @@ angular.module('aniMachine', [])
 		scope: {
 			on: '@',
 			animate: '@',
-			enter: '@',
 			goto: '@'
 		},
 		require: '^amState',
@@ -235,10 +233,7 @@ angular.module('aniMachine', [])
 			var on = tt.parseOn(scope.on),
 				type, param;
 
-			/*if (scope.enter) {
-				type = 'enter';
-				param = scope.enter;
-			} else*/ if (scope.animate) {
+			if (scope.animate) {
 				type = 'animate';
 				param = scope.animate;
 			}
