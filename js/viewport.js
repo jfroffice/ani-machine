@@ -13,7 +13,7 @@ am.viewport = (function() {
 			if (!isNaN(elm.offsetLeft)) {
 			  	offsetLeft += elm.offsetLeft;
 			}
-		} while (elm = elm.offsetParent)
+		} while (elm = elm.offsetParent);
 
 		return {
 			top: offsetTop,
@@ -34,12 +34,11 @@ am.viewport = (function() {
 				viewed = scrolled + getViewportH(),
 				elH = elm.offsetHeight,
 				elTop = getOffset(elm).top,
-				elBottom = elTop + elH,
-				h = h || 0.5;
+				elBottom = elTop + elH;
 
-			return (elTop + elH * h) <= viewed
-				&& (elBottom) >= scrolled
-				|| (elm.currentStyle? elm.currentStyle : window.getComputedStyle(elm, null)).position == 'fixed';
+			h = h || 0.5;
+
+			return (elTop + elH * h) <= viewed && (elBottom) >= scrolled || (elm.currentStyle? elm.currentStyle : window.getComputedStyle(elm, null)).position == 'fixed';
 		}
 	};
 
