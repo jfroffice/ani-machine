@@ -84,7 +84,6 @@ angular.module('aniMachine', [])
 				running = true;
 				job.run(function() {
 					job.finish();
-					// remove job from array here !
 					jobs.splice(0, 1);
 					running = false;
 					run();
@@ -94,6 +93,8 @@ angular.module('aniMachine', [])
 			function initEvent(event) {
 				var goto = event.goto,
 					on = event.on;
+
+				console.log(on);
 
 				var eventFn = function() {
 
@@ -140,7 +141,7 @@ angular.module('aniMachine', [])
 
 			initTriggers();
 
-			if (events['enter'] || events['leave']) {
+			if (events.enter || events.leave) {
 
 				if (am.viewport.isInside(element[0])) {
 					if (!events['default']) {
