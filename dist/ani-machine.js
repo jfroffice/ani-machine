@@ -73,7 +73,7 @@ am.viewport = (function() {
 			if (!isNaN(elm.offsetLeft)) {
 			  	offsetLeft += elm.offsetLeft;
 			}
-		} while (elm = elm.offsetParent)
+		} while (elm = elm.offsetParent);
 
 		return {
 			top: offsetTop,
@@ -94,12 +94,11 @@ am.viewport = (function() {
 				viewed = scrolled + getViewportH(),
 				elH = elm.offsetHeight,
 				elTop = getOffset(elm).top,
-				elBottom = elTop + elH,
-				h = h || 0.5;
+				elBottom = elTop + elH;
 
-			return (elTop + elH * h) <= viewed
-				&& (elBottom) >= scrolled
-				|| (elm.currentStyle? elm.currentStyle : window.getComputedStyle(elm, null)).position == 'fixed';
+			h = h || 0.5;
+
+			return (elTop + elH * h) <= viewed && (elBottom) >= scrolled || (elm.currentStyle? elm.currentStyle : window.getComputedStyle(elm, null)).position == 'fixed';
 		}
 	};
 
@@ -307,6 +306,7 @@ angular.module('aniMachine', [])
 
 			var events = scope.events,
 				triggers = scope.triggers,
+				timeoutFn = $timeout,
 				jobs = [],
 				running,
 				unregisters,
@@ -379,7 +379,6 @@ angular.module('aniMachine', [])
 				running = true;
 				job.run(function() {
 					job.finish();
-					// remove job from array here !
 					jobs.splice(0, 1);
 					running = false;
 					run();
@@ -390,30 +389,29 @@ angular.module('aniMachine', [])
 				var goto = event.goto,
 					on = event.on;
 
-				var eventFn = function() {
+				function eventFn() {
 
 					var params = event.param.split(' ');
-					event.currentStep += 1;
-
-					if (event.currentStep >= params.length) {
-						console.warn('try to relaunch animation that is not finished');
-					} else {
+					
+					if (params && params[0] === ':enter') {
 						addQueue({
-							run: animator.build(element, event.type, params[event.currentStep]),
+							run: animator.build(element, 'enter', params.slice(1, params.length)),
 							finish: finish
-						});						
+						});	
+					} else {
+						event.currentStep += 1;
+						if (event.currentStep >= params.length) {
+							console.warn('try to relaunch animation that is not finished');
+						} else {
+							addQueue({
+								run: animator.build(element, event.type, params[event.currentStep]),
+								finish: finishSequence
+							});	
+						}												
 					}
 				};
 
 				function finish() {
-
-					if (event.currentStep < (event.param.split(' ').length-1)) {
-						$timeout(eventFn, 0);
-					} else {
-						event.currentStep = -1;
-					}
-
-					// change state
 					if (goto) {
 						if (on !== ACTIVE) {
 							element.off(on, eventFn);
@@ -422,8 +420,18 @@ angular.module('aniMachine', [])
 					}
 				}
 
+				function finishSequence() {
+					if (event.currentStep < (event.param.split(' ').length-1)) {
+						$timeout(eventFn, 0);
+					} else {
+						event.currentStep = -1;
+					}
+
+					finish();
+				}
+
 				if (on === ACTIVE) { // autostart animation
-					$timeout(eventFn, 0);
+					timeoutFn(eventFn, 0);
 				} else {
 					element.on(on, eventFn);
 				}
@@ -435,7 +443,7 @@ angular.module('aniMachine', [])
 
 			initTriggers();
 
-			if (events['enter'] || events['leave']) {
+			if (events.enter || events.leave) {
 
 				if (am.viewport.isInside(element[0])) {
 					if (!events['default']) {
@@ -446,19 +454,19 @@ angular.module('aniMachine', [])
 				scope.$watch(function() {
 						return am.viewport.isInside(element[0]);
 					}, function(newValue, oldValue) {
-			           	if (newValue !== oldValue) {
-			           		changeState(newValue ? 'enter' : 'leave');
-			           }
+						if (newValue !== oldValue) {
+							changeState(newValue ? 'enter' : 'leave');
+					   }
 				}, true);
 
 				// should be outside !?
-			    angular.element($window)
-			    	.bind('resize', function () {
-	                	scope.$apply();
-	            	})
-			    	.bind('scroll', function () {
-	                	scope.$apply();
-	            	});
+				angular.element($window)
+					.bind('resize', function () {
+						scope.$apply();
+					})
+					.bind('scroll', function () {
+						scope.$apply();
+					});
 			}
 
 			if (!options.enter) {
@@ -498,9 +506,7 @@ angular.module('aniMachine', [])
 			elementCtrl.setEvents(scope.value, scope.trigger, scope.events);
 		},
 		controller: ['$scope', function($scope) {
-
 			$scope.events = [];
-
 			this.addEvent = function(event) {
 				$scope.events.push(event);
 			};
@@ -513,7 +519,6 @@ angular.module('aniMachine', [])
 		scope: {
 			on: '@',
 			animate: '@',
-			enter: '@',
 			goto: '@'
 		},
 		require: '^amState',
@@ -522,10 +527,7 @@ angular.module('aniMachine', [])
 			var on = tt.parseOn(scope.on),
 				type, param;
 
-			if (scope.enter) {
-				type = 'enter';
-				param = scope.enter;
-			} else if (scope.animate) {
+			if (scope.animate) {
 				type = 'animate';
 				param = scope.animate;
 			}
