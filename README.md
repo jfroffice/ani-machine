@@ -11,7 +11,7 @@ it allows to add entering animation like below
 <div class="element" am-element enter="left move 800px over 2.0s">
 </div>
 ```
-using attribute __am-element__ on DOM element with special attribute __enter__
+using attribute __am-element__ on DOM element with attribute __enter__
 
 State
 -----
@@ -83,6 +83,7 @@ You can play animation on state activation using keyword __active__
 
 Roadmap
 -------
+- launch __enter__ animation using trigger
 - add css generator function like shake.css
 - add move and rotate animation
 - refactor angular directives in order to minimize coupling

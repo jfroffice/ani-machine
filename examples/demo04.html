@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>AniMachine</title>
+	<link rel="stylesheet" href="/css/demo02.css">
+	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
+	<script src='../bower_components/angular/angular.min.js'></script>
+	<script src='/js/prefix.js'></script>
+	<script src="/js/tt.js"></script>
+	<script src="/js/viewport.js"></script>
+	<script src='/js/styles.js'></script>
+	<script src='/js/translate.js'></script>
+	<script src='/js/transition.js'></script>
+	<script src='/js/enter.js'></script>
+	<script src='/js/animator.js'></script>
+	<script src="/js/machine.js"></script>
+	<script>
+	angular.module('app', ['aniMachine']);
+	</script>
+</head>
+<body ng-app="app">
+	<div class="container">
+		<div class="container">
+				<h2 class="title" am-element enter="top move 200px over 0.8s">Trigger animation</h2>
+				<span class="subtitle">Simple</span>
+				<div class="element" am-element>
+					<am-state trigger=".btn--tada click">
+						<am-event on="active" animate="tada"></am-event>
+					</am-state>
+				</div>
+				<p><a class="btn btn--tada">Tada</a></p>
+
+				<span class="subtitle">Simple Chained</span>
+				<div class="element element--blue" am-element>
+					<am-state trigger=".btn--tadaandbounce click">
+						<am-event on="active" animate="tada bounce"></am-event>
+					</am-state>
+				</div>
+				<p><a class="btn btn--tadaandbounce">Tada and Bounce</a></p>
+
+				<span class="subtitle">Multiple</span>
+				<div class="element" am-element>
+					<am-state trigger=".btn--multitrigger click">
+						<am-event on="active" animate="tada"></am-event>
+					</am-state>
+				</div>
+				<div class="element element--blue" am-element>
+					<am-state trigger=".btn--multitrigger click">
+						<am-event on="active" animate="bounce"></am-event>
+					</am-state>
+				</div>
+				<p><a class="btn btn--multitrigger">Tada + Bounce</a></p>
+
+				<h2 class="title" am-element enter="right move 200px over 0.8s">Reveal animation</h2>
+				<span class="subtitle">Enter</span>
+				<div class="element" am-element>
+					<am-state value="enter">
+						<am-event on="active" animate="bounceInLeft"></am-event>
+					</am-state>
+				</div>
+				<span class="subtitle">Leave</span>
+				<div class="element element--blue" am-element>
+					<am-state value="leave">
+						<am-event on="active" animate="bounceOutRight"></am-event>
+					</am-state>
+				</div>
+				<span class="subtitle">Enter and Leave</span>
+				<div class="element" am-element>
+					<am-state value="enter">
+						<am-event on="active" animate="bounceInLeft"></am-event>
+					</am-state>
+					<am-state value="leave">
+						<am-event on="active" animate="bounceOutRight"></am-event>
+					</am-state>
+				</div>
+			</div>
+		</div>
+</body>
+</html>
