@@ -94,38 +94,45 @@ angular.module('aniMachine', [])
 				var goto = event.goto,
 					on = event.on;
 
-				console.log(on);
-
 				var eventFn = function() {
 
 					var params = event.param.split(' ');
-					event.currentStep += 1;
-
-					if (event.currentStep >= params.length) {
-						console.warn('try to relaunch animation that is not finished');
-					} else {
+					
+					if (params && params[0] === ':enter') {
 						addQueue({
-							run: animator.build(element, event.type, params[event.currentStep]),
+							run: animator.build(element, 'enter', params.slice(1, params.length)),
 							finish: finish
-						});						
+						});	
+					} else {
+						event.currentStep += 1;
+						if (event.currentStep >= params.length) {
+							console.warn('try to relaunch animation that is not finished');
+						} else {
+							addQueue({
+								run: animator.build(element, event.type, params[event.currentStep]),
+								finish: finishSequence
+							});	
+						}												
 					}
 				};
 
 				function finish() {
-
-					if (event.currentStep < (event.param.split(' ').length-1)) {
-						$timeout(eventFn, 0);
-					} else {
-						event.currentStep = -1;
-					}
-
-					// change state
 					if (goto) {
 						if (on !== ACTIVE) {
 							element.off(on, eventFn);
 						}
 						changeState(goto);
 					}
+				}
+
+				function finishSequence() {
+					if (event.currentStep < (event.param.split(' ').length-1)) {
+						$timeout(eventFn, 0);
+					} else {
+						event.currentStep = -1;
+					}
+
+					finish();
 				}
 
 				if (on === ACTIVE) { // autostart animation
@@ -228,10 +235,10 @@ angular.module('aniMachine', [])
 			var on = tt.parseOn(scope.on),
 				type, param;
 
-			if (scope.enter) {
+			/*if (scope.enter) {
 				type = 'enter';
 				param = scope.enter;
-			} else if (scope.animate) {
+			} else*/ if (scope.animate) {
 				type = 'animate';
 				param = scope.animate;
 			}

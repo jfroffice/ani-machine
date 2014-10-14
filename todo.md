@@ -3,3 +3,5 @@ use Crowford new recommandation
 	for
 
 try to use Q. promise API
+
+ID geometric Font with AniMachine
