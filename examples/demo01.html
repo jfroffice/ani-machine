@@ -2,507 +2,71 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>AniMachine - Demo1</title>
-	<link rel="stylesheet" href="../css/style.css">
+	<title>AniMachine - Demo2</title>
+	<link rel="stylesheet" href="../css/demo02.css">
 	<link rel="stylesheet" href="../dist/animate.min.css">
 	<script src='../dist/angular.min.js'></script>
-	<script src='../dist/ani-machine.min.js'></script>
+	<script src='../dist/ani-machine.js'></script>
 	<script>
 	angular.module('app', ['aniMachine']);
 	</script>
 </head>
 <body ng-app="app">
 	<div class="container">
-		<h2>Animation Element Event</h2>
-		<span class="subtitle">mouseenter and mouseleave event below</span>
+		<div class="container">
+				<h2 class="title" am-element enter="top move 200px over 0.8s">Trigger animation</h2>
+				<span class="subtitle">Simple</span>
+				<div class="element" am-element>
+					<am-state trigger=".btn--tada click">
+						<am-event on="active" animate="tada"></am-event>
+					</am-state>
+				</div>
+				<p><a class="btn btn--tada">Tada</a></p>
 
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
+				<span class="subtitle">Simple Chained</span>
+				<div class="element element--blue" am-element>
+					<am-state trigger=".btn--tadaandbounce click">
+						<am-event on="active" animate="tada bounce"></am-event>
+					</am-state>
+				</div>
+				<p><a class="btn btn--tadaandbounce">Tada and Bounce</a></p>
+
+				<span class="subtitle">Multiple</span>
+				<div class="element" am-element>
+					<am-state trigger=".btn--multitrigger click">
+						<am-event on="active" animate="tada"></am-event>
+					</am-state>
+				</div>
+				<div class="element element--blue" am-element>
+					<am-state trigger=".btn--multitrigger click">
+						<am-event on="active" animate="bounce"></am-event>
+					</am-state>
+				</div>
+				<p><a class="btn btn--multitrigger">Tada + Bounce</a></p>
+
+				<h2 class="title" am-element enter="right move 200px over 0.8s">Reveal animation</h2>
+				<span class="subtitle">Enter</span>
+				<div class="element" am-element>
+					<am-state value="enter">
+						<am-event on="active" animate="bounceInLeft"></am-event>
+					</am-state>
+				</div>
+				<span class="subtitle">Leave</span>
+				<div class="element element--blue" am-element>
+					<am-state value="leave">
+						<am-event on="active" animate="bounceOutRight"></am-event>
+					</am-state>
+				</div>
+				<span class="subtitle">Enter and Leave</span>
+				<div class="element" am-element>
+					<am-state value="enter">
+						<am-event on="active" animate="bounceInLeft"></am-event>
+					</am-state>
+					<am-state value="leave">
+						<am-event on="active" animate="bounceOutRight"></am-event>
+					</am-state>
+				</div>
+			</div>
 		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element element--white" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="top move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="right move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="bottom move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-			</am-state>
-		</div>
-		<div class="element" am-element enter="left move 800px over 2.0s">
-			<am-state value="default">
-				<am-event on="enter" animate="flipInX"></am-event>
-				<am-event on="leave" animate="bounce"></am-event>
-				<am-event on="click" animate="hinge"></am-event>
-			</am-state>
-		</div>
-	</div>
 </body>
 </html>

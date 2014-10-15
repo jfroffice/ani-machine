@@ -51,8 +51,6 @@ var enter = (function() {
 		};
 	}
 
-	return {
-		genCSS: genCSS
-	};
+	return { genCSS: genCSS };
 
 })();
