@@ -34,16 +34,16 @@
   },
   "path": {
     "js": [
-      "js/prefix.js",
-      "js/tt.js",
-      "js/viewport.js",
-      "js/styles.js",
-      "js/translate.js",
-      "js/transition.js",
-      "js/enter.js",
-      "js/animator.js",
-      "js/maestro.js",
-      "js/machine.js"
+      "js/core/prefix.js",
+      "js/core/tt.js",
+      "js/core/viewport.js",
+      "js/core/styles.js",
+      "js/core/translate.js",
+      "js/core/transition.js",
+      "js/core/enter.js",
+      "js/core/animator.js",
+      "js/core/maestro.js",
+      "js/am-directive.js"
     ],
     "deps": [
       "bower_components/angular/angular.js",

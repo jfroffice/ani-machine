@@ -8,12 +8,16 @@
 	<script src='dist/angular.min.js'></script>
 	<script src='dist/ani-machine.min.js'></script>
 	<script>
-	angular.module('myApp', ['aniMachine']);
+	angular.module('app', ['aniMachine']);
 	</script>
 </head>
-<body ng-app="myApp">
+<body ng-app="app">
 	<div class="container">
-		<h2 am-element class="special-header" enter="top move 200px over 0.8s">Ani Machine</h2>
+		<h2 am-element class="special-header">Ani Machine
+			<am-state value="default">
+				<am-event on="active" animate=":enter top move 200px over 0.8s"
+			</am-state>
+		</h2>
 		<span class="subtitle" am-element enter="wait 1.0s left move 200px over 1.2s">Declarative animation and machine state build on top <a class="link" href="https://angularjs.org/">AngularJS</a></span>
 		<div class="element" am-element enter="left move 800px over 2.0s">
 			<am-state value="default">
