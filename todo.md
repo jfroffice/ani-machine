@@ -2,6 +2,6 @@ use Crowford new recommandation
 	for in
 	for
 
-try to use Q. promise API
+Try to use Q. promise API
 
-ID geometric Font with AniMachine
+Font Geometric with AniMachine

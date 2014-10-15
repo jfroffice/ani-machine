@@ -33,7 +33,7 @@ angular.module('aniMachine', [])
 						if (newValue !== oldValue) {
 							musician.changeState(newValue ? 'enter' : 'leave');
 					   }
-				}, true);
+					}, true);
 
 				// should be outside !?
 				angular.element($window)
