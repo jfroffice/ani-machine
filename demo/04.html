@@ -18,6 +18,26 @@
 	<script src="/js/am-directive.js"></script>
 	<script>
 	angular.module('app', ['aniMachine']);
+
+	function changeColor() {
+		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
+			elm.classList.add('element--blue');
+		});
+	}
+
+	function hide() {
+		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
+			elm.classList.add('element--hidden');
+		});
+	}
+
+	function show() {
+		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
+			elm.classList.remove('element--hidden');
+			elm.classList.remove('element--blue');
+		});
+	}
+
 	</script>
 </head>
 <body ng-app="app">
@@ -25,20 +45,23 @@
 		<div class="container">
 				<h2 class="title">Experimental</h2>
 				<div class="element" am-element>
+					<am-state value="trigger" trigger=".btn--reveal click">
+						<am-event on="active" before="show()" goto="enter"></am-event>
+					</am-state>
 					<am-state value="enter">
-						<am-event on="active" animate=":enter left move 800px over 0.3s" goto="intro"></am-event>
+						<am-event on="active" animate=":enter left move 800px over 0.6s" goto="intro"></am-event>
 					</am-state>
 					<am-state value="intro">
-						<am-event on="active" animate="pulse tada"></am-event>
-						<am-event on="enter" animate="pulse"></am-event>
-						<am-event on="leave" animate="tada"></am-event>
+						<am-event on="enter" animate="pulse" before="changeColor()"></am-event>
+						<am-event on="leave" animate="tada" goto="outro"></am-event>
 					</am-state>
-					<am-state value="bounce" trigger=".trigger click">
-						<am-event on="enter" animate="bounce" goto="default"></am-event>
-						<am-event on="active" animate="rubberBand"></am-event>
+					<am-state value="outro">
+						<am-event on="active" animate="bounceOutRight" after="hide()"></am-event>
 					</am-state>
 				</div>
+				<p><a class="btn btn--reveal">Restart</a></p>
 			</div>
 		</div>
+	</div>
 </body>
 </html>
