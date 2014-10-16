@@ -103,7 +103,7 @@ am.maestro = {
 					if (on !== ACTIVE) {
 						self.element.off(on, eventFn);
 					}
-					changeState(goto);
+					self.changeState(goto);
 				}
 			}
 
