@@ -364,14 +364,28 @@ am.maestro = {
 			return tmp;
 		}
 
+		function callFn(fn) {
+			fn = window[fn];					 
+			if (typeof fn === "function") fn.apply(null, self);
+		}
+
 		function initEvent(event) {
 			var goto = event.goto,
+				before = event.before ? event.before.replace('()', '') : '',
+				after = event.after ? event.after.replace('()', '') : '',
 				on = event.on;
 
 			function eventFn() {
 
-				var params = event.param.split(' ');
+				before && callFn(before);
 				
+				if (!event.param) {
+					gotoFn();
+					return;
+				}
+
+				var params = event.param.split(' ');
+								
 				if (params && params[0] === ':enter') {
 					addQueue({
 						run: animator.build(self.element, 'enter', params.slice(1, params.length)),
@@ -388,15 +402,22 @@ am.maestro = {
 						});	
 					}												
 				}
-			};
+			}
+
+			function gotoFn() {
+				if (!goto) {
+					return;
+				}
+
+				if (on !== ACTIVE) {
+					self.element.off(on, eventFn);
+				}
+				self.changeState(goto);
+			}
 
 			function finish() {
-				if (goto) {
-					if (on !== ACTIVE) {
-						self.element.off(on, eventFn);
-					}
-					self.changeState(goto);
-				}
+				gotoFn();
+				after && callFn(after);
 			}
 
 			function finishSequence() {
@@ -415,9 +436,7 @@ am.maestro = {
 				self.element.on(on, eventFn);
 			}
 		
-			return function() {
-				self.element.off(on, eventFn);
-			};
+			return function() { self.element.off(on, eventFn); };
 		}
 
 		var sameState = self.currentState === state;
@@ -522,6 +541,8 @@ angular.module('aniMachine', [])
 		restrict: 'E',
 		scope: {
 			on: '@',
+			before: '@',
+			after: '@',
 			animate: '@',
 			goto: '@'
 		},
@@ -541,6 +562,8 @@ angular.module('aniMachine', [])
 				type: type,
 				param: param,
 				currentStep: -1,
+				before: scope.before,
+				after: scope.after,
 				goto: scope.goto
 			});
 		}
