@@ -84,6 +84,8 @@ angular.module('aniMachine', [])
 		restrict: 'E',
 		scope: {
 			on: '@',
+			before: '@',
+			after: '@',
 			animate: '@',
 			goto: '@'
 		},
@@ -103,6 +105,8 @@ angular.module('aniMachine', [])
 				type: type,
 				param: param,
 				currentStep: -1,
+				before: scope.before,
+				after: scope.after,
 				goto: scope.goto
 			});
 		}

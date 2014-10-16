@@ -39,6 +39,10 @@ body {
 	background-color: #17c9f6;
 }
 
+.element--hidden {
+	visibility: hidden;
+}
+
 .btn {
 	background-color: #555;
 	border: none;
