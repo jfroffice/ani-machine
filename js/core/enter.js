@@ -1,4 +1,4 @@
-var enter = (function() {
+am.enter = (function(translate, transition, undefined) {
 	"use strict";
 
 	function parse(lang) {
@@ -38,11 +38,10 @@ var enter = (function() {
 		return attrs;
 	}
 
-	function genCSS(lang) {
+	return function(lang) {
 
-		var attrs = parse('enter ' + lang);
-
-		var over = attrs.over || '0.7s',
+		var attrs = parse('enter ' + lang),
+			over = attrs.over || '0.7s',
 			enter = attrs.enter || 'left',
 			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
 			after = attrs.after || '0s',
@@ -62,16 +61,14 @@ var enter = (function() {
 		}
 
 		return {
-			initial: translate.genCSS({
+			initial: translate({
 				axis: axis,
 				move: move,
 				scale: scale,
 				opacity: false
 			}),
-			transition: transition.genCSS(over, easing, after)
+			transition: transition(over, easing, after)
 		};
 	}
 
-	return { genCSS: genCSS };
-
-})();
+})(am.translate, am.transition);

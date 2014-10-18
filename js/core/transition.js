@@ -1,7 +1,7 @@
-var transition = (function() {
+am.transition = (function(styles, undefined) {
 	"use strict";
 
-	function genCSS(over, easing, after) {
+	return function(over, easing, after) {
 		var tmp = over + ' ' + easing + ' ' + after,
 			tmp2 = tmp + ', scale, opacity ' + tmp + ';';
 
@@ -9,9 +9,7 @@ var transition = (function() {
 		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
 					       'transition: transform '			+ tmp2;
 
-		console.log(css);
-		return styles.add(key, css);
-	}
+		return styles(key, css);
+	};
 
-	return { genCSS: genCSS };
-})();
+})(am.styles);
