@@ -1,6 +1,6 @@
 /**
  * ani-machine - Declarative animation and machine state
- * @version v0.1.3
+ * @version v0.1.4
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
@@ -205,8 +205,8 @@ var enter = (function() {
 				case 'scale':
 				  	attrs.scale = {};
 				  	if (param == 'up' || param == 'down') {
-				  		attrs.scale.direction = param
-				    	attrs.scale.power    = words[i+2]
+				  		attrs.scale.direction = param;
+				    	attrs.scale.power    = words[i+2];
 				    	return;
 				  	}
 				  	attrs.scale.power = param;
@@ -237,7 +237,7 @@ var enter = (function() {
 
 		if (scale && parseInt(scale.power) != 0) {
 			var delta = parseFloat(scale.power) * 0.01;
-			if (scale.direction == 'up' ) { delta = -delta; }
+			if (scale.direction == 'up') { delta = -delta; }
 		  	scale.value = 1 + delta;
 		}
 
