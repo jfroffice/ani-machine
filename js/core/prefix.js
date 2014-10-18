@@ -1,4 +1,5 @@
-var prefix = (function() {
+var am = {};
+am.prefix = (function() {
 	"use strict";
 
 	var ANIMATION_END_EVENTS = {

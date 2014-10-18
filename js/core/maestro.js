@@ -1,164 +1,167 @@
-am.maestro = {
-	init: function(options) {
+am.maestro = (function(parser, frame, undefined) {
 
-		var self = this,
-			triggers = options.triggers;
+	return {
+		init: function(options) {
 
-		self.events = options.events;
-		self.element = options.element;
-		self.deferFn = options.timeoutFn;
-		self.jobs = [];
-		self.unregisters = [];
-		self.currentState;
-		self.running;
+			var self = this,
+				triggers = options.triggers;
 
-		function initTrigger(state, trigger) {
-			var tmp = trigger.split(' '),
-				selector = tmp[0],
-				on = tt.parseOn(tmp[1]);
+			self.events = options.events;
+			self.element = options.element;
+			self.deferFn = options.timeoutFn;
+			self.jobs = [];
+			self.unregisters = [];
+			self.currentState;
+			self.running;
 
-			[].forEach.call(document.querySelectorAll(selector), function(el) {
-				el.addEventListener(on, function() {
-					self.changeState(state);
+			function initTrigger(state, trigger) {
+				var tmp = trigger.split(' '),
+					selector = tmp[0],
+					on = parser(tmp[1]);
+
+				[].forEach.call(document.querySelectorAll(selector), function(el) {
+					el.addEventListener(on, function() {
+						self.state(state);
+					});
 				});
-			});
-		}
-
-		for(var state in triggers) {
-			var trigger = triggers[state];
-			if (!trigger) {
-				continue;
 			}
-			initTrigger(state, trigger);
-		}
-	},
-	changeState: function(state) {
 
-		var self = this,
-			ACTIVE = 'active';
-
-		function addQueue(job) {
-			self.jobs.push(job);
-			run();
-		}
-
-		function run() {
-			if (self.running) {
-				return;
+			for(var state in triggers) {
+				var trigger = triggers[state];
+				if (!trigger) {
+					continue;
+				}
+				initTrigger(state, trigger);
 			}
-			var job = self.jobs[0];
-			if (!job) {
-				return;
-			}
-			self.running = true;
-			job.run(function() {
-				job.finish();
-				self.jobs.splice(0, 1);
-				self.running = false;
+		},
+		state: function(state) {
+
+			var self = this,
+				ACTIVE = 'active';
+
+			function addQueue(job) {
+				self.jobs.push(job);
 				run();
-			});
-		}
-
-		function initEvents(events) {
-			if (!events) {
-				return;
 			}
 
-			var tmp = [];
-			events.forEach(function(e) {
-				tmp.push(initEvent(e));
-			});
-			return tmp;
-		}
+			function run() {
+				if (self.running) {
+					return;
+				}
+				var job = self.jobs[0];
+				if (!job) {
+					return;
+				}
+				self.running = true;
+				job.run(function() {
+					job.finish();
+					self.jobs.splice(0, 1);
+					self.running = false;
+					run();
+				});
+			}
 
-		function callFn(fn) {
-			fn = window[fn];					 
-			if (typeof fn === "function") fn.apply(null, self);
-		}
-
-		function initEvent(event) {
-			var goto = event.goto,
-				before = event.before ? event.before.replace('()', '') : '',
-				after = event.after ? event.after.replace('()', '') : '',
-				on = event.on;
-
-			function eventFn() {
-
-				before && callFn(before);
-				
-				if (!event.param) {
-					gotoFn();
+			function initEvents(events) {
+				if (!events) {
 					return;
 				}
 
-				var params = event.param.split(' ');
-								
-				if (params && params[0] === ':enter') {
-					addQueue({
-						run: am.build(self.element, 'enter', params.slice(1, params.length)),
-						finish: finish
-					});	
-				} else {
-					event.currentStep += 1;
-					if (event.currentStep >= params.length) {
-						console.warn('try to relaunch animation that is not finished');
-					} else {
+				var tmp = [];
+				events.forEach(function(e) {
+					tmp.push(initEvent(e));
+				});
+				return tmp;
+			}
+
+			function callFn(fn) {
+				fn = window[fn];					 
+				if (typeof fn === "function") fn.apply(null, self);
+			}
+
+			function initEvent(event) {
+				var goto = event.goto,
+					before = event.before ? event.before.replace('()', '') : '',
+					after = event.after ? event.after.replace('()', '') : '',
+					on = event.on;
+
+				function eventFn() {
+
+					before && callFn(before);
+					
+					if (!event.param) {
+						gotoFn();
+						return;
+					}
+
+					var params = event.param.split(' ');
+									
+					if (params && params[0] === ':enter') {
 						addQueue({
-							run: am.build(self.element, event.type, params[event.currentStep]),
-							finish: finishSequence
+							run: am.build(self.element, 'enter', params.slice(1, params.length)),
+							finish: finish
 						});	
-					}												
+					} else {
+						event.currentStep += 1;
+						if (event.currentStep >= params.length) {
+							console.warn('try to relaunch animation that is not finished');
+						} else {
+							addQueue({
+								run: am.build(self.element, event.type, params[event.currentStep]),
+								finish: finishSequence
+							});	
+						}												
+					}
 				}
-			}
 
-			function gotoFn() {
-				if (!goto) {
-					return;
+				function gotoFn() {
+					if (!goto) {
+						return;
+					}
+
+					if (on !== ACTIVE) {
+						self.element.off(on, eventFn);
+					}
+					self.state(goto);
 				}
 
-				if (on !== ACTIVE) {
-					self.element.off(on, eventFn);
+				function finish() {
+					gotoFn();
+					after && callFn(after);
 				}
-				self.changeState(goto);
-			}
 
-			function finish() {
-				gotoFn();
-				after && callFn(after);
-			}
+				function finishSequence() {
+					if (event.currentStep < (event.param.split(' ').length-1)) {
+						frame(eventFn);
+					} else {
+						event.currentStep = -1;
+					}
 
-			function finishSequence() {
-				if (event.currentStep < (event.param.split(' ').length-1)) {
-					am.frame(eventFn);
+					finish();
+				}
+
+				if (on === ACTIVE) { // autostart animation
+					frame(eventFn);
 				} else {
-					event.currentStep = -1;
+					self.element.on(on, eventFn);
 				}
-
-				finish();
+			
+				return function() { self.element.off(on, eventFn); };
 			}
 
-			if (on === ACTIVE) { // autostart animation
-				am.frame(eventFn);
+			var sameState = self.currentState === state;
+
+			if (self.currentState && self.unregisters && !sameState) {
+				for (var i=0; i<self.unregisters.length; i++) {
+					self.unregisters[i]();
+				}
+			}
+
+			if (sameState) {
+				initEvents(self.events[state]);
 			} else {
-				self.element.on(on, eventFn);
-			}
-		
-			return function() { self.element.off(on, eventFn); };
-		}
-
-		var sameState = self.currentState === state;
-
-		if (self.currentState && self.unregisters && !sameState) {
-			for (var i=0; i<self.unregisters.length; i++) {
-				self.unregisters[i]();
+				self.currentState = state;
+				self.unregisters = initEvents(self.events[state]);
 			}
 		}
-
-		if (sameState) {
-			initEvents(self.events[state]);
-		} else {
-			self.currentState = state;
-			self.unregisters = initEvents(self.events[state]);
-		}
-	}
-};
+	};
+})(am.parser, am.frame);

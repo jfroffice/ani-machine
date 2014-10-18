@@ -1,7 +1,7 @@
-var translate = (function(undefined) {
+am.translate = (function(styles, undefined) {
 	"use strict";
 
-	function genCSS(options) {
+	return function(options) {
 		var type = 'translate',
 			tmp = type + options.axis + '(' + options.move + ')',
 			css, key;
@@ -18,10 +18,7 @@ var translate = (function(undefined) {
 	
 		var key = (type + '_' + options.axis + '_' + options.move + '_' + options.opacity).replace(/-/g, 'm');
 
-		console.log(css);
+		return styles(key, css);
+	};
 
-		return styles.add(key, css);
-	}
-
-	return { genCSS: genCSS };
-})();
+})(am.styles);

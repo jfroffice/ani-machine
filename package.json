@@ -35,7 +35,7 @@
   "path": {
     "js": [
       "js/core/prefix.js",
-      "js/core/tt.js",
+      "js/core/parser.js",
       "js/core/viewport.js",
       "js/core/styles.js",
       "js/core/translate.js",

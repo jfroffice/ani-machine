@@ -1,4 +1,4 @@
-am.build = (function() {
+am.build = (function(prefix, enter, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
@@ -32,7 +32,7 @@ am.build = (function() {
 
 		if (type === 'enter') {
 			return function(cb) {
-				s = enter.genCSS(param);
+				s = enter(param);
 				elm.addClass(s.initial);
 				doTransition(elm, s.initial, null, s.transition, function() {
 					//console.log('animation end ' + initial);
@@ -57,4 +57,4 @@ am.build = (function() {
 		}
 	};
 
-})();
+})(am.prefix, am.enter);

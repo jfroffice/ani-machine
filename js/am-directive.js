@@ -1,5 +1,5 @@
 angular.module('aniMachine', [])
-.directive('amElement', ['$timeout', '$window', function($timeout, $window) {
+.directive('amElement', ['$window', function($window) {
 
 	return {
 		restrict: 'A',
@@ -15,15 +15,14 @@ angular.module('aniMachine', [])
 			musician.init({
 				triggers: triggers,
 				events: events,
-				element: element,
-				timeoutFn: $timeout
+				element: element
 			});			
 
 			if (events.enter || events.leave) {
 
 				if (am.viewport.isInside(element[0])) {
 					if (!events['default']) {
-						musician.changeState('enter');
+						musician.state('enter');
 					}
 				}
 
@@ -31,7 +30,7 @@ angular.module('aniMachine', [])
 						return am.viewport.isInside(element[0]);
 					}, function(newValue, oldValue) {
 						if (newValue !== oldValue) {
-							musician.changeState(newValue ? 'enter' : 'leave');
+							musician.state(newValue ? 'enter' : 'leave');
 					   }
 					}, true);
 
@@ -45,7 +44,7 @@ angular.module('aniMachine', [])
 					});
 			}
 
-			musician.changeState('default');
+			musician.state('default');
 		},
 		controller: ['$scope', '$element', function($scope, $element) {
 
@@ -92,7 +91,7 @@ angular.module('aniMachine', [])
 		require: '^amState',
 		link: function(scope, elm, options, stateCtrl) {
 
-			var on = tt.parseOn(scope.on),
+			var on = am.parser(scope.on),
 				type, param;
 
 			if (scope.animate) {

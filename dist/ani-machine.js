@@ -4,7 +4,8 @@
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
-var prefix = (function() {
+var am = {};
+am.prefix = (function() {
 	"use strict";
 
 	var ANIMATION_END_EVENTS = {
@@ -43,22 +44,18 @@ var prefix = (function() {
 	};
 
 })();
-var tt = (function() {
+am.parser = (function() {
 	"use strict";
 
-	return {
-		parseOn: function(on) {
-			if (on === 'enter') {
-				on = 'mouseenter';
-			} else if (on === 'leave') {
-				on = 'mouseleave';
-			}
-			return on;
+	return function(on) {
+		if (on === 'enter') {
+			on = 'mouseenter';
+		} else if (on === 'leave') {
+			on = 'mouseleave';
 		}
+		return on;
 	};
-
 })();
-var am = am || {};
 am.viewport = (function() {
 	"use strict";
 
@@ -103,7 +100,7 @@ am.viewport = (function() {
 	};
 
 })();
-var styles = (function() {
+am.styles = (function(undefined) {
 	"use strict";
 
 	var cache = {};
@@ -112,12 +109,11 @@ var styles = (function() {
 		if (cache[key]) {
 			return;
 		}
-
 		cache[key] = true;
 		return '.' + key + '{' + content + '}';
 	}
 
-	function add(key, content) {
+	return function(key, content) {
 		var raw = buildCSS(key, content);
 		if (!raw) {
 			return key;
@@ -127,17 +123,13 @@ var styles = (function() {
 		style.innerHTML = raw;
 		document.getElementsByTagName("head")[0].appendChild(style);
 		return key;
-	}
-
-	return {
-		add: add
 	};
 
 })();
-var translate = (function(undefined) {
+am.translate = (function(styles, undefined) {
 	"use strict";
 
-	function genCSS(options) {
+	return function(options) {
 		var type = 'translate',
 			tmp = type + options.axis + '(' + options.move + ')',
 			css, key;
@@ -154,17 +146,14 @@ var translate = (function(undefined) {
 	
 		var key = (type + '_' + options.axis + '_' + options.move + '_' + options.opacity).replace(/-/g, 'm');
 
-		console.log(css);
+		return styles(key, css);
+	};
 
-		return styles.add(key, css);
-	}
-
-	return { genCSS: genCSS };
-})();
-var transition = (function() {
+})(am.styles);
+am.transition = (function(styles, undefined) {
 	"use strict";
 
-	function genCSS(over, easing, after) {
+	return function(over, easing, after) {
 		var tmp = over + ' ' + easing + ' ' + after,
 			tmp2 = tmp + ', scale, opacity ' + tmp + ';';
 
@@ -172,13 +161,11 @@ var transition = (function() {
 		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
 					       'transition: transform '			+ tmp2;
 
-		console.log(css);
-		return styles.add(key, css);
-	}
+		return styles(key, css);
+	};
 
-	return { genCSS: genCSS };
-})();
-var enter = (function() {
+})(am.styles);
+am.enter = (function(translate, transition, undefined) {
 	"use strict";
 
 	function parse(lang) {
@@ -218,11 +205,10 @@ var enter = (function() {
 		return attrs;
 	}
 
-	function genCSS(lang) {
+	return function(lang) {
 
-		var attrs = parse('enter ' + lang);
-
-		var over = attrs.over || '0.7s',
+		var attrs = parse('enter ' + lang),
+			over = attrs.over || '0.7s',
 			enter = attrs.enter || 'left',
 			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
 			after = attrs.after || '0s',
@@ -242,19 +228,17 @@ var enter = (function() {
 		}
 
 		return {
-			initial: translate.genCSS({
+			initial: translate({
 				axis: axis,
 				move: move,
 				scale: scale,
 				opacity: false
 			}),
-			transition: transition.genCSS(over, easing, after)
+			transition: transition(over, easing, after)
 		};
 	}
 
-	return { genCSS: genCSS };
-
-})();
+})(am.translate, am.transition);
 am.frame = (function () {
   	var frameFn = window.requestAnimationFrame 		||
   		 		window.webkitRequestAnimationFrame ||
@@ -267,7 +251,7 @@ am.frame = (function () {
      	frameFn.call(window, cb);
      }
 }());
-am.build = (function() {
+am.build = (function(prefix, enter, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
@@ -301,7 +285,7 @@ am.build = (function() {
 
 		if (type === 'enter') {
 			return function(cb) {
-				s = enter.genCSS(param);
+				s = enter(param);
 				elm.addClass(s.initial);
 				doTransition(elm, s.initial, null, s.transition, function() {
 					//console.log('animation end ' + initial);
@@ -326,173 +310,176 @@ am.build = (function() {
 		}
 	};
 
-})();
-am.maestro = {
-	init: function(options) {
+})(am.prefix, am.enter);
+am.maestro = (function(parser, frame, undefined) {
 
-		var self = this,
-			triggers = options.triggers;
+	return {
+		init: function(options) {
 
-		self.events = options.events;
-		self.element = options.element;
-		self.deferFn = options.timeoutFn;
-		self.jobs = [];
-		self.unregisters = [];
-		self.currentState;
-		self.running;
+			var self = this,
+				triggers = options.triggers;
 
-		function initTrigger(state, trigger) {
-			var tmp = trigger.split(' '),
-				selector = tmp[0],
-				on = tt.parseOn(tmp[1]);
+			self.events = options.events;
+			self.element = options.element;
+			self.deferFn = options.timeoutFn;
+			self.jobs = [];
+			self.unregisters = [];
+			self.currentState;
+			self.running;
 
-			[].forEach.call(document.querySelectorAll(selector), function(el) {
-				el.addEventListener(on, function() {
-					self.changeState(state);
+			function initTrigger(state, trigger) {
+				var tmp = trigger.split(' '),
+					selector = tmp[0],
+					on = parser(tmp[1]);
+
+				[].forEach.call(document.querySelectorAll(selector), function(el) {
+					el.addEventListener(on, function() {
+						self.state(state);
+					});
 				});
-			});
-		}
-
-		for(var state in triggers) {
-			var trigger = triggers[state];
-			if (!trigger) {
-				continue;
 			}
-			initTrigger(state, trigger);
-		}
-	},
-	changeState: function(state) {
 
-		var self = this,
-			ACTIVE = 'active';
-
-		function addQueue(job) {
-			self.jobs.push(job);
-			run();
-		}
-
-		function run() {
-			if (self.running) {
-				return;
+			for(var state in triggers) {
+				var trigger = triggers[state];
+				if (!trigger) {
+					continue;
+				}
+				initTrigger(state, trigger);
 			}
-			var job = self.jobs[0];
-			if (!job) {
-				return;
-			}
-			self.running = true;
-			job.run(function() {
-				job.finish();
-				self.jobs.splice(0, 1);
-				self.running = false;
+		},
+		state: function(state) {
+
+			var self = this,
+				ACTIVE = 'active';
+
+			function addQueue(job) {
+				self.jobs.push(job);
 				run();
-			});
-		}
-
-		function initEvents(events) {
-			if (!events) {
-				return;
 			}
 
-			var tmp = [];
-			events.forEach(function(e) {
-				tmp.push(initEvent(e));
-			});
-			return tmp;
-		}
+			function run() {
+				if (self.running) {
+					return;
+				}
+				var job = self.jobs[0];
+				if (!job) {
+					return;
+				}
+				self.running = true;
+				job.run(function() {
+					job.finish();
+					self.jobs.splice(0, 1);
+					self.running = false;
+					run();
+				});
+			}
 
-		function callFn(fn) {
-			fn = window[fn];					 
-			if (typeof fn === "function") fn.apply(null, self);
-		}
-
-		function initEvent(event) {
-			var goto = event.goto,
-				before = event.before ? event.before.replace('()', '') : '',
-				after = event.after ? event.after.replace('()', '') : '',
-				on = event.on;
-
-			function eventFn() {
-
-				before && callFn(before);
-				
-				if (!event.param) {
-					gotoFn();
+			function initEvents(events) {
+				if (!events) {
 					return;
 				}
 
-				var params = event.param.split(' ');
-								
-				if (params && params[0] === ':enter') {
-					addQueue({
-						run: am.build(self.element, 'enter', params.slice(1, params.length)),
-						finish: finish
-					});	
-				} else {
-					event.currentStep += 1;
-					if (event.currentStep >= params.length) {
-						console.warn('try to relaunch animation that is not finished');
-					} else {
+				var tmp = [];
+				events.forEach(function(e) {
+					tmp.push(initEvent(e));
+				});
+				return tmp;
+			}
+
+			function callFn(fn) {
+				fn = window[fn];					 
+				if (typeof fn === "function") fn.apply(null, self);
+			}
+
+			function initEvent(event) {
+				var goto = event.goto,
+					before = event.before ? event.before.replace('()', '') : '',
+					after = event.after ? event.after.replace('()', '') : '',
+					on = event.on;
+
+				function eventFn() {
+
+					before && callFn(before);
+					
+					if (!event.param) {
+						gotoFn();
+						return;
+					}
+
+					var params = event.param.split(' ');
+									
+					if (params && params[0] === ':enter') {
 						addQueue({
-							run: am.build(self.element, event.type, params[event.currentStep]),
-							finish: finishSequence
+							run: am.build(self.element, 'enter', params.slice(1, params.length)),
+							finish: finish
 						});	
-					}												
+					} else {
+						event.currentStep += 1;
+						if (event.currentStep >= params.length) {
+							console.warn('try to relaunch animation that is not finished');
+						} else {
+							addQueue({
+								run: am.build(self.element, event.type, params[event.currentStep]),
+								finish: finishSequence
+							});	
+						}												
+					}
 				}
-			}
 
-			function gotoFn() {
-				if (!goto) {
-					return;
+				function gotoFn() {
+					if (!goto) {
+						return;
+					}
+
+					if (on !== ACTIVE) {
+						self.element.off(on, eventFn);
+					}
+					self.state(goto);
 				}
 
-				if (on !== ACTIVE) {
-					self.element.off(on, eventFn);
+				function finish() {
+					gotoFn();
+					after && callFn(after);
 				}
-				self.changeState(goto);
-			}
 
-			function finish() {
-				gotoFn();
-				after && callFn(after);
-			}
+				function finishSequence() {
+					if (event.currentStep < (event.param.split(' ').length-1)) {
+						frame(eventFn);
+					} else {
+						event.currentStep = -1;
+					}
 
-			function finishSequence() {
-				if (event.currentStep < (event.param.split(' ').length-1)) {
-					am.frame(eventFn);
+					finish();
+				}
+
+				if (on === ACTIVE) { // autostart animation
+					frame(eventFn);
 				} else {
-					event.currentStep = -1;
+					self.element.on(on, eventFn);
 				}
-
-				finish();
+			
+				return function() { self.element.off(on, eventFn); };
 			}
 
-			if (on === ACTIVE) { // autostart animation
-				am.frame(eventFn);
+			var sameState = self.currentState === state;
+
+			if (self.currentState && self.unregisters && !sameState) {
+				for (var i=0; i<self.unregisters.length; i++) {
+					self.unregisters[i]();
+				}
+			}
+
+			if (sameState) {
+				initEvents(self.events[state]);
 			} else {
-				self.element.on(on, eventFn);
-			}
-		
-			return function() { self.element.off(on, eventFn); };
-		}
-
-		var sameState = self.currentState === state;
-
-		if (self.currentState && self.unregisters && !sameState) {
-			for (var i=0; i<self.unregisters.length; i++) {
-				self.unregisters[i]();
+				self.currentState = state;
+				self.unregisters = initEvents(self.events[state]);
 			}
 		}
-
-		if (sameState) {
-			initEvents(self.events[state]);
-		} else {
-			self.currentState = state;
-			self.unregisters = initEvents(self.events[state]);
-		}
-	}
-};
+	};
+})(am.parser, am.frame);
 angular.module('aniMachine', [])
-.directive('amElement', ['$timeout', '$window', function($timeout, $window) {
+.directive('amElement', ['$window', function($window) {
 
 	return {
 		restrict: 'A',
@@ -508,15 +495,14 @@ angular.module('aniMachine', [])
 			musician.init({
 				triggers: triggers,
 				events: events,
-				element: element,
-				timeoutFn: $timeout
+				element: element
 			});			
 
 			if (events.enter || events.leave) {
 
 				if (am.viewport.isInside(element[0])) {
 					if (!events['default']) {
-						musician.changeState('enter');
+						musician.state('enter');
 					}
 				}
 
@@ -524,7 +510,7 @@ angular.module('aniMachine', [])
 						return am.viewport.isInside(element[0]);
 					}, function(newValue, oldValue) {
 						if (newValue !== oldValue) {
-							musician.changeState(newValue ? 'enter' : 'leave');
+							musician.state(newValue ? 'enter' : 'leave');
 					   }
 					}, true);
 
@@ -538,7 +524,7 @@ angular.module('aniMachine', [])
 					});
 			}
 
-			musician.changeState('default');
+			musician.state('default');
 		},
 		controller: ['$scope', '$element', function($scope, $element) {
 
@@ -585,7 +571,7 @@ angular.module('aniMachine', [])
 		require: '^amState',
 		link: function(scope, elm, options, stateCtrl) {
 
-			var on = tt.parseOn(scope.on),
+			var on = am.parser(scope.on),
 				type, param;
 
 			if (scope.animate) {

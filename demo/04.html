@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
 	<script src='../bower_components/angular/angular.min.js'></script>
 	<script src='/js/core/prefix.js'></script>
-	<script src="/js/core/tt.js"></script>
+	<script src="/js/core/parser.js"></script>
 	<script src="/js/core/viewport.js"></script>
 	<script src='/js/core/styles.js'></script>
 	<script src='/js/core/translate.js'></script>
@@ -49,7 +49,7 @@
 						<am-event on="active" before="show()" goto="enter"></am-event>
 					</am-state>
 					<am-state value="enter">
-						<am-event on="active" animate=":enter left move 200px scale 20% over 2.0s" goto="intro"></am-event>
+						<am-event on="active" animate=":enter left move 200px scale 40% over 1.0s" goto="intro"></am-event>
 					</am-state>
 					<am-state value="intro">
 						<am-event on="enter" animate="pulse" before="changeColor()"></am-event>
