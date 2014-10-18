@@ -9,3 +9,4 @@ rotate
 scale
 scroll
 reverse
+template animation
