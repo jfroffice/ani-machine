@@ -105,6 +105,16 @@ Or you chain animation by current __state__ using special word __goto__
 
 in the second case, trigger event will be unregistered which might be useful
 
+Before and After Animation
+--------------------------
+
+You can bind callback before and after animation event.
+
+```
+<am-state value="enter">
+	<am-event on="active" before="show()" animate="bounceOutRight" after="hide()"></am-event>
+</am-state>
+```
 
 Roadmap
 -------
