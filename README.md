@@ -115,9 +115,3 @@ You can bind callback before and after animation event.
 	<am-event on="active" before="show()" animate="bounceOutRight" after="hide()"></am-event>
 </am-state>
 ```
-
-Roadmap
--------
-- add CSS generator function like shake.css
-- add transform like translate rotate scale animation
-- vanilla JS version
