@@ -106,5 +106,5 @@ in the second case, trigger event will be unregistered which might be useful
 Roadmap
 -------
 - add CSS generator function like shake.css
-- add move and rotate animation
+- add transform like move and rotate animation
 - vanilla JS version
