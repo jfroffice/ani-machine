@@ -1,5 +1,5 @@
 body {
-	padding: 0 50px;
+	padding: 50px;
 	color: #AAA;
 	font: 22px 'Helvetica';
 	background-color: #f5e8d7;
@@ -42,6 +42,46 @@ body {
 .element--hidden {
 	visibility: hidden;
 }
+
+
+
+
+
+.letter-vertical {
+	height: 220px;
+	width: 35px;
+	opacity: 0.65;
+	display: inline-block;
+}
+
+.letter-horizontal {
+	width: 107px;
+	height: 30px;
+	opacity: 0.9;
+	display: inline-block;
+	transform: skewx(-15deg) translatex(-108px) translatey(-52px);
+}
+
+.letter--green {
+	background-color: #0F9;
+}
+
+.letter--lila {
+	background-color: #F09;
+}
+
+.letter--blue {
+	background-color: #09F;
+}
+
+.letter-vertical--right {
+	transform: skewx(-15deg);
+}
+
+.letter-vertical--left {
+	transform: skewx(15deg) translatex(17px);
+}
+
 
 .btn {
 	background-color: #555;
