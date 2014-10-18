@@ -22,6 +22,15 @@ var enter = (function() {
 				case "over":
 					attrs.over = param;
 					return;
+				case 'scale':
+				  	attrs.scale = {};
+				  	if (param == 'up' || param == 'down') {
+				  		attrs.scale.direction = param;
+				    	attrs.scale.power    = words[i+2];
+				    	return;
+				  	}
+				  	attrs.scale.power = param;
+				  	return;
 				default:
 					return;
 			}
@@ -38,6 +47,7 @@ var enter = (function() {
 			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
+			scale = attrs.scale,
 			axis = 'x',
 			tmp;
 
@@ -45,8 +55,19 @@ var enter = (function() {
 			axis = 'y';
 		}
 
+		if (scale && parseInt(scale.power) != 0) {
+			var delta = parseFloat(scale.power) * 0.01;
+			if (scale.direction == 'up') { delta = -delta; }
+		  	scale.value = 1 + delta;
+		}
+
 		return {
-			initial: translate.genCSS(axis, move, false),
+			initial: translate.genCSS({
+				axis: axis,
+				move: move,
+				scale: scale,
+				opacity: false
+			}),
 			transition: transition.genCSS(over, easing, after)
 		};
 	}

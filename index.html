@@ -18,10 +18,10 @@
 				<am-event on="active" animate=":enter top move 200px over 0.8s"
 			</am-state>
 		</h2>
-		<span class="subtitle" am-element enter="wait 1.0s left move 200px over 1.2s">Declarative animation and machine state build on top <a class="link" href="https://angularjs.org/">AngularJS</a></span>
+		<span class="subtitle" am-element>Declarative animation and machine state build on top <a class="link" href="https://angularjs.org/">AngularJS</a></span>
 		<div class="element" am-element>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter left move 800px over 0.3s" goto="intro"></am-event>
+				<am-event on="active" animate=":enter left move 400px scale 200% over 0.3s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
 				<am-event on="active" animate="pulse tada"></am-event>
@@ -31,7 +31,7 @@
 		</div>
 		<div class="element" am-element>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter top move 800px over 0.6s" goto="intro"></am-event>
+				<am-event on="active" animate=":enter top move 400px scale 400% over 0.6s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
 				<am-event on="active" animate="pulse tada"></am-event>
@@ -41,7 +41,7 @@
 		</div>
 		<div class="element element--white" am-element>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter bottom move 800px over 0.9s" goto="intro"></am-event>
+				<am-event on="active" animate=":enter bottom move 400px scale 600% over 0.9s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
 				<am-event on="active" animate="pulse tada"></am-event>
@@ -51,7 +51,7 @@
 		</div>
 		<div class="element" am-element>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter right move 800px over 1.2s" goto="intro"></am-event>
+				<am-event on="active" animate=":enter right move 400px scale 800% over 1.2s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
 				<am-event on="active" animate="pulse tada"></am-event>

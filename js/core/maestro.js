@@ -1,4 +1,3 @@
-var am = am || {};
 am.maestro = {
 	init: function(options) {
 
@@ -96,7 +95,7 @@ am.maestro = {
 								
 				if (params && params[0] === ':enter') {
 					addQueue({
-						run: animator.build(self.element, 'enter', params.slice(1, params.length)),
+						run: am.build(self.element, 'enter', params.slice(1, params.length)),
 						finish: finish
 					});	
 				} else {
@@ -105,7 +104,7 @@ am.maestro = {
 						console.warn('try to relaunch animation that is not finished');
 					} else {
 						addQueue({
-							run: animator.build(self.element, event.type, params[event.currentStep]),
+							run: am.build(self.element, event.type, params[event.currentStep]),
 							finish: finishSequence
 						});	
 					}												
@@ -130,7 +129,7 @@ am.maestro = {
 
 			function finishSequence() {
 				if (event.currentStep < (event.param.split(' ').length-1)) {
-					self.deferFn(eventFn, 0);
+					am.frame(eventFn);
 				} else {
 					event.currentStep = -1;
 				}
@@ -139,7 +138,7 @@ am.maestro = {
 			}
 
 			if (on === ACTIVE) { // autostart animation
-				self.deferFn(eventFn, 0);
+				am.frame(eventFn);
 			} else {
 				self.element.on(on, eventFn);
 			}
