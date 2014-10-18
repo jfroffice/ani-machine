@@ -134,43 +134,49 @@ var styles = (function() {
 	};
 
 })();
-var translate = (function() {
+var translate = (function(undefined) {
 	"use strict";
 
-	function genCSS(param, move, opacity) {
+	function genCSS(options) {
 		var type = 'translate',
-			tmp = type + param + '(' + move + '); ',
-			css = '-webkit-transform: ' + tmp + 'transform: ' + tmp;
+			tmp = type + options.axis + '(' + options.move + ')',
+			css, key;
 
-		if (opacity !== undefined) {
-			css += 'opacity: ' + (opacity ? '1' : '0') + ';';
+		if (options.scale !== undefined) {
+			tmp += ' scale(' + options.scale.value + ')';
 		}
 
-		var key = (type + '_' + param + '_' + move + '_' + opacity).replace(/-/g, 'm');
+		css = '-webkit-transform: ' + tmp + ';transform: ' + tmp + ';';
+
+		if (options.opacity !== undefined) {
+			css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
+		}
+	
+		var key = (type + '_' + options.axis + '_' + options.move + '_' + options.opacity).replace(/-/g, 'm');
+
+		console.log(css);
+
 		return styles.add(key, css);
 	}
 
-	return {
-		genCSS: genCSS
-	};
-
+	return { genCSS: genCSS };
 })();
 var transition = (function() {
 	"use strict";
 
-	function genCSS(over , easing, after) {
+	function genCSS(over, easing, after) {
 		var tmp = over + ' ' + easing + ' ' + after,
-			tmp2 = tmp + ', opacity ' + tmp + ';';
+			tmp2 = tmp + ', scale, opacity ' + tmp + ';';
 
 		var key = '_' + tmp.replace(/ /g, '_').replace(/\./g, '_');
-		return styles.add(key, '-webkit-transition: -webkit-transform ' + tmp2 +
-					'transition: transform ' + tmp2);
+		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
+					       'transition: transform '			+ tmp2;
+
+		console.log(css);
+		return styles.add(key, css);
 	}
 
-	return {
-		genCSS: genCSS
-	};
-
+	return { genCSS: genCSS };
 })();
 var enter = (function() {
 	"use strict";
@@ -196,6 +202,15 @@ var enter = (function() {
 				case "over":
 					attrs.over = param;
 					return;
+				case 'scale':
+				  	attrs.scale = {};
+				  	if (param == 'up' || param == 'down') {
+				  		attrs.scale.direction = param
+				    	attrs.scale.power    = words[i+2]
+				    	return;
+				  	}
+				  	attrs.scale.power = param;
+				  	return;
 				default:
 					return;
 			}
@@ -212,6 +227,7 @@ var enter = (function() {
 			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
+			scale = attrs.scale,
 			axis = 'x',
 			tmp;
 
@@ -219,8 +235,19 @@ var enter = (function() {
 			axis = 'y';
 		}
 
+		if (scale && parseInt(scale.power) != 0) {
+			var delta = parseFloat(scale.power) * 0.01;
+			if (scale.direction == 'up' ) { delta = -delta; }
+		  	scale.value = 1 + delta;
+		}
+
 		return {
-			initial: translate.genCSS(axis, move, false),
+			initial: translate.genCSS({
+				axis: axis,
+				move: move,
+				scale: scale,
+				opacity: false
+			}),
 			transition: transition.genCSS(over, easing, after)
 		};
 	}
@@ -228,7 +255,19 @@ var enter = (function() {
 	return { genCSS: genCSS };
 
 })();
-var animator = (function() {
+am.frame = (function () {
+  	var frameFn = window.requestAnimationFrame 		||
+  		 		window.webkitRequestAnimationFrame ||
+  		 		window.mozRequestAnimationFrame 	||
+        		function(cb) {
+          			window.setTimeout(cb, 1000/60);
+        		};
+
+     return function(cb) {
+     	frameFn.call(window, cb);
+     }
+}());
+am.build = (function() {
 	"use strict";
 
 	function hackStyle(elm) {
@@ -241,6 +280,7 @@ var animator = (function() {
 
 		if (target) {
 			elm.addClass(target);
+			console.log(target);
 		}
 
 		elm.addClass(transition);
@@ -254,43 +294,39 @@ var animator = (function() {
 		});
 	}
 
-	return {
-		build: function(elm, type, param) {
+	return function(elm, type, param) {
+		var s, run, initial;
 
-			var s, run, initial;
+		//console.log('animation start ' + initial);
 
-			//console.log('animation start ' + initial);
+		if (type === 'enter') {
+			return function(cb) {
+				s = enter.genCSS(param);
+				elm.addClass(s.initial);
+				doTransition(elm, s.initial, null, s.transition, function() {
+					//console.log('animation end ' + initial);
+					cb && cb();
+				});
+			};
+		} else { // only animate for now
+			return function(cb) {
 
-			if (type === 'enter') {
-				return function(cb) {
-					s = enter.genCSS(param);
-					elm.addClass(s.initial);
-					doTransition(elm, s.initial, null, s.transition, function() {
-						//console.log('animation end ' + initial);
+				hackStyle(elm);
+
+				var initial = param + ' animated';
+
+				elm
+					.addClass(initial)
+					.one(prefix.ANIMATION_END_EVENT, function() {
+						//console.log('animation end : ' + initial);
+						elm.removeClass(initial);
 						cb && cb();
 					});
-				};
-			} else { // only animate for now
-				return function(cb) {
-
-					hackStyle(elm);
-
-					var initial = param + ' animated';
-
-					elm
-						.addClass(initial)
-						.one(prefix.ANIMATION_END_EVENT, function() {
-							//console.log('animation end : ' + initial);
-							elm.removeClass(initial);
-							cb && cb();
-						});
-				};
-			}
+			};
 		}
 	};
 
 })();
-var am = am || {};
 am.maestro = {
 	init: function(options) {
 
@@ -388,7 +424,7 @@ am.maestro = {
 								
 				if (params && params[0] === ':enter') {
 					addQueue({
-						run: animator.build(self.element, 'enter', params.slice(1, params.length)),
+						run: am.build(self.element, 'enter', params.slice(1, params.length)),
 						finish: finish
 					});	
 				} else {
@@ -397,7 +433,7 @@ am.maestro = {
 						console.warn('try to relaunch animation that is not finished');
 					} else {
 						addQueue({
-							run: animator.build(self.element, event.type, params[event.currentStep]),
+							run: am.build(self.element, event.type, params[event.currentStep]),
 							finish: finishSequence
 						});	
 					}												
@@ -422,7 +458,7 @@ am.maestro = {
 
 			function finishSequence() {
 				if (event.currentStep < (event.param.split(' ').length-1)) {
-					self.deferFn(eventFn, 0);
+					am.frame(eventFn);
 				} else {
 					event.currentStep = -1;
 				}
@@ -431,7 +467,7 @@ am.maestro = {
 			}
 
 			if (on === ACTIVE) { // autostart animation
-				self.deferFn(eventFn, 0);
+				am.frame(eventFn);
 			} else {
 				self.element.on(on, eventFn);
 			}

@@ -13,7 +13,8 @@
 	<script src='/js/core/translate.js'></script>
 	<script src='/js/core/transition.js'></script>
 	<script src='/js/core/enter.js'></script>
-	<script src='/js/core/animator.js'></script>
+	<script src='/js/core/frame.js'></script>
+	<script src='/js/core/build.js'></script>
 	<script src="/js/core/maestro.js"></script>
 	<script src="/js/am-directive.js"></script>
 	<script>
@@ -48,7 +49,7 @@
 						<am-event on="active" before="show()" goto="enter"></am-event>
 					</am-state>
 					<am-state value="enter">
-						<am-event on="active" animate=":enter left move 800px over 0.6s" goto="intro"></am-event>
+						<am-event on="active" animate=":enter left move 200px scale 20% over 2.0s" goto="intro"></am-event>
 					</am-state>
 					<am-state value="intro">
 						<am-event on="enter" animate="pulse" before="changeColor()"></am-event>

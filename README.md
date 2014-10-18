@@ -12,12 +12,15 @@ Version
 -------
 AniMachine v0.1.3 (Proof Of Concept)
 
-Entering
+Enter
 --------
 
-it allows to add entering animation like below
+it allows to add enter animation like below
 ```
-<div class="element" am-element enter="left move 800px over 2.0s">
+<div class="element" am-element>
+	<am-state value="default">
+		<am-event on="active" animate=":enter left move 800px scale 20% over 2.0s"></am-event>
+	</am-state>
 </div>
 ```
 using attribute __am-element__ on DOM element with attribute __enter__
@@ -27,7 +30,7 @@ State
 
 by default you can declare a __default__ state like this
 ```
-<div class="element" am-element enter="left move 800px over 2.0s">
+<div class="element" am-element>
 	<am-state value="default">
 		<am-event on="enter" animate="pulse"></am-event>
 		<am-event on="leave" animate="tada"></am-event>
@@ -72,7 +75,7 @@ You can trigger animation with state __enter__
 
 or state __leave__
 ```
-<am-state value="enter">
+<am-state value="leave">
 	<am-event on="active" animate="bounceOutRight"></am-event>
 </am-state>
 ```
@@ -106,5 +109,5 @@ in the second case, trigger event will be unregistered which might be useful
 Roadmap
 -------
 - add CSS generator function like shake.css
-- add transform like move and rotate animation
+- add transform like translate rotate scale animation
 - vanilla JS version

@@ -41,7 +41,8 @@
       "js/core/translate.js",
       "js/core/transition.js",
       "js/core/enter.js",
-      "js/core/animator.js",
+      "js/core/frame.js",
+      "js/core/build.js",
       "js/core/maestro.js",
       "js/am-directive.js"
     ],
