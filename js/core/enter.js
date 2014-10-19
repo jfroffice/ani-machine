@@ -9,7 +9,7 @@ am.enter = (function(translate, transition, undefined) {
 		words.forEach(function (word, i) {
 			param = words[i+1];
 			switch (word) {
-				case "enter":
+				case ":enter":
 					attrs.enter = param;
 					return;
 				case "after":

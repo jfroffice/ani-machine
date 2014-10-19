@@ -172,6 +172,90 @@ am.transition = (function(styles, undefined) {
 	};
 
 })(am.styles);
+am.transform = (function(styles, transition, undefined) {
+	"use strict";
+
+	function parse(words) {
+		var attrs = {},
+			param,
+			ignoreNext;
+
+		words.forEach(function (word, i) {
+			if (ignoreNext) {
+				ignoreNext = false;
+				return;
+			}
+			param = words[i+1];
+			switch (word) {
+				case "twist":
+					if (param === 'left') {
+						attrs.skewx = words[i+2];
+					} else if (param === 'right') {
+						attrs.skewx = '-' + words[i+2];
+					}
+					ignoreNext = true;
+					return;
+				case "move":
+					if (param === 'left') {
+						attrs.translatex = '-' + words[i+2];
+					} else if (param === 'right') {
+						attrs.translatex = words[i+2];
+					} else if (param === 'bottom') {
+						attrs.translatey = words[i+2];
+					} else if (param === 'top') {
+						attrs.translatey = '-' + words[i+2];
+					}
+					ignoreNext = true;
+					return;
+				default:
+					return;
+			}
+		});
+		return attrs;
+	}
+
+	return function(lang) {
+
+		var attrs = parse(lang),
+			skewx = attrs.skewx,
+			translatex = attrs.translatex,
+			translatey = attrs.translatey,
+			over = attrs.over || '1.0s',
+			after = attrs.after || '0s',
+			easing = attrs.easing || 'ease-in-out',
+			key = '',
+			tmp = '';
+		
+		//console.log(attrs);
+
+		if (skewx) {
+			tmp = 'skewx(' + skewx + ') ';
+			key = 'skewx' + skewx;
+		}
+		
+		if (translatex) {
+			tmp += 'translatex(' + translatex + ')';
+			key += 'translatex' + translatex;
+		}
+
+		if (translatey) {
+			tmp += 'translatey(' + translatey + ')';
+			key += 'translatey' + translatey;
+		}
+		var css =  '-webkit-transform: ' 	+ tmp +
+					     '; transform: '	+ tmp;
+	
+		key = key.replace(/-/g, 'm');
+
+		//console.log(css);
+
+		return {
+			target: styles(key, css),
+			transition: transition(over, easing, after)
+		};
+	}
+
+})(am.styles, am.transition);
 am.enter = (function(translate, transition, undefined) {
 	"use strict";
 
@@ -183,7 +267,7 @@ am.enter = (function(translate, transition, undefined) {
 		words.forEach(function (word, i) {
 			param = words[i+1];
 			switch (word) {
-				case "enter":
+				case ":enter":
 					attrs.enter = param;
 					return;
 				case "after":
@@ -411,28 +495,6 @@ am.maestro = (function(parser, frame, undefined) {
 					after = event.after ? event.after.replace('()', '') : '',
 					on = event.on;
 
-				function doAction(action) {
-					var params = action.split(' '),
-						param = params[0];
-
-					if (params) {
-						addQueue({
-							run: am.build(self.element, param, params),
-							finish: finish
-						});	
-					} else {
-						event.currentStep += 1;
-						if (event.currentStep >= params.length) {
-							console.warn('try to relaunch animation that is not finished');
-						} else {
-							addQueue({
-								run: am.build(self.element, event.type, params[event.currentStep]),
-								finish: finishSequence
-							});	
-						}												
-					}
-				}
-
 				function eventFn() {
 
 					before && callFn(before);
@@ -442,20 +504,12 @@ am.maestro = (function(parser, frame, undefined) {
 						return;
 					}
 
-					var actions = event.param.split(':');
-
-					actions.forEach(function(action) {
-						if (action.length) {
-							doAction(action);
-						}
-					});
-
-				/*	var params = event.param.split(' '),
+					var params = event.param.split(' '),
 						param = params[0];
 									
 					if (params && param.indexOf(':') === 0) {
 						addQueue({
-							run: am.build(self.element, param.slice(1, param.length), params.slice(1, params.length)),
+							run: am.build(self.element, param.slice(1, param.length), params),
 							finish: finish
 						});	
 					} else {
@@ -468,7 +522,7 @@ am.maestro = (function(parser, frame, undefined) {
 								finish: finishSequence
 							});	
 						}												
-					}*/
+					}
 				}
 
 				function gotoFn() {

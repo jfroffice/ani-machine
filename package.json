@@ -40,6 +40,7 @@
       "js/core/styles.js",
       "js/core/translate.js",
       "js/core/transition.js",
+      "js/core/transform.js",
       "js/core/enter.js",
       "js/core/frame.js",
       "js/core/build.js",
