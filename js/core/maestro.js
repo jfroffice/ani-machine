@@ -93,11 +93,12 @@ am.maestro = (function(parser, frame, undefined) {
 						return;
 					}
 
-					var params = event.param.split(' ');
+					var params = event.param.split(' '),
+						param = params[0];
 									
-					if (params && params[0] === ':enter') {
+					if (params && param.indexOf(':') === 0) {
 						addQueue({
-							run: am.build(self.element, 'enter', params.slice(1, params.length)),
+							run: am.build(self.element, param.slice(1, param.length), params.slice(1, params.length)),
 							finish: finish
 						});	
 					} else {

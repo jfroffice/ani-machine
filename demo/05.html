@@ -13,6 +13,7 @@
 	<script src='/js/core/translate.js'></script>
 	<script src='/js/core/transition.js'></script>
 	<script src='/js/core/enter.js'></script>
+	<script src='/js/core/transform.js'></script>
 	<script src='/js/core/frame.js'></script>
 	<script src='/js/core/build.js'></script>
 	<script src="/js/core/maestro.js"></script>
@@ -23,9 +24,9 @@
 </head>
 <body ng-app="app">
 	<div class="container">
-		<div class="letter-vertical letter-vertical--right letter--green" am-element>
+		<div class="letter-vertical letter--green" am-element>
 			<am-state value="default">
-				<am-event on="active" animate=":enter left move 400px scale 40%"></am-event>
+				<am-event on="active" animate=":enter left move 400px scale 40% :transform twist right 15deg"></am-event>
 			</am-state>
 		</div>
 		<div class="letter-vertical letter-vertical--left letter--lila" am-element>
@@ -36,6 +37,21 @@
 		<div class="letter-horizontal letter--blue" am-element>
 			<am-state value="default">
 				<am-event on="active" animate=":enter bottom move 400px scale 1000% wait 0.2s"></am-event>
+			</am-state>
+		</div>
+		<div class="letter-vertical letter--orange" am-element>
+			<am-state value="default">
+				<am-event on="active" animate=":transform move left 10px"></am-event>
+			</am-state>
+		</div>
+		<div class="letter-vertical letter letter--lila" am-element>
+			<am-state value="default">
+				<am-event on="active" animate=":transform twist left 25deg"></am-event>
+			</am-state>
+		</div>
+		<div class="letter-vertical letter letter--blue" am-element>
+			<am-state value="default">
+				<am-event on="active" animate=":transform move right 10px"></am-event>
 			</am-state>
 		</div>
 	</div>

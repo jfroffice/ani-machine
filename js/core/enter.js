@@ -2,7 +2,7 @@ am.enter = (function(translate, transition, undefined) {
 	"use strict";
 
 	function parse(lang) {
-		var words = lang.split(/[, ]+/),
+		var words = lang,//.split(/[, ]+/),
 			attrs = {},
 			param;
 
@@ -40,10 +40,10 @@ am.enter = (function(translate, transition, undefined) {
 
 	return function(lang) {
 
-		var attrs = parse('enter ' + lang),
-			over = attrs.over || '0.7s',
+		var attrs = parse(['enter'].concat(lang)),
 			enter = attrs.enter || 'left',
 			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
+			over = attrs.over || '0.7s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
 			scale = attrs.scale,

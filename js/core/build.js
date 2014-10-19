@@ -1,4 +1,4 @@
-am.build = (function(prefix, enter, undefined) {
+am.build = (function(prefix, enter, transform, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
@@ -11,7 +11,6 @@ am.build = (function(prefix, enter, undefined) {
 
 		if (target) {
 			elm.addClass(target);
-			console.log(target);
 		}
 
 		elm.addClass(transition);
@@ -39,6 +38,14 @@ am.build = (function(prefix, enter, undefined) {
 					cb && cb();
 				});
 			};
+		} else if (type === 'transform') {
+			return function(cb) {
+				s = transform(param);
+				doTransition(elm, null, s.target, s.transition, function() {
+					//console.log('animation end ' + initial);
+					cb && cb();
+				});
+			};
 		} else { // only animate for now
 			return function(cb) {
 
@@ -57,4 +64,4 @@ am.build = (function(prefix, enter, undefined) {
 		}
 	};
 
-})(am.prefix, am.enter);
+})(am.prefix, am.enter, am.transform);

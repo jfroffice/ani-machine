@@ -74,6 +74,10 @@ body {
 	background-color: #09F;
 }
 
+.letter--orange {
+	background-color: #F90;
+}
+
 .letter-vertical--right {
 	transform: skewx(-15deg);
 }
