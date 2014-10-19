@@ -6,17 +6,7 @@
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
 	<script src='../bower_components/angular/angular.min.js'></script>
-	<script src='/js/core/prefix.js'></script>
-	<script src="/js/core/parser.js"></script>
-	<script src="/js/core/viewport.js"></script>
-	<script src='/js/core/styles.js'></script>
-	<script src='/js/core/translate.js'></script>
-	<script src='/js/core/transition.js'></script>
-	<script src='/js/core/enter.js'></script>
-	<script src='/js/core/frame.js'></script>
-	<script src='/js/core/build.js'></script>
-	<script src="/js/core/maestro.js"></script>
-	<script src="/js/am-directive.js"></script>
+	<script src='../dist/ani-machine.js'></script>
 	<script>
 	angular.module('app', ['aniMachine']);
 
@@ -42,7 +32,9 @@
 </head>
 <body ng-app="app">
 	<div class="container">
-		<h2 class="title">Experimental</h2>
+		<h2 class="title">Before & After Callback</h2>
+		<span class="subtitle">Move your mouse on cube and see what happend.</span>
+		<span class="subtitle">And Leave your mouse from cube and ...</span>
 		<div class="element" am-element>
 			<am-state value="trigger" trigger=".btn--reveal click">
 				<am-event on="active" before="show()" goto="enter"></am-event>

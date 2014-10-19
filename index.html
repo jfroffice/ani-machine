@@ -60,7 +60,7 @@
 			</am-state>
 		</div>
 		<div class="demolink">
-			<a class="link" href="./demo/01.html" am-element>Demo 1
+			<a class="link" href="./demo/01.html" am-element>Trigger & Reveal Animation
 				<am-state value="enter">
 					<am-event on="active" animate=":enter left move 800px over 1.5s" goto="intro"></am-event>
 					<am-event on="enter" animate="pulse"></am-event>
@@ -73,7 +73,7 @@
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/02.html" am-element>Demo 2
+			<a class="link" href="./demo/02.html" am-element>Trigger Reveal Animation
 				<am-state value="enter">
 					<am-event on="active" animate=":enter left move 800px over 1.8s" goto="intro"></am-event>
 					<am-event on="enter" animate="pulse"></am-event>
@@ -86,9 +86,35 @@
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/03.html" am-element>Demo 3
+			<a class="link" href="./demo/03.html" am-element>Animation Element Event
 				<am-state value="enter">
 					<am-event on="active" animate=":enter left move 800px over 2.1s" goto="intro"></am-event>
+					<am-event on="enter" animate="pulse"></am-event>
+				</am-state>
+				<am-state value="intro">
+					<am-event on="active" animate="pulse tada"></am-event>
+					<am-event on="enter" animate="pulse"></am-event>
+					<am-event on="leave" animate="tada"></am-event>
+				</am-state>
+		   	</a>
+		</div>
+		<div class="demolink demolink--nice">
+			<a class="link" href="./demo/04.html" am-element>Before & After Callback
+				<am-state value="enter">
+					<am-event on="active" animate=":enter left move 800px over 2.4s" goto="intro"></am-event>
+					<am-event on="enter" animate="pulse"></am-event>
+				</am-state>
+				<am-state value="intro">
+					<am-event on="active" animate="pulse tada"></am-event>
+					<am-event on="enter" animate="pulse"></am-event>
+					<am-event on="leave" animate="tada"></am-event>
+				</am-state>
+		   	</a>
+		</div>
+		<div class="demolink demolink--nice">
+			<a class="link" href="./demo/05.html" am-element>Advanced Animation
+				<am-state value="enter">
+					<am-event on="active" animate=":enter left move 800px over 2.7s" goto="intro"></am-event>
 					<am-event on="enter" animate="pulse"></am-event>
 				</am-state>
 				<am-state value="intro">

@@ -26,6 +26,10 @@ am.transform = (function(styles, transition, undefined) {
 						attrs.translatex = '-' + words[i+2];
 					} else if (param === 'right') {
 						attrs.translatex = words[i+2];
+					} else if (param === 'bottom') {
+						attrs.translatey = words[i+2];
+					} else if (param === 'top') {
+						attrs.translatey = '-' + words[i+2];
 					}
 					ignoreNext = true;
 					return;
@@ -41,6 +45,7 @@ am.transform = (function(styles, transition, undefined) {
 		var attrs = parse(lang),
 			skewx = attrs.skewx,
 			translatex = attrs.translatex,
+			translatey = attrs.translatey,
 			over = attrs.over || '1.0s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
@@ -57,6 +62,11 @@ am.transform = (function(styles, transition, undefined) {
 		if (translatex) {
 			tmp += 'translatex(' + translatex + ')';
 			key += 'translatex' + translatex;
+		}
+
+		if (translatey) {
+			tmp += 'translatey(' + translatey + ')';
+			key += 'translatey' + translatey;
 		}
 		var css =  '-webkit-transform: ' 	+ tmp +
 					     '; transform: '	+ tmp;

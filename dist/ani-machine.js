@@ -132,10 +132,11 @@ am.translate = (function(styles, undefined) {
 	return function(options) {
 		var type = 'translate',
 			tmp = type + options.axis + '(' + options.move + ')',
+			scale = options.scale,
 			css, key;
 
-		if (options.scale !== undefined) {
-			tmp += ' scale(' + options.scale.value + ')';
+		if (scale !== undefined) {
+			tmp += ' scale(' + scale.value + ')';
 		}
 
 		css = '-webkit-transform: ' + tmp + ';transform: ' + tmp + ';';
@@ -144,7 +145,13 @@ am.translate = (function(styles, undefined) {
 			css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
 		}
 	
-		var key = (type + '_' + options.axis + '_' + options.move + '_' + options.opacity).replace(/-/g, 'm');
+		var key = type + options.axis + '_' + options.move + '_' + options.opacity;
+
+		if (scale !== undefined) {
+			key += ('_scale' + scale.value).replace('.', '_');
+		}
+
+		key = key.replace(/-/g, 'm');
 
 		return styles(key, css);
 	};
@@ -155,7 +162,7 @@ am.transition = (function(styles, undefined) {
 
 	return function(over, easing, after) {
 		var tmp = over + ' ' + easing + ' ' + after,
-			tmp2 = tmp + ', scale, opacity ' + tmp + ';';
+			tmp2 = tmp + ', skew, scale, opacity ' + tmp + ';';
 
 		var key = '_' + tmp.replace(/ /g, '_').replace(/\./g, '_');
 		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
@@ -169,7 +176,7 @@ am.enter = (function(translate, transition, undefined) {
 	"use strict";
 
 	function parse(lang) {
-		var words = lang.split(/[, ]+/),
+		var words = lang,//.split(/[, ]+/),
 			attrs = {},
 			param;
 
@@ -207,10 +214,10 @@ am.enter = (function(translate, transition, undefined) {
 
 	return function(lang) {
 
-		var attrs = parse('enter ' + lang),
-			over = attrs.over || '0.7s',
+		var attrs = parse(lang),
 			enter = attrs.enter || 'left',
 			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
+			over = attrs.over || '0.7s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
 			scale = attrs.scale,
@@ -251,7 +258,7 @@ am.frame = (function () {
      	frameFn.call(window, cb);
      }
 }());
-am.build = (function(prefix, enter, undefined) {
+am.build = (function(prefix, enter, transform, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
@@ -264,7 +271,6 @@ am.build = (function(prefix, enter, undefined) {
 
 		if (target) {
 			elm.addClass(target);
-			console.log(target);
 		}
 
 		elm.addClass(transition);
@@ -292,6 +298,14 @@ am.build = (function(prefix, enter, undefined) {
 					cb && cb();
 				});
 			};
+		} else if (type === 'transform') {
+			return function(cb) {
+				s = transform(param);
+				doTransition(elm, null, s.target, s.transition, function() {
+					//console.log('animation end ' + initial);
+					cb && cb();
+				});
+			};
 		} else { // only animate for now
 			return function(cb) {
 
@@ -310,7 +324,7 @@ am.build = (function(prefix, enter, undefined) {
 		}
 	};
 
-})(am.prefix, am.enter);
+})(am.prefix, am.enter, am.transform);
 am.maestro = (function(parser, frame, undefined) {
 
 	return {
@@ -397,20 +411,13 @@ am.maestro = (function(parser, frame, undefined) {
 					after = event.after ? event.after.replace('()', '') : '',
 					on = event.on;
 
-				function eventFn() {
+				function doAction(action) {
+					var params = action.split(' '),
+						param = params[0];
 
-					before && callFn(before);
-					
-					if (!event.param) {
-						gotoFn();
-						return;
-					}
-
-					var params = event.param.split(' ');
-									
-					if (params && params[0] === ':enter') {
+					if (params) {
 						addQueue({
-							run: am.build(self.element, 'enter', params.slice(1, params.length)),
+							run: am.build(self.element, param, params),
 							finish: finish
 						});	
 					} else {
@@ -424,6 +431,44 @@ am.maestro = (function(parser, frame, undefined) {
 							});	
 						}												
 					}
+				}
+
+				function eventFn() {
+
+					before && callFn(before);
+					
+					if (!event.param) {
+						gotoFn();
+						return;
+					}
+
+					var actions = event.param.split(':');
+
+					actions.forEach(function(action) {
+						if (action.length) {
+							doAction(action);
+						}
+					});
+
+				/*	var params = event.param.split(' '),
+						param = params[0];
+									
+					if (params && param.indexOf(':') === 0) {
+						addQueue({
+							run: am.build(self.element, param.slice(1, param.length), params.slice(1, params.length)),
+							finish: finish
+						});	
+					} else {
+						event.currentStep += 1;
+						if (event.currentStep >= params.length) {
+							console.warn('try to relaunch animation that is not finished');
+						} else {
+							addQueue({
+								run: am.build(self.element, event.type, params[event.currentStep]),
+								finish: finishSequence
+							});	
+						}												
+					}*/
 				}
 
 				function gotoFn() {
