@@ -6,27 +6,16 @@
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
 	<script src='../bower_components/angular/angular.min.js'></script>
-	<script src='/js/core/prefix.js'></script>
-	<script src="/js/core/parser.js"></script>
-	<script src="/js/core/viewport.js"></script>
-	<script src='/js/core/styles.js'></script>
-	<script src='/js/core/translate.js'></script>
-	<script src='/js/core/transition.js'></script>
-	<script src='/js/core/enter.js'></script>
-	<script src='/js/core/transform.js'></script>
-	<script src='/js/core/frame.js'></script>
-	<script src='/js/core/build.js'></script>
-	<script src="/js/core/maestro.js"></script>
-	<script src="/js/am-directive.js"></script>
+	<script src='../dist/ani-machine.js'></script>
 	<script>
 	angular.module('app', ['aniMachine']);
 	</script>
 </head>
 <body ng-app="app">
 	<div class="container">
-		<div class="letter-vertical letter--green" am-element>
+		<div class="letter-vertical letter-vertical--right letter--green" am-element>
 			<am-state value="default">
-				<am-event on="active" animate=":enter left move 400px scale 40% :transform twist right 15deg"></am-event>
+				<am-event on="active" animate=":enter left move 400px scale 40%"></am-event>
 			</am-state>
 		</div>
 		<div class="letter-vertical letter-vertical--left letter--yellow" am-element>
