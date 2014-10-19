@@ -20,7 +20,7 @@ am.translate = (function(styles, undefined) {
 		var key = type + options.axis + '_' + options.move + '_' + options.opacity;
 
 		if (scale !== undefined) {
-			key += ('_scale' + scale.value).replace('.', 'p');
+			key += ('_scale' + scale.value).replace('.', '_');
 		}
 
 		key = key.replace(/-/g, 'm');

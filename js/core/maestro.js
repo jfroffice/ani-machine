@@ -84,6 +84,28 @@ am.maestro = (function(parser, frame, undefined) {
 					after = event.after ? event.after.replace('()', '') : '',
 					on = event.on;
 
+				function doAction(action) {
+					var params = action.split(' '),
+						param = params[0];
+
+					if (params) {
+						addQueue({
+							run: am.build(self.element, param, params),
+							finish: finish
+						});	
+					} else {
+						event.currentStep += 1;
+						if (event.currentStep >= params.length) {
+							console.warn('try to relaunch animation that is not finished');
+						} else {
+							addQueue({
+								run: am.build(self.element, event.type, params[event.currentStep]),
+								finish: finishSequence
+							});	
+						}												
+					}
+				}
+
 				function eventFn() {
 
 					before && callFn(before);
@@ -93,7 +115,15 @@ am.maestro = (function(parser, frame, undefined) {
 						return;
 					}
 
-					var params = event.param.split(' '),
+					var actions = event.param.split(':');
+
+					actions.forEach(function(action) {
+						if (action.length) {
+							doAction(action);
+						}
+					});
+
+				/*	var params = event.param.split(' '),
 						param = params[0];
 									
 					if (params && param.indexOf(':') === 0) {
@@ -111,7 +141,7 @@ am.maestro = (function(parser, frame, undefined) {
 								finish: finishSequence
 							});	
 						}												
-					}
+					}*/
 				}
 
 				function gotoFn() {
