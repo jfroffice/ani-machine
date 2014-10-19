@@ -1,13 +1,10 @@
 am.transform = (function(styles, transition, undefined) {
 	"use strict";
 
-	function parse(lang) {
-		var words = lang,//.split(/[, ]+/),
-			attrs = {},
-			param;
-
-		//console.log(words);
-		var ignoreNext;
+	function parse(words) {
+		var attrs = {},
+			param,
+			ignoreNext;
 
 		words.forEach(function (word, i) {
 			if (ignoreNext) {
@@ -50,7 +47,7 @@ am.transform = (function(styles, transition, undefined) {
 			key = '',
 			tmp = '';
 		
-		console.log(attrs);
+		//console.log(attrs);
 
 		if (skewx) {
 			tmp = 'skewx(' + skewx + ') ';

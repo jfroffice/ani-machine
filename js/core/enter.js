@@ -40,7 +40,7 @@ am.enter = (function(translate, transition, undefined) {
 
 	return function(lang) {
 
-		var attrs = parse(['enter'].concat(lang)),
+		var attrs = parse(lang),
 			enter = attrs.enter || 'left',
 			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
 			over = attrs.over || '0.7s',
