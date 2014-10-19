@@ -8,10 +8,6 @@ Dependencies
 - AngularJS 1.2+
 - Animate.css (optional)
 
-Version
--------
-AniMachine v0.1.3 (Proof Of Concept)
-
 Enter
 --------
 

@@ -1,6 +1,6 @@
 {
   "name": "ani-machine",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Declarative animation and machine state",
   "main": "gulpfile.js",
   "scripts": {
@@ -27,6 +27,7 @@
     "gulp-load-plugins": "~0.5.0",
     "gulp-rename": "^1.2.0",
     "gulp-ruby-sass": "^0.7.1",
+    "gulp-bump": "*",
     "gulp-sass": "^1.0.0",
     "gulp-uglify": "^1.0.1",
     "jshint-stylish": "^1.0.0",
