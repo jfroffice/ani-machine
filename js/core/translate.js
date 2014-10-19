@@ -4,10 +4,11 @@ am.translate = (function(styles, undefined) {
 	return function(options) {
 		var type = 'translate',
 			tmp = type + options.axis + '(' + options.move + ')',
+			scale = options.scale,
 			css, key;
 
-		if (options.scale !== undefined) {
-			tmp += ' scale(' + options.scale.value + ')';
+		if (scale !== undefined) {
+			tmp += ' scale(' + scale.value + ')';
 		}
 
 		css = '-webkit-transform: ' + tmp + ';transform: ' + tmp + ';';
@@ -16,7 +17,13 @@ am.translate = (function(styles, undefined) {
 			css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
 		}
 	
-		var key = (type + '_' + options.axis + '_' + options.move + '_' + options.opacity).replace(/-/g, 'm');
+		var key = type + options.axis + '_' + options.move + '_' + options.opacity;
+
+		if (scale !== undefined) {
+			key += ('_scale' + scale.value).replace('.', 'p');
+		}
+
+		key = key.replace(/-/g, 'm');
 
 		return styles(key, css);
 	};
