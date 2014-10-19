@@ -67,6 +67,12 @@ gulp.task('deps', function(){
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('bump', function(){
+  gulp.src(['./bower.json', './package.json'])
+  .pipe($.bump())
+  .pipe(gulp.dest('./'));
+});
+
 gulp.task('concat', function() {
     gulp.src(path.js)
         .pipe($.concat('ani-machine.js'))
@@ -87,3 +93,5 @@ gulp.task('uglify', function() {
 });
 
 gulp.task('build', ['clean', 'concat', 'uglify', 'deps']);
+
+gulp.task('release', ['bump', 'build', 'build']);
