@@ -4,7 +4,6 @@ Roadmap
 -------
 loop
 shake.css
-translate
 rotate
 scale
 scroll

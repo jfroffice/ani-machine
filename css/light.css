@@ -41,7 +41,9 @@ body {
 	visibility: hidden;
 }
 
-
+.element--ball {
+	border-radius: 50px;
+}
 
 
 

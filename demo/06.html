@@ -24,14 +24,21 @@
 </head>
 <body ng-app="app">
 	<div class="container">
-		<div class="element" am-element>
-			<am-state value="enter">
-				<am-event on="active" animate=":enter right move 400px scale 800% over 1.2s" goto="intro"></am-event>
+		<div class="element element--blue element--ball" am-element>
+			<am-state value="default">
+				<am-event on="active" goto="topright"></am-event>
 			</am-state>
-			<am-state value="intro">
-				<am-event on="active" animate="pulse tada"></am-event>
-				<am-event on="enter" animate="pulse"></am-event>
-				<am-event on="leave" animate="tada"></am-event>
+			<am-state value="topright">
+				<am-event on="active" animate=":transform move right 300px" goto="bottomright"></am-event>
+			</am-state>
+			<am-state value="bottomright">
+				<am-event on="active" animate=":transform move bottom 300px move right 300px" goto="bottomleft"></am-event>
+			</am-state>
+			<am-state value="bottomleft">
+				<am-event on="active" animate=":transform move bottom 300px move left 0" goto="topleft"></am-event>
+			</am-state>
+			<am-state value="topleft">
+				<am-event on="active" animate=":transform move left 0" goto="topright"></am-event>
 			</am-state>
 		</div>
 	</div>

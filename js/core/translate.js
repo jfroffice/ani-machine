@@ -1,11 +1,14 @@
 am.translate = (function(styles, undefined) {
 	"use strict";
 
+	var PREFIX = 'am_';
+
 	return function(options) {
 		var type = 'translate',
 			tmp = type + options.axis + '(' + options.move + ')',
 			scale = options.scale,
-			css, key;
+			key = PREFIX,
+			css;
 
 		if (scale !== undefined) {
 			tmp += ' scale(' + scale.value + ')';
@@ -17,7 +20,7 @@ am.translate = (function(styles, undefined) {
 			css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
 		}
 	
-		var key = type + options.axis + '_' + options.move + '_' + options.opacity;
+		key += type + options.axis + '_' + options.move + '_' + options.opacity;
 
 		if (scale !== undefined) {
 			key += ('_scale' + scale.value).replace('.', '_');
@@ -25,7 +28,7 @@ am.translate = (function(styles, undefined) {
 
 		key = key.replace(/-/g, 'm');
 
-		return styles(key, css);
+		return styles.build(key, css);
 	};
 
 })(am.styles);

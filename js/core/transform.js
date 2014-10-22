@@ -1,10 +1,11 @@
 am.transform = (function(styles, transition, undefined) {
 	"use strict";
 
+	var PREFIX = 'am_';
+
 	function parse(words) {
 		var attrs = {},
-			param,
-			ignoreNext;
+			param, ignoreNext;
 
 		words.forEach(function (word, i) {
 			if (ignoreNext) {
@@ -22,16 +23,24 @@ am.transform = (function(styles, transition, undefined) {
 					ignoreNext = true;
 					return;
 				case "move":
+					var param2 = words[i+2];
 					if (param === 'left') {
-						attrs.translatex = '-' + words[i+2];
+						attrs.translatex = '-' + param2;
 					} else if (param === 'right') {
-						attrs.translatex = words[i+2];
+						attrs.translatex = param2;
 					} else if (param === 'bottom') {
-						attrs.translatey = words[i+2];
+						attrs.translatey = param2;
 					} else if (param === 'top') {
-						attrs.translatey = '-' + words[i+2];
+						attrs.translatey = '-' + param2;
 					}
 					ignoreNext = true;
+					return;
+				case "after":
+				case "wait":
+					attrs.after = param;
+					return;
+				case "over":
+					attrs.over = param;
 					return;
 				default:
 					return;
@@ -44,19 +53,25 @@ am.transform = (function(styles, transition, undefined) {
 
 		var attrs = parse(lang),
 			skewx = attrs.skewx,
+			skewy = attrs.skewy,
 			translatex = attrs.translatex,
 			translatey = attrs.translatey,
 			over = attrs.over || '1.0s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
-			key = '',
+			key = PREFIX,
 			tmp = '';
 		
 		//console.log(attrs);
 
 		if (skewx) {
-			tmp = 'skewx(' + skewx + ') ';
-			key = 'skewx' + skewx;
+			tmp += 'skewx(' + skewx + ') ';
+			key += 'skewx' + skewx;
+		}
+
+		if (skewy) {
+			tmp += 'skewy(' + skewy + ') ';
+			key += 'skewy' + skewy;
 		}
 		
 		if (translatex) {
@@ -68,15 +83,17 @@ am.transform = (function(styles, transition, undefined) {
 			tmp += 'translatey(' + translatey + ')';
 			key += 'translatey' + translatey;
 		}
+
 		var css =  '-webkit-transform: ' 	+ tmp +
 					     '; transform: '	+ tmp;
 	
 		key = key.replace(/-/g, 'm');
 
-		//console.log(css);
+		console.log(key);
 
 		return {
-			target: styles(key, css),
+			target: styles.build(key, css),
+			reset: true,
 			transition: transition(over, easing, after)
 		};
 	}
