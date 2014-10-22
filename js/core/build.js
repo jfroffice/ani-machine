@@ -1,16 +1,23 @@
 am.build = (function(prefix, enter, transform, undefined) {
 	"use strict";
 
+	var PREFIX = 'am_';
+
 	function hackStyle(elm) {
 		getComputedStyle(elm[0], null).display;
 	}
 
 	function doTransition(elm, initial, target, transition, cb) {
+		
 		// hack: access style to apply transition
 		hackStyle(elm);
 
 		if (target) {
 			elm.addClass(target);
+		}
+
+		if (elm.hasClass(elm.data('previous-target'))) {
+			elm.removeClass(elm.data('previous-target'));
 		}
 
 		elm.addClass(transition);
@@ -20,6 +27,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 		}
 		elm.one(prefix.TRANSITION_END_EVENT, function() {
 			elm.removeClass(transition);
+			elm.data('previous-target', target);
 			cb && cb();
 		});
 	}

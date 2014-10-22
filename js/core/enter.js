@@ -1,9 +1,8 @@
 am.enter = (function(translate, transition, undefined) {
 	"use strict";
 
-	function parse(lang) {
-		var words = lang,//.split(/[, ]+/),
-			attrs = {},
+	function parse(words) {
+		var attrs = {},
 			param;
 
 		words.forEach(function (word, i) {
@@ -11,13 +10,18 @@ am.enter = (function(translate, transition, undefined) {
 			switch (word) {
 				case ":enter":
 					attrs.enter = param;
+					if (attrs.enter === 'top' || attrs.enter === 'bottom') {
+						attrs.axis = 'y';
+					} else {
+						attrs.axis = 'x';
+					}
+					return;
+				case "move":
+					attrs.move = param;
 					return;
 				case "after":
 				case "wait":
 					attrs.after = param;
-					return;
-				case "move":
-					attrs.move = param;
 					return;
 				case "over":
 					attrs.over = param;
@@ -27,9 +31,14 @@ am.enter = (function(translate, transition, undefined) {
 				  	if (param == 'up' || param == 'down') {
 				  		attrs.scale.direction = param;
 				    	attrs.scale.power    = words[i+2];
-				    	return;
+				  	} else {
+				  		attrs.scale.power = param;
 				  	}
-				  	attrs.scale.power = param;
+				  	if (parseInt(attrs.scale.power) != 0) {
+				  		var delta = parseFloat(attrs.scale.power) * 0.01;
+				  		if (attrs.scale.direction == 'up') { delta = -delta; }
+				  	  	attrs.scale.value = 1 + delta;
+				  	}
 				  	return;
 				default:
 					return;
@@ -46,25 +55,13 @@ am.enter = (function(translate, transition, undefined) {
 			over = attrs.over || '0.7s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
-			scale = attrs.scale,
-			axis = 'x',
 			tmp;
-
-		if (enter && (enter === 'top' || enter === 'bottom')) {
-			axis = 'y';
-		}
-
-		if (scale && parseInt(scale.power) != 0) {
-			var delta = parseFloat(scale.power) * 0.01;
-			if (scale.direction == 'up') { delta = -delta; }
-		  	scale.value = 1 + delta;
-		}
 
 		return {
 			initial: translate({
-				axis: axis,
+				axis: attrs.axis,
 				move: move,
-				scale: scale,
+				scale: attrs.scale,
 				opacity: false
 			}),
 			transition: transition(over, easing, after)
