@@ -1,6 +1,6 @@
 /**
  * ani-machine - Declarative animation and machine state
- * @version v0.1.4
+ * @version v0.1.5
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
@@ -109,31 +109,37 @@ am.styles = (function(undefined) {
 		if (cache[key]) {
 			return;
 		}
-		cache[key] = true;
 		return '.' + key + '{' + content + '}';
 	}
 
-	return function(key, content) {
-		var raw = buildCSS(key, content);
-		if (!raw) {
+	return {
+		build: function(key, content) {
+			var raw = buildCSS(key, content);
+			if (!raw) {
+				return key;
+			}
+			var style = document.createElement("style");
+			style.type = "text/css";
+			style.innerHTML = raw;
+			console.log(style);
+			cache[key] = true; //style;
+			document.getElementsByTagName("head")[0].appendChild(style);
 			return key;
 		}
-		var style = document.createElement("style");
-		style.type = "text/css";
-		style.innerHTML = raw;
-		document.getElementsByTagName("head")[0].appendChild(style);
-		return key;
 	};
 
 })();
 am.translate = (function(styles, undefined) {
 	"use strict";
 
+	var PREFIX = 'am_';
+
 	return function(options) {
 		var type = 'translate',
 			tmp = type + options.axis + '(' + options.move + ')',
 			scale = options.scale,
-			css, key;
+			key = PREFIX,
+			css;
 
 		if (scale !== undefined) {
 			tmp += ' scale(' + scale.value + ')';
@@ -145,7 +151,7 @@ am.translate = (function(styles, undefined) {
 			css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
 		}
 	
-		var key = type + options.axis + '_' + options.move + '_' + options.opacity;
+		key += type + options.axis + '_' + options.move + '_' + options.opacity;
 
 		if (scale !== undefined) {
 			key += ('_scale' + scale.value).replace('.', '_');
@@ -153,7 +159,7 @@ am.translate = (function(styles, undefined) {
 
 		key = key.replace(/-/g, 'm');
 
-		return styles(key, css);
+		return styles.build(key, css);
 	};
 
 })(am.styles);
@@ -168,17 +174,18 @@ am.transition = (function(styles, undefined) {
 		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
 					       'transition: transform '			+ tmp2;
 
-		return styles(key, css);
+		return styles.build(key, css);
 	};
 
 })(am.styles);
 am.transform = (function(styles, transition, undefined) {
 	"use strict";
 
+	var PREFIX = 'am_';
+
 	function parse(words) {
 		var attrs = {},
-			param,
-			ignoreNext;
+			param, ignoreNext;
 
 		words.forEach(function (word, i) {
 			if (ignoreNext) {
@@ -196,16 +203,24 @@ am.transform = (function(styles, transition, undefined) {
 					ignoreNext = true;
 					return;
 				case "move":
+					var param2 = words[i+2];
 					if (param === 'left') {
-						attrs.translatex = '-' + words[i+2];
+						attrs.translatex = '-' + param2;
 					} else if (param === 'right') {
-						attrs.translatex = words[i+2];
+						attrs.translatex = param2;
 					} else if (param === 'bottom') {
-						attrs.translatey = words[i+2];
+						attrs.translatey = param2;
 					} else if (param === 'top') {
-						attrs.translatey = '-' + words[i+2];
+						attrs.translatey = '-' + param2;
 					}
 					ignoreNext = true;
+					return;
+				case "after":
+				case "wait":
+					attrs.after = param;
+					return;
+				case "over":
+					attrs.over = param;
 					return;
 				default:
 					return;
@@ -218,19 +233,25 @@ am.transform = (function(styles, transition, undefined) {
 
 		var attrs = parse(lang),
 			skewx = attrs.skewx,
+			skewy = attrs.skewy,
 			translatex = attrs.translatex,
 			translatey = attrs.translatey,
 			over = attrs.over || '1.0s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
-			key = '',
+			key = PREFIX,
 			tmp = '';
 		
 		//console.log(attrs);
 
 		if (skewx) {
-			tmp = 'skewx(' + skewx + ') ';
-			key = 'skewx' + skewx;
+			tmp += 'skewx(' + skewx + ') ';
+			key += 'skewx' + skewx;
+		}
+
+		if (skewy) {
+			tmp += 'skewy(' + skewy + ') ';
+			key += 'skewy' + skewy;
 		}
 		
 		if (translatex) {
@@ -242,15 +263,19 @@ am.transform = (function(styles, transition, undefined) {
 			tmp += 'translatey(' + translatey + ')';
 			key += 'translatey' + translatey;
 		}
+
 		var css =  '-webkit-transform: ' 	+ tmp +
 					     '; transform: '	+ tmp;
 	
+		//css += '; transform-origin: 50% 50%';
+
 		key = key.replace(/-/g, 'm');
 
-		//console.log(css);
+		console.log(key);
 
 		return {
-			target: styles(key, css),
+			target: styles.build(key, css),
+			reset: true,
 			transition: transition(over, easing, after)
 		};
 	}
@@ -259,9 +284,8 @@ am.transform = (function(styles, transition, undefined) {
 am.enter = (function(translate, transition, undefined) {
 	"use strict";
 
-	function parse(lang) {
-		var words = lang,//.split(/[, ]+/),
-			attrs = {},
+	function parse(words) {
+		var attrs = {},
 			param;
 
 		words.forEach(function (word, i) {
@@ -269,13 +293,18 @@ am.enter = (function(translate, transition, undefined) {
 			switch (word) {
 				case ":enter":
 					attrs.enter = param;
+					if (attrs.enter === 'top' || attrs.enter === 'bottom') {
+						attrs.axis = 'y';
+					} else {
+						attrs.axis = 'x';
+					}
+					return;
+				case "move":
+					attrs.move = param;
 					return;
 				case "after":
 				case "wait":
 					attrs.after = param;
-					return;
-				case "move":
-					attrs.move = param;
 					return;
 				case "over":
 					attrs.over = param;
@@ -285,9 +314,14 @@ am.enter = (function(translate, transition, undefined) {
 				  	if (param == 'up' || param == 'down') {
 				  		attrs.scale.direction = param;
 				    	attrs.scale.power    = words[i+2];
-				    	return;
+				  	} else {
+				  		attrs.scale.power = param;
 				  	}
-				  	attrs.scale.power = param;
+				  	if (parseInt(attrs.scale.power) != 0) {
+				  		var delta = parseFloat(attrs.scale.power) * 0.01;
+				  		if (attrs.scale.direction == 'up') { delta = -delta; }
+				  	  	attrs.scale.value = 1 + delta;
+				  	}
 				  	return;
 				default:
 					return;
@@ -304,25 +338,13 @@ am.enter = (function(translate, transition, undefined) {
 			over = attrs.over || '0.7s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
-			scale = attrs.scale,
-			axis = 'x',
 			tmp;
-
-		if (enter && (enter === 'top' || enter === 'bottom')) {
-			axis = 'y';
-		}
-
-		if (scale && parseInt(scale.power) != 0) {
-			var delta = parseFloat(scale.power) * 0.01;
-			if (scale.direction == 'up') { delta = -delta; }
-		  	scale.value = 1 + delta;
-		}
 
 		return {
 			initial: translate({
-				axis: axis,
+				axis: attrs.axis,
 				move: move,
-				scale: scale,
+				scale: attrs.scale,
 				opacity: false
 			}),
 			transition: transition(over, easing, after)
@@ -332,7 +354,7 @@ am.enter = (function(translate, transition, undefined) {
 })(am.translate, am.transition);
 am.frame = (function () {
   	var frameFn = window.requestAnimationFrame 		||
-  		 		window.webkitRequestAnimationFrame ||
+  		 		window.webkitRequestAnimationFrame 	||
   		 		window.mozRequestAnimationFrame 	||
         		function(cb) {
           			window.setTimeout(cb, 1000/60);
@@ -345,16 +367,23 @@ am.frame = (function () {
 am.build = (function(prefix, enter, transform, undefined) {
 	"use strict";
 
+	var PREFIX = 'am_';
+
 	function hackStyle(elm) {
 		getComputedStyle(elm[0], null).display;
 	}
 
 	function doTransition(elm, initial, target, transition, cb) {
+		
 		// hack: access style to apply transition
 		hackStyle(elm);
 
 		if (target) {
 			elm.addClass(target);
+		}
+
+		if (elm.hasClass(elm.data('previous-target'))) {
+			elm.removeClass(elm.data('previous-target'));
 		}
 
 		elm.addClass(transition);
@@ -364,6 +393,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 		}
 		elm.one(prefix.TRANSITION_END_EVENT, function() {
 			elm.removeClass(transition);
+			elm.data('previous-target', target);
 			cb && cb();
 		});
 	}

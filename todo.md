@@ -11,3 +11,5 @@ reverse
 template animation
 add unit on parser
 parallax
+
+disable css stylesheets

@@ -87,6 +87,8 @@ am.transform = (function(styles, transition, undefined) {
 		var css =  '-webkit-transform: ' 	+ tmp +
 					     '; transform: '	+ tmp;
 	
+		//css += '; transform-origin: 50% 50%';
+
 		key = key.replace(/-/g, 'm');
 
 		console.log(key);
