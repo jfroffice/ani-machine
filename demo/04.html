@@ -40,14 +40,14 @@
 				<am-event on="active" before="show()" goto="enter"></am-event>
 			</am-state>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter left move 200px scale 40% over 1.0s" goto="intro"></am-event>
+				<am-event on="active" do=":enter left move 200px scale 40% over 1.0s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
-				<am-event on="enter" animate="pulse" before="changeColor()"></am-event>
-				<am-event on="leave" animate="tada" goto="outro"></am-event>
+				<am-event on="enter" do=":animate pulse" before="changeColor()"></am-event>
+				<am-event on="leave" do=":animate tada" goto="outro"></am-event>
 			</am-state>
 			<am-state value="outro">
-				<am-event on="active" animate="bounceOutRight" after="hide()"></am-event>
+				<am-event on="active" do=":animate bounceOutRight" after="hide()"></am-event>
 			</am-state>
 		</div>
 		<p><a class="btn btn--reveal">Restart</a></p>

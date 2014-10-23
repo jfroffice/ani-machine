@@ -4,8 +4,6 @@ Roadmap
 -------
 loop
 shake.css
-rotate
-scale
 scroll
 reverse
 template animation

@@ -80,8 +80,8 @@ am.maestro = (function(parser, frame, undefined) {
 
 			function initEvent(event) {
 				var goto = event.goto,
-					before = event.before ? event.before.replace('()', '') : '',
-					after = event.after ? event.after.replace('()', '') : '',
+					before = event.before,
+					after = event.after,
 					on = event.on;
 
 				function eventFn() {
@@ -96,22 +96,26 @@ am.maestro = (function(parser, frame, undefined) {
 					var params = event.param.split(' '),
 						param = params[0];
 									
-					if (params && param.indexOf(':') === 0) {
-						addQueue({
-							run: am.build(self.element, param.slice(1, param.length), params),
-							finish: finish
-						});	
-					} else {
-						event.currentStep += 1;
-						if (event.currentStep >= params.length) {
-							console.warn('try to relaunch animation that is not finished');
+					if (params) {
+						var type = param.slice(1, param.length);
+						if (param === ':animate') {
+							event.currentStep += 1;
+							if (event.currentStep >= params.length) {
+								console.warn('try to relaunch animation that is not finished');
+							} else {
+								addQueue({
+									run: am.build(self.element, type, params[event.currentStep]),
+									finish: finishSequence
+								});	
+							}												
 						} else {
 							addQueue({
-								run: am.build(self.element, event.type, params[event.currentStep]),
-								finish: finishSequence
+								run: am.build(self.element, type, params),
+								finish: finish
 							});	
-						}												
-					}
+						} 
+
+					} 
 				}
 
 				function gotoFn() {
@@ -134,7 +138,7 @@ am.maestro = (function(parser, frame, undefined) {
 					if (event.currentStep < (event.param.split(' ').length-1)) {
 						frame(eventFn);
 					} else {
-						event.currentStep = -1;
+						event.currentStep = 0;
 					}
 
 					finish();
