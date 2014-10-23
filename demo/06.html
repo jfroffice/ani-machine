@@ -32,10 +32,10 @@
 				<am-event on="active" goto="bottomleft"></am-event>
 			</am-state>
 			<am-state value="bottomleft">
-				<am-event on="active" animate=":transform move bottom 250px move left 0" goto="topleft"></am-event>
+				<am-event on="active" do=":transform move bottom 250px move left 0" goto="topleft"></am-event>
 			</am-state>
 			<am-state value="topleft">
-				<am-event on="active" animate=":transform move left 0" goto="bottomleft"></am-event>
+				<am-event on="active" do=":transform move left 0" goto="bottomleft"></am-event>
 			</am-state>
 		</div>
 		<div class="element element--blue element--ball" am-element>
@@ -43,17 +43,16 @@
 				<am-event on="active" goto="topright"></am-event>
 			</am-state>
 			<am-state value="topright">
-				<am-event on="active" animate=":transform move right 250px" before="blueColor()" goto="bottomright"></am-event>
+				<am-event on="active" do=":transform move right 250px" before="blueColor()" goto="bottomright"></am-event>
 			</am-state>
 			<am-state value="bottomright">
-				<am-event on="enter" animate="shake"></am-event>
-				<am-event on="active" animate=":transform move bottom 250px move right 250px" goto="bottomleft"></am-event>
+				<am-event on="active" do=":transform move bottom 250px move right 250px" goto="bottomleft"></am-event>
 			</am-state>
 			<am-state value="bottomleft">
-				<am-event on="active" animate=":transform move bottom 250px move left 0" before="pinkColor()" goto="topleft"></am-event>
+				<am-event on="active" do=":transform move bottom 250px move left 0" before="pinkColor()" goto="topleft"></am-event>
 			</am-state>
 			<am-state value="topleft">
-				<am-event on="active" animate=":transform move left 0" goto="topright"></am-event>
+				<am-event on="active" do=":transform move left 0" goto="topright"></am-event>
 			</am-state>
 		</div>
 	</div>

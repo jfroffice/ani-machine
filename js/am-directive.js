@@ -85,27 +85,17 @@ angular.module('aniMachine', [])
 			on: '@',
 			before: '@',
 			after: '@',
-			animate: '@',
+			do: '@',
 			goto: '@'
 		},
 		require: '^amState',
 		link: function(scope, elm, options, stateCtrl) {
-
-			var on = am.parser(scope.on),
-				type, param;
-
-			if (scope.animate) {
-				type = 'animate';
-				param = scope.animate;
-			}
-
 			stateCtrl.addEvent({
-				on: on,
-				type: type,
-				param: param,
-				currentStep: -1,
-				before: scope.before,
-				after: scope.after,
+				on: am.parser(scope.on),
+				param: scope.do,
+				currentStep: 0,
+				before: scope.before ? scope.before.replace('()', '') : '',
+				after: scope.after ? scope.after.replace('()', '') : '',
 				goto: scope.goto
 			});
 		}

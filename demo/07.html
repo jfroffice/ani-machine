@@ -20,53 +20,40 @@
 	<script src="/js/am-directive.js"></script>
 	<script>
 	angular.module('app', ['aniMachine']);
-
-	function blueColor() {
-		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			elm.classList.add('element--blue');
-		});
-	}
-
-	function pinkColor() {
-		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			elm.classList.remove('element--blue');
-		});
-	}
 	</script>
+	<style>
+	.element {
+		opacity: 0.6;
+	}
+	.late {
+		position: relative;
+		left: -138px;
+	}
+	</style>
 </head>
 <body ng-app="app">
 	<div class="container">
-		<h2 class="title">Transform Animation</h2>
-		<span class="subtitle">with some before callbacks.</span>
-		<div class="element element--yellow element--ball" am-element>
-			<am-state value="default">
-				<am-event on="active" goto="bottomleft"></am-event>
+		<h2 class="title">Rotate</h2>
+		<div class="element" am-element>
+			<am-state value="right" trigger=".btn--action click">
+				<am-event on="active" do=":transform move right 300px rotate right 120deg scale 50% wait 0.02s" goto="stop"></am-event>
 			</am-state>
-			<am-state value="bottomleft">
-				<am-event on="active" animate=":transform move bottom 250px move left 0" goto="topleft"></am-event>
-			</am-state>
-			<am-state value="topleft">
-				<am-event on="active" animate=":transform move left 0" goto="bottomleft"></am-event>
+			<am-state value="stop" >
+				<am-event on="active" do=":animate pulse"></am-event>
 			</am-state>
 		</div>
-		<div class="element element--blue element--ball" am-element>
-			<am-state value="default">
-				<am-event on="active" goto="topright"></am-event>
+		<div class="element element--blue late" am-element>
+			<am-state value="right" trigger=".btn--action click">
+				<am-event on="active" do=":transform move right 300px rotate right 120deg" goto="bottom"></am-event>
 			</am-state>
-			<am-state value="topright">
-				<am-event on="active" animate=":transform move right 250px" before="blueColor()" goto="bottomright"></am-event>
+			<am-state value="bottom">
+				<am-event on="active" do=":transform move bottom 150px move right 150px rotate right 240deg" goto="left"></am-event>
 			</am-state>
-			<am-state value="bottomright">
-				<am-event on="enter" animate="shake"></am-event>
-				<am-event on="active" animate=":transform move bottom 250px move right 250px" goto="bottomleft"></am-event>
-			</am-state>
-			<am-state value="bottomleft">
-				<am-event on="active" animate=":transform move bottom 250px move left 0" before="pinkColor()" goto="topleft"></am-event>
-			</am-state>
-			<am-state value="topleft">
-				<am-event on="active" animate=":transform move left 0" goto="topright"></am-event>
+			<am-state value="left">
+				<am-event on="active" do=":transform move left 0 rotate right 0deg" goto="right"></am-event>
 			</am-state>
 		</div>
+		<p><a class="btn btn--action">Start</a></p>
 	</div>
 </body>
 </html>

@@ -3,7 +3,7 @@ am.transition = (function(styles, undefined) {
 
 	return function(over, easing, after) {
 		var tmp = over + ' ' + easing + ' ' + after,
-			tmp2 = tmp + ', skew, scale, opacity ' + tmp + ';';
+			tmp2 = tmp + ', rotate, skew, scale, opacity ' + tmp + ';';
 
 		var key = '_' + tmp.replace(/ /g, '_').replace(/\./g, '_');
 		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +

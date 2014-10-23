@@ -19,7 +19,6 @@ am.styles = (function(undefined) {
 			var style = document.createElement("style");
 			style.type = "text/css";
 			style.innerHTML = raw;
-			console.log(style);
 			cache[key] = true; //style;
 			document.getElementsByTagName("head")[0].appendChild(style);
 			return key;

@@ -54,7 +54,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 					cb && cb();
 				});
 			};
-		} else { // only animate for now
+		} else if (type === 'animate') {
 			return function(cb) {
 
 				hackStyle(elm);
@@ -68,6 +68,10 @@ am.build = (function(prefix, enter, transform, undefined) {
 						elm.removeClass(initial);
 						cb && cb();
 					});
+			};
+		} else { // only animate for now
+			return function(cb) {
+				alert('ERROR ' + type);
 			};
 		}
 	};

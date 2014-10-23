@@ -1,6 +1,6 @@
 /**
  * ani-machine - Declarative animation and machine state
- * @version v0.1.5
+ * @version v0.1.6
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
@@ -121,7 +121,6 @@ am.styles = (function(undefined) {
 			var style = document.createElement("style");
 			style.type = "text/css";
 			style.innerHTML = raw;
-			console.log(style);
 			cache[key] = true; //style;
 			document.getElementsByTagName("head")[0].appendChild(style);
 			return key;
@@ -168,7 +167,7 @@ am.transition = (function(styles, undefined) {
 
 	return function(over, easing, after) {
 		var tmp = over + ' ' + easing + ' ' + after,
-			tmp2 = tmp + ', skew, scale, opacity ' + tmp + ';';
+			tmp2 = tmp + ', rotate, skew, scale, opacity ' + tmp + ';';
 
 		var key = '_' + tmp.replace(/ /g, '_').replace(/\./g, '_');
 		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
@@ -202,6 +201,14 @@ am.transform = (function(styles, transition, undefined) {
 					}
 					ignoreNext = true;
 					return;
+				case "rotate":
+					if (param === 'left') {
+						attrs.rotatey = '-' + words[i+2];
+					} else if (param === 'right') {
+						attrs.rotatey = words[i+2];
+					}
+					ignoreNext = true;
+					return;
 				case "move":
 					var param2 = words[i+2];
 					if (param === 'left') {
@@ -215,6 +222,20 @@ am.transform = (function(styles, transition, undefined) {
 					}
 					ignoreNext = true;
 					return;
+				case 'scale':
+				  	attrs.scale = {};
+				  	if (param == 'up' || param == 'down') {
+				  		attrs.scale.direction = param;
+				    	attrs.scale.power    = words[i+2];
+				  	} else {
+				  		attrs.scale.power = param;
+				  	}
+				  	if (parseInt(attrs.scale.power) != 0) {
+				  		var delta = parseFloat(attrs.scale.power) * 0.01;
+				  		if (attrs.scale.direction == 'up') { delta = -delta; }
+				  	  	attrs.scale.value = 1 + delta;
+				  	}
+				  	return;
 				case "after":
 				case "wait":
 					attrs.after = param;
@@ -234,8 +255,10 @@ am.transform = (function(styles, transition, undefined) {
 		var attrs = parse(lang),
 			skewx = attrs.skewx,
 			skewy = attrs.skewy,
+			rotatey = attrs.rotatey,
 			translatex = attrs.translatex,
 			translatey = attrs.translatey,
+			scale = attrs.scale,
 			over = attrs.over || '1.0s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
@@ -264,14 +287,24 @@ am.transform = (function(styles, transition, undefined) {
 			key += 'translatey' + translatey;
 		}
 
-		var css =  '-webkit-transform: ' 	+ tmp +
-					     '; transform: '	+ tmp;
+		if (rotatey) {
+			tmp += 'rotate(' + rotatey + ') ';
+			key += 'rotate' + rotatey;
+		}
+
+		if (scale) {
+			tmp += ' scale(' + scale.value + ')';
+			key += 'scale' + scale.value.toString().replace('.', '_');
+		}
+
+		var css =  '-webkit-transform: ' 	+ tmp + ' translateZ(0);' + 
+					       'transform: '	+ tmp + ' translateZ(0);'
 	
-		//css += '; transform-origin: 50% 50%';
+		//css += ';  -webkit-transform-origin: 50% 50% ; transform-origin: 50% 50%';
 
 		key = key.replace(/-/g, 'm');
 
-		console.log(key);
+		//console.log(key);
 
 		return {
 			target: styles.build(key, css),
@@ -420,7 +453,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 					cb && cb();
 				});
 			};
-		} else { // only animate for now
+		} else if (type === 'animate') {
 			return function(cb) {
 
 				hackStyle(elm);
@@ -434,6 +467,10 @@ am.build = (function(prefix, enter, transform, undefined) {
 						elm.removeClass(initial);
 						cb && cb();
 					});
+			};
+		} else { // only animate for now
+			return function(cb) {
+				alert('ERROR ' + type);
 			};
 		}
 	};
@@ -521,8 +558,8 @@ am.maestro = (function(parser, frame, undefined) {
 
 			function initEvent(event) {
 				var goto = event.goto,
-					before = event.before ? event.before.replace('()', '') : '',
-					after = event.after ? event.after.replace('()', '') : '',
+					before = event.before,
+					after = event.after,
 					on = event.on;
 
 				function eventFn() {
@@ -537,22 +574,26 @@ am.maestro = (function(parser, frame, undefined) {
 					var params = event.param.split(' '),
 						param = params[0];
 									
-					if (params && param.indexOf(':') === 0) {
-						addQueue({
-							run: am.build(self.element, param.slice(1, param.length), params),
-							finish: finish
-						});	
-					} else {
-						event.currentStep += 1;
-						if (event.currentStep >= params.length) {
-							console.warn('try to relaunch animation that is not finished');
+					if (params) {
+						var type = param.slice(1, param.length);
+						if (param === ':animate') {
+							event.currentStep += 1;
+							if (event.currentStep >= params.length) {
+								console.warn('try to relaunch animation that is not finished');
+							} else {
+								addQueue({
+									run: am.build(self.element, type, params[event.currentStep]),
+									finish: finishSequence
+								});	
+							}												
 						} else {
 							addQueue({
-								run: am.build(self.element, event.type, params[event.currentStep]),
-								finish: finishSequence
+								run: am.build(self.element, type, params),
+								finish: finish
 							});	
-						}												
-					}
+						} 
+
+					} 
 				}
 
 				function gotoFn() {
@@ -575,7 +616,7 @@ am.maestro = (function(parser, frame, undefined) {
 					if (event.currentStep < (event.param.split(' ').length-1)) {
 						frame(eventFn);
 					} else {
-						event.currentStep = -1;
+						event.currentStep = 0;
 					}
 
 					finish();
@@ -694,27 +735,17 @@ angular.module('aniMachine', [])
 			on: '@',
 			before: '@',
 			after: '@',
-			animate: '@',
+			do: '@',
 			goto: '@'
 		},
 		require: '^amState',
 		link: function(scope, elm, options, stateCtrl) {
-
-			var on = am.parser(scope.on),
-				type, param;
-
-			if (scope.animate) {
-				type = 'animate';
-				param = scope.animate;
-			}
-
 			stateCtrl.addEvent({
-				on: on,
-				type: type,
-				param: param,
-				currentStep: -1,
-				before: scope.before,
-				after: scope.after,
+				on: am.parser(scope.on),
+				param: scope.do,
+				currentStep: 0,
+				before: scope.before ? scope.before.replace('()', '') : '',
+				after: scope.after ? scope.after.replace('()', '') : '',
 				goto: scope.goto
 			});
 		}
