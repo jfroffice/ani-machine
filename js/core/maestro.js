@@ -97,20 +97,19 @@ am.maestro = (function(parser, frame, undefined) {
 						param = params[0];
 									
 					if (params) {
-						var type = param.slice(1, param.length);
 						if (param === ':animate') {
 							event.currentStep += 1;
 							if (event.currentStep >= params.length) {
 								console.warn('try to relaunch animation that is not finished');
 							} else {
 								addQueue({
-									run: am.build(self.element, type, params[event.currentStep]),
+									run: am.build(self.element, param, params[event.currentStep]),
 									finish: finishSequence
 								});	
 							}												
 						} else {
 							addQueue({
-								run: am.build(self.element, type, params),
+								run: am.build(self.element, param, params),
 								finish: finish
 							});	
 						} 
