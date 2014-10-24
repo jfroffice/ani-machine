@@ -131,13 +131,11 @@ am.styles = (function(undefined) {
 am.translate = (function(styles, undefined) {
 	"use strict";
 
-	var PREFIX = 'am_';
-
 	return function(options) {
 		var type = 'translate',
 			tmp = type + options.axis + '(' + options.move + ')',
 			scale = options.scale,
-			key = PREFIX,
+			key = '',
 			css;
 
 		if (scale !== undefined) {
@@ -179,8 +177,6 @@ am.transition = (function(styles, undefined) {
 })(am.styles);
 am.transform = (function(styles, transition, undefined) {
 	"use strict";
-
-	var PREFIX = 'am_';
 
 	function parse(words) {
 		var attrs = {},
@@ -262,7 +258,7 @@ am.transform = (function(styles, transition, undefined) {
 			over = attrs.over || '1.0s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
-			key = PREFIX,
+			key = '',
 			tmp = '';
 		
 		//console.log(attrs);
