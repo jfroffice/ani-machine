@@ -1,6 +1,6 @@
 /**
  * ani-machine - Declarative animation and machine state
- * @version v0.1.6
+ * @version v0.1.7
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
