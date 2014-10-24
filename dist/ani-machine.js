@@ -400,8 +400,6 @@ am.frame = (function () {
 am.build = (function(prefix, enter, transform, undefined) {
 	"use strict";
 
-	var PREFIX = 'am_';
-
 	function hackStyle(elm) {
 		getComputedStyle(elm[0], null).display;
 	}
@@ -435,8 +433,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 		var s, run, initial;
 
 		//console.log('animation start ' + initial);
-
-		if (type === 'enter') {
+		if (type === ':enter') {
 			return function(cb) {
 				s = enter(param);
 				elm.addClass(s.initial);
@@ -445,7 +442,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 					cb && cb();
 				});
 			};
-		} else if (type === 'transform') {
+		} else if (type === ':transform') {
 			return function(cb) {
 				s = transform(param);
 				doTransition(elm, null, s.target, s.transition, function() {
@@ -453,7 +450,22 @@ am.build = (function(prefix, enter, transform, undefined) {
 					cb && cb();
 				});
 			};
-		} else if (type === 'animate') {
+		} else if (type === ':shake') {
+			return function(cb) {
+
+				hackStyle(elm);
+
+				var initial = 'shake shake-constant shake-' + param[1];
+
+				elm
+					.addClass(initial)
+					.one(prefix.ANIMATION_END_EVENT, function() {
+						//console.log('animation end : ' + initial);
+						elm.removeClass(initial);
+						cb && cb();
+					});
+			};
+		} else if (type === ':animate') {
 			return function(cb) {
 
 				hackStyle(elm);
@@ -575,20 +587,19 @@ am.maestro = (function(parser, frame, undefined) {
 						param = params[0];
 									
 					if (params) {
-						var type = param.slice(1, param.length);
 						if (param === ':animate') {
 							event.currentStep += 1;
 							if (event.currentStep >= params.length) {
 								console.warn('try to relaunch animation that is not finished');
 							} else {
 								addQueue({
-									run: am.build(self.element, type, params[event.currentStep]),
+									run: am.build(self.element, param, params[event.currentStep]),
 									finish: finishSequence
 								});	
 							}												
 						} else {
 							addQueue({
-								run: am.build(self.element, type, params),
+								run: am.build(self.element, param, params),
 								finish: finish
 							});	
 						} 
