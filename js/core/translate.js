@@ -1,13 +1,11 @@
 am.translate = (function(styles, undefined) {
 	"use strict";
 
-	var PREFIX = 'am_';
-
 	return function(options) {
 		var type = 'translate',
 			tmp = type + options.axis + '(' + options.move + ')',
 			scale = options.scale,
-			key = PREFIX,
+			key = '',
 			css;
 
 		if (scale !== undefined) {
