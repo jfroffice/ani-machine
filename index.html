@@ -15,125 +15,125 @@
 	<div class="container">
 		<h2 am-element class="special-header">Ani Machine
 			<am-state value="default">
-				<am-event on="active" animate=":enter top move 200px over 0.8s"
+				<am-event on="active" do=":enter top move 200px over 0.8s"
 			</am-state>
 		</h2>
 		<span class="subtitle" am-element>Declarative animation and machine state build on top <a class="link" href="https://angularjs.org/">AngularJS</a></span>
 		<div class="element" am-element>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter left move 400px scale 200% over 0.3s" goto="intro"></am-event>
+				<am-event on="active" do=":enter left move 400px scale 200% over 0.3s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
-				<am-event on="active" animate="pulse tada"></am-event>
-				<am-event on="enter" animate="pulse"></am-event>
-				<am-event on="leave" animate="tada"></am-event>
+				<am-event on="active" do=":animate pulse tada"></am-event>
+				<am-event on="enter" do=":animate pulse"></am-event>
+				<am-event on="leave" do=":animate tada"></am-event>
 			</am-state>
 		</div>
 		<div class="element" am-element>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter top move 400px scale 400% over 0.6s" goto="intro"></am-event>
+				<am-event on="active" do=":enter top move 400px scale 400% over 0.6s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
-				<am-event on="active" animate="pulse tada"></am-event>
-				<am-event on="enter" animate="pulse"></am-event>
-				<am-event on="leave" animate="tada"></am-event>
+				<am-event on="active" do=":animate pulse tada"></am-event>
+				<am-event on="enter" do=":animate pulse"></am-event>
+				<am-event on="leave" do=":animate tada"></am-event>
 			</am-state>
 		</div>
 		<div class="element element--white" am-element>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter bottom move 400px scale 600% over 0.9s" goto="intro"></am-event>
+				<am-event on="active" do=":enter bottom move 400px scale 600% over 0.9s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
-				<am-event on="active" animate="pulse tada"></am-event>
-				<am-event on="enter" animate="pulse"></am-event>
-				<am-event on="leave" animate="tada"></am-event>
+				<am-event on="active" do=":animate pulse tada"></am-event>
+				<am-event on="enter" do=":animate pulse"></am-event>
+				<am-event on="leave" do=":animate tada"></am-event>
 			</am-state>
 		</div>
 		<div class="element" am-element>
 			<am-state value="enter">
-				<am-event on="active" animate=":enter right move 400px scale 800% over 1.2s" goto="intro"></am-event>
+				<am-event on="active" do=":enter right move 400px scale 800% over 1.2s" goto="intro"></am-event>
 			</am-state>
 			<am-state value="intro">
-				<am-event on="active" animate="pulse tada"></am-event>
-				<am-event on="enter" animate="pulse"></am-event>
-				<am-event on="leave" animate="tada"></am-event>
+				<am-event on="active" do=":animate pulse tada"></am-event>
+				<am-event on="enter" do=":animate pulse"></am-event>
+				<am-event on="leave" do=":animate tada"></am-event>
 			</am-state>
 		</div>
 		<div class="demolink">
 			<a class="link" href="./demo/01.html" am-element>Trigger & Reveal Animation
 				<am-state value="enter">
-					<am-event on="active" animate=":enter left move 800px over 1.5s" goto="intro"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
+					<am-event on="active" do=":enter left move 800px over 1.5s" goto="intro"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
 				</am-state>
 				<am-state value="intro">
-					<am-event on="active" animate="pulse tada"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
-					<am-event on="leave" animate="tada"></am-event>
+					<am-event on="active" do=":animate pulse tada"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
+					<am-event on="leave" do=":animate tada"></am-event>
 				</am-state>
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
 			<a class="link" href="./demo/02.html" am-element>Trigger Reveal Animation
 				<am-state value="enter">
-					<am-event on="active" animate=":enter left move 800px over 1.8s" goto="intro"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
+					<am-event on="active" do=":enter left move 800px over 1.8s" goto="intro"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
 				</am-state>
 				<am-state value="intro">
-					<am-event on="active" animate="pulse tada"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
-					<am-event on="leave" animate="tada"></am-event>
+					<am-event on="active" do=":animate pulse tada"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
+					<am-event on="leave" do=":animate tada"></am-event>
 				</am-state>
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
 			<a class="link" href="./demo/03.html" am-element>Animation Element Event
 				<am-state value="enter">
-					<am-event on="active" animate=":enter left move 800px over 2.1s" goto="intro"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
+					<am-event on="active" do=":enter left move 800px over 2.1s" goto="intro"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
 				</am-state>
 				<am-state value="intro">
-					<am-event on="active" animate="pulse tada"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
-					<am-event on="leave" animate="tada"></am-event>
+					<am-event on="active" do=":animate pulse tada"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
+					<am-event on="leave" do=":animate tada"></am-event>
 				</am-state>
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
 			<a class="link" href="./demo/04.html" am-element>Before & After Callback
 				<am-state value="enter">
-					<am-event on="active" animate=":enter left move 800px over 2.4s" goto="intro"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
+					<am-event on="active" do=":enter left move 800px over 2.4s" goto="intro"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
 				</am-state>
 				<am-state value="intro">
-					<am-event on="active" animate="pulse tada"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
-					<am-event on="leave" animate="tada"></am-event>
+					<am-event on="active" do=":animate pulse tada"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
+					<am-event on="leave" do=":animate tada"></am-event>
 				</am-state>
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
 			<a class="link" href="./demo/05.html" am-element>Advanced Animation
 				<am-state value="enter">
-					<am-event on="active" animate=":enter left move 800px over 2.7s" goto="intro"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
+					<am-event on="active" do=":enter left move 800px over 2.7s" goto="intro"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
 				</am-state>
 				<am-state value="intro">
-					<am-event on="active" animate="pulse tada"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
-					<am-event on="leave" animate="tada"></am-event>
+					<am-event on="active" do=":animate pulse tada"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
+					<am-event on="leave" do=":animate tada"></am-event>
 				</am-state>
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
 			<a class="link" href="./demo/06.html" am-element>Transform Animation
 				<am-state value="enter">
-					<am-event on="active" animate=":enter left move 800px over 2.7s" goto="intro"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
+					<am-event on="active" do=":enter left move 800px over 2.7s" goto="intro"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
 				</am-state>
 				<am-state value="intro">
-					<am-event on="active" animate="pulse tada"></am-event>
-					<am-event on="enter" animate="pulse"></am-event>
-					<am-event on="leave" animate="tada"></am-event>
+					<am-event on="active" do=":animate pulse tada"></am-event>
+					<am-event on="enter" do=":animate pulse"></am-event>
+					<am-event on="leave" do=":animate tada"></am-event>
 				</am-state>
 		   	</a>
 		</div>
