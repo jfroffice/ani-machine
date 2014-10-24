@@ -1,8 +1,6 @@
 am.transform = (function(styles, transition, undefined) {
 	"use strict";
 
-	var PREFIX = 'am_';
-
 	function parse(words) {
 		var attrs = {},
 			param, ignoreNext;
@@ -83,7 +81,7 @@ am.transform = (function(styles, transition, undefined) {
 			over = attrs.over || '1.0s',
 			after = attrs.after || '0s',
 			easing = attrs.easing || 'ease-in-out',
-			key = PREFIX,
+			key = '',
 			tmp = '';
 		
 		//console.log(attrs);
