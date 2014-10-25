@@ -6,7 +6,7 @@ am.maestro = (function(parser, frame, undefined) {
 			var self = this,
 				triggers = options.triggers;
 
-			self.events = options.events;
+			self.states = options.states;
 			self.element = options.element;
 			self.jobs = [];
 			self.offs = [];
@@ -20,7 +20,7 @@ am.maestro = (function(parser, frame, undefined) {
 
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
 					el.addEventListener(on, function() {
-						self.state(state);
+						self.changeState(state);
 					});
 				});
 			}
@@ -33,7 +33,7 @@ am.maestro = (function(parser, frame, undefined) {
 				initTrigger(state, trigger);
 			}
 		},
-		state: function(state) {
+		changeState: function(state) {
 
 			var self = this,
 				ACTIVE = 'active';
@@ -60,15 +60,15 @@ am.maestro = (function(parser, frame, undefined) {
 				});
 			}
 
-			function initEvents(events) {
-				if (!events) {
+			function initState(state) {
+				if (!state) {
 					return;
 				}
 
 				var tmp = [];
-				events.forEach(function(e) {
-					tmp.push(initEvent(e));
-				});
+				for(key in state) {
+					tmp.push(initEvent(state[key]));
+				}
 				return tmp;
 			}
 
@@ -79,21 +79,24 @@ am.maestro = (function(parser, frame, undefined) {
 
 			function initEvent(event) {
 				var goto = event.goto,
-					before = event.before,
-					after = event.after,
+					before = event.before ? event.before.replace('()', '') : '',
+					after = event.after ? event.after.replace('()', '') : '',
 					loop = event.loop,
-					on = event.on;
+					eventParam = event.do,
+					on = parser(event.on);
+
+				event.currentStep = event.currentStep || 0;
 
 				function eventFn() {
 
 					before && callFn(before);
 					
-					if (!event.param) {
+					if (!eventParam) {
 						gotoFn();
 						return;
 					}
 
-					var params = event.param.split(' '),
+					var params = eventParam.split(' '),
 						param = params[0];
 									
 					if (params) {
@@ -125,7 +128,7 @@ am.maestro = (function(parser, frame, undefined) {
 					if (on !== ACTIVE) {
 						self.element.off(on, eventFn);
 					}
-					self.state(goto);
+					self.changeState(goto);
 				}
 
 				function finish() {
@@ -134,7 +137,7 @@ am.maestro = (function(parser, frame, undefined) {
 				}
 
 				function finishSequence() {
-					if (event.currentStep < (event.param.split(' ').length-1)) {
+					if (event.currentStep < (eventParam.split(' ').length-1)) {
 						frame(eventFn);
 					} else {
 						event.currentStep = 0;
@@ -151,12 +154,6 @@ am.maestro = (function(parser, frame, undefined) {
 			
 				return function() {
 					self.element.off(on, eventFn);
-					// if (loop) {
-					// 	frame(function() {
-					// 		self.element.removeClass('swing animated loop4');
-					// 		//self.element.addClass('loopoff');
-					// 	});
-					// }
 				};
 			}
 
@@ -168,13 +165,13 @@ am.maestro = (function(parser, frame, undefined) {
 				});
 			}
 
+			var future = self.states[state];
+
 			if (sameState) {
-				initEvents(self.events[state]);
+				initState(future);
 			} else {
 				self.currentState = state;
-				frame(function() {
-					self.offs = initEvents(self.events[state]);
-				})
+				self.offs = initState(future);
 			}
 		}
 	};
