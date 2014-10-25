@@ -8,9 +8,8 @@ am.maestro = (function(parser, frame, undefined) {
 
 			self.events = options.events;
 			self.element = options.element;
-			self.deferFn = options.timeoutFn;
 			self.jobs = [];
-			self.unregisters = [];
+			self.offs = [];
 			self.currentState;
 			self.running;
 
@@ -150,22 +149,32 @@ am.maestro = (function(parser, frame, undefined) {
 					self.element.on(on, eventFn);
 				}
 			
-				return function() { self.element.off(on, eventFn); };
+				return function() {
+					self.element.off(on, eventFn);
+					// if (loop) {
+					// 	frame(function() {
+					// 		self.element.removeClass('swing animated loop4');
+					// 		//self.element.addClass('loopoff');
+					// 	});
+					// }
+				};
 			}
 
 			var sameState = self.currentState === state;
 
-			if (self.currentState && self.unregisters && !sameState) {
-				for (var i=0; i<self.unregisters.length; i++) {
-					self.unregisters[i]();
-				}
+			if (self.currentState && self.offs && !sameState) {
+				self.offs.forEach(function(off) {
+					off();
+				});
 			}
 
 			if (sameState) {
 				initEvents(self.events[state]);
 			} else {
 				self.currentState = state;
-				self.unregisters = initEvents(self.events[state]);
+				frame(function() {
+					self.offs = initEvents(self.events[state]);
+				})
 			}
 		}
 	};
