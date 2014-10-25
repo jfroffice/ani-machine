@@ -54,9 +54,10 @@ am.build = (function(prefix, enter, transform, undefined) {
 		} else if (type === ':shake') {
 			return function(cb) {
 
-				hackStyle(elm);
-
 				var initial = 'shake shake-constant shake-' + param[1];
+
+				// duplicate code !!!!
+				hackStyle(elm);
 
 				elm
 					.addClass(initial)
@@ -69,13 +70,13 @@ am.build = (function(prefix, enter, transform, undefined) {
 		} else if (type === ':animate') {
 			return function(cb) {
 
-				hackStyle(elm);
-
 				var initial = param + ' animated';
 
 				if (loop) {
 					initial += ' loop' + loop;
 				}
+
+				hackStyle(elm);
 
 				elm
 					.addClass(initial)

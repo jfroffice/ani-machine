@@ -2,17 +2,21 @@ Font Geometric with AniMachine
 
 Roadmap
 -------
+remove AngularJS dependencies
+try polymer
+
 scroll
 reverse (animation-direction only on animation not transition)
 template animation
 parallax
 
-try
-reverse
-iteration-animation
 trigger event from other event (ex: div on hover animate title inside)
 
+Memo
+----
+bug stop infinite loop animation
 disable css stylesheets
+
 
 Inspiration
 -----------

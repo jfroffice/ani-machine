@@ -39,6 +39,15 @@
 		-webkit-animation-iteration-count: infinite;
 		animation-iteration-count: infinite;
 	}
+
+	.trigger-link {
+		float: left;
+		margin-top: 10px;
+		text-decoration: none;
+		color: yellow;
+		cursor: pointer;
+		font-weight: bold;
+	}
 	</style>
 </head>
 <body ng-app="app">
@@ -93,11 +102,18 @@
 			</am-state>
 		</div>
 		<div class="element" am-element>swing
+			<a class="trigger-link">Stop this animation</a>
 			<am-state value="default">
 				<am-event on="active" do=":enter bottom move 500px" goto="next"></am-event>
 			</am-state>
 			<am-state value="next">
-				<am-event on="active" do=":animate swing" loop="3"></am-event>
+				<am-event on="active" do=":animate swing" loop="4"></am-event>
+			</am-state>
+			<am-state value="stop" trigger=".trigger-link click">
+				<am-event on="active" do=":animate bounce" goto="pulse"></am-event>
+			</am-state>
+			<am-state value="pulse">
+				<am-event on="active" do=":animate pulse" loop="4"></am-event>
 			</am-state>
 		</div>
 		<div class="element" am-element>wobble
