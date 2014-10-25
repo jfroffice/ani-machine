@@ -21,7 +21,7 @@ angular.module('aniMachine', [])
 			if (events.enter || events.leave) {
 
 				if (am.viewport.isInside(element[0])) {
-					if (!events['default']) {
+					if (!events.default) {
 						musician.state('enter');
 					}
 				}
