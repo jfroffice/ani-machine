@@ -1,7 +1,8 @@
 body {
 	padding: 50px;
 	color: #AAA;
-	font: 22px 'Helvetica';
+	font: 16px "Myriad Set Pro","Lucida Grande","Helvetica Neue","Helvetica","Arial","Verdana","sans-serif";
+	-webkit-font-smoothing: antialiased;
 	background-color: #f5e8d7;
 }
 
@@ -30,7 +31,7 @@ body {
 	padding: 0;
 	color: white;
 	padding: 5px;
-	margin: 0 20px 0 0;
+	margin: 0 22px 25px 0;
 	display: inline-block;
 	border: 1px solid rgba(255, 255, 255, 0.6);
 }

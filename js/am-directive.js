@@ -86,6 +86,7 @@ angular.module('aniMachine', [])
 			before: '@',
 			after: '@',
 			do: '@',
+			loop: '@',
 			goto: '@'
 		},
 		require: '^amState',
@@ -96,6 +97,7 @@ angular.module('aniMachine', [])
 				currentStep: 0,
 				before: scope.before ? scope.before.replace('()', '') : '',
 				after: scope.after ? scope.after.replace('()', '') : '',
+				loop: scope.loop,
 				goto: scope.goto
 			});
 		}
