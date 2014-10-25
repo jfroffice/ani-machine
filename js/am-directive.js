@@ -4,21 +4,21 @@ angular.module('aniMachine', [])
 	return {
 		restrict: 'A',
 		scope: {
-			enter: '@'
+			am: '='
 		},
 		link: function(scope, element, options) {
 
-			var events = scope.events,
-				triggers = scope.triggers;
+			var states = scope.am.states,
+				triggers = scope.am.triggers || [];
 
 			var musician = Object.create(am.maestro);
 			musician.init({
 				triggers: triggers,
-				events: events,
+				states: states,
 				element: element
 			});			
 
-			if (events.enter || events.leave) {
+			/*if (states.enter || states.leave) {
 
 				if (am.viewport.isInside(element[0])) {
 					if (!events.default) {
@@ -42,10 +42,10 @@ angular.module('aniMachine', [])
 					.bind('scroll', function () {
 						scope.$apply();
 					});
-			}
+			}*/
 
-			musician.state('default');
-		},
+			musician.changeState('default');
+		}/*,
 		controller: ['$scope', '$element', function($scope, $element) {
 
 			$scope.events = {};
@@ -56,9 +56,10 @@ angular.module('aniMachine', [])
 				$scope.events[state] = events;
 				$scope.triggers[state] = trigger;
 			};
-		}]
+		}]*/
 	};
-}])
+}]);
+/*
 .directive('amState', function() {
 	return {
 		restrict: 'E',
@@ -102,4 +103,4 @@ angular.module('aniMachine', [])
 			});
 		}
 	};
-});
+});*/
