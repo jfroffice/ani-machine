@@ -2,8 +2,11 @@ Font Geometric with AniMachine
 
 Roadmap
 -------
+new demo pages
 remove AngularJS dependencies
 try polymer
+
+add loop style in css from sass
 
 scroll
 reverse (animation-direction only on animation not transition)
