@@ -10,6 +10,7 @@ am.translate = (function(styles, undefined) {
 
 		if (scale !== undefined) {
 			tmp += ' scale(' + scale.value + ')';
+			key += ('_scale' + scale.value).replace('.', '_');
 		}
 
 		css = '-webkit-transform: ' + tmp + ';transform: ' + tmp + ';';
@@ -20,13 +21,7 @@ am.translate = (function(styles, undefined) {
 	
 		key += type + options.axis + '_' + options.move + '_' + options.opacity;
 
-		if (scale !== undefined) {
-			key += ('_scale' + scale.value).replace('.', '_');
-		}
-
-		key = key.replace(/-/g, 'm');
-
-		return styles.build(key, css);
+		return styles.build(key.replace(/-/g, 'm'), css);
 	};
 
 })(am.styles);

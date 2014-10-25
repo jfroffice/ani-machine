@@ -30,7 +30,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 		});
 	}
 
-	return function(elm, type, param) {
+	return function(elm, type, param, loop) {
 		var s, run, initial;
 
 		//console.log('animation start ' + initial);
@@ -72,6 +72,10 @@ am.build = (function(prefix, enter, transform, undefined) {
 				hackStyle(elm);
 
 				var initial = param + ' animated';
+
+				if (loop) {
+					initial += ' loop' + loop;
+				}
 
 				elm
 					.addClass(initial)

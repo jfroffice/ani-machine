@@ -82,6 +82,7 @@ am.maestro = (function(parser, frame, undefined) {
 				var goto = event.goto,
 					before = event.before,
 					after = event.after,
+					loop = event.loop,
 					on = event.on;
 
 				function eventFn() {
@@ -103,7 +104,7 @@ am.maestro = (function(parser, frame, undefined) {
 								console.warn('try to relaunch animation that is not finished');
 							} else {
 								addQueue({
-									run: am.build(self.element, param, params[event.currentStep]),
+									run: am.build(self.element, param, params[event.currentStep], loop),
 									finish: finishSequence
 								});	
 							}												

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>AniMachine</title>
+	<link rel="stylesheet" href="../css/light.css">
+	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
+	<link rel="stylesheet" href="../bower_components/csshake/css/csshake.min.css">
+	<script src='../bower_components/angular/angular.min.js'></script>
+	<script src='/js/core/prefix.js'></script>
+	<script src="/js/core/parser.js"></script>
+	<script src="/js/core/viewport.js"></script>
+	<script src='/js/core/styles.js'></script>
+	<script src='/js/core/translate.js'></script>
+	<script src='/js/core/transition.js'></script>
+	<script src='/js/core/enter.js'></script>
+	<script src='/js/core/transform.js'></script>
+	<script src='/js/core/frame.js'></script>
+	<script src='/js/core/build.js'></script>
+	<script src="/js/core/maestro.js"></script>
+	<script src="/js/am-directive.js"></script>
+	<script>
+	angular.module('app', ['aniMachine']);
+	</script>
+	<style type="text/css">
+	.loop2 {
+		-webkit-animation-iteration-count: 2;
+		animation-iteration-count: 2;
+	}
+	.loop3 {
+		-webkit-animation-iteration-count: 3;
+		animation-iteration-count: 3;
+	}
+	.loop4 {
+		-webkit-animation-iteration-count: 4;
+		animation-iteration-count: 4;
+	}
+	.loopinfinite {
+		-webkit-animation-iteration-count: infinite;
+		animation-iteration-count: infinite;
+	}
+	</style>
+</head>
+<body ng-app="app">
+	<div class="container">
+		<h2 class="title">Animate.CSS</h2>
+		<div class="element" am-element>pulse
+			<am-state value="default">
+				<am-event on="active" do=":enter left move 500px" goto="next"></am-event>
+			</am-state>
+			<am-state value="next">
+				<am-event on="active" do=":animate pulse" loop="3"></am-event>
+			</am-state>
+		</div>
+		<div class="element" am-element>tada
+			<am-state value="default">
+				<am-event on="active" do=":enter top move 500px" goto="next"></am-event>
+			</am-state>
+			<am-state value="next">
+				<am-event on="active" do=":animate tada" loop="3"></am-event>
+			</am-state>
+		</div>
+		<div class="element" am-element>bounce
+			<am-state value="default">
+				<am-event on="active" do=":enter bottom move 500px" goto="next"></am-event>
+			</am-state>
+			<am-state value="next">
+				<am-event on="active" do=":animate bounce" loop="3"></am-event>
+			</am-state>
+		</div>
+		<div class="element" am-element>flash
+			<am-state value="default">
+				<am-event on="active" do=":enter right move 500px" goto="next"></am-event>
+			</am-state>
+			<am-state value="next">
+				<am-event on="active" do=":animate flash" loop="3"></am-event>
+			</am-state>
+		</div>
+		<div class="element" am-element>rubberBand
+			<am-state value="default">
+				<am-event on="active" do=":enter bottom move 500px" goto="next"></am-event>
+			</am-state>
+			<am-state value="next">
+				<am-event on="active" do=":animate rubberBand" loop="3"></am-event>
+			</am-state>
+		</div>
+		<div class="element" am-element>shake
+			<am-state value="default">
+				<am-event on="active" do=":enter right move 500px" goto="next"></am-event>
+			</am-state>
+			<am-state value="next">
+				<am-event on="active" do=":animate shake" loop="3"></am-event>
+			</am-state>
+		</div>
+		<div class="element" am-element>swing
+			<am-state value="default">
+				<am-event on="active" do=":enter bottom move 500px" goto="next"></am-event>
+			</am-state>
+			<am-state value="next">
+				<am-event on="active" do=":animate swing" loop="3"></am-event>
+			</am-state>
+		</div>
+		<div class="element" am-element>wobble
+			<am-state value="default">
+				<am-event on="active" do=":enter right move 500px" goto="next"></am-event>
+			</am-state>
+			<am-state value="next">
+				<am-event on="active" do=":animate wobble" loop="3"></am-event>
+			</am-state>
+		</div>
+	</div>
+</body>
+</html>
