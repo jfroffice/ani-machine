@@ -24,16 +24,16 @@
 	<div class="container">
 		<h2 class="title">Animate.CSS</h2>
 		<div class="element"
-			am-state-init=':on init :enter left move 500px :go next'
-			am-state-next=':on init :animate pulse,
+			am-state-init=':enter left move 500px :go next'
+			am-state-next=':animate pulse,
 						   :on enter :animate tada,
-						   :on enter :animate flash'
+						   :on leave :animate flash'
 			am-trigger=':next .btn--pulse-next click'>pulse
 			<div class="btn btn--pulse-next">Replay</div>
 		</div>
 		<div class="element" 
-			am-state-init=':on init :enter left move 500px :go next'
-			am-state-next=':on init :animate tada'
+			am-state-init=':enter left move 500px :go next'
+			am-state-next=':animate tada'
 			am-trigger=':next .btn--tada-next click'>tada
 			<div class="btn btn--tada-next">Replay</div>
 		</div>
