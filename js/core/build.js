@@ -2,7 +2,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
-		getComputedStyle(elm[0], null).display;
+		getComputedStyle(elm, null).display;
 	}
 
 	function doTransition(elm, initial, target, transition, cb) {
@@ -11,21 +11,31 @@ am.build = (function(prefix, enter, transform, undefined) {
 		hackStyle(elm);
 
 		if (target) {
-			elm.addClass(target);
+			classie.addClass(elm, target);
+			//elm.addClass(target);
 		}
 
-		if (elm.hasClass(elm.data('previous-target'))) {
-			elm.removeClass(elm.data('previous-target'));
+		var previousTarget = elm.getAttribute('data-previous-target');
+		if (classie.hasClass(elm, previousTarget)) {
+			classie.removeClass(elm, previousTarget);
 		}
+		//if (elm.hasClass(elm.data('previous-target'))) {
+		//	elm.removeClass(elm.data('previous-target'));
+		//}
 
-		elm.addClass(transition);
+		classie.addClass(elm, transition);
+		//elm.addClass(transition);
 
 		if (initial) {
-			elm.removeClass(initial);
+			classie.removeClass(elm, initial);
+			//elm.removeClass(initial);
 		}
-		elm.one(prefix.TRANSITION_END_EVENT, function() {
-			elm.removeClass(transition);
-			elm.data('previous-target', target);
+		evt.on(elm, prefix.TRANSITION_END_EVENT, function() {
+		//elm.one(prefix.TRANSITION_END_EVENT, function() {
+			classie.removeClass(elm, transition);
+			//elm.removeClass(transition);
+			elm.setAttribute('data-previous-target', target);
+			//elm.data('previous-target', target);
 			cb && cb();
 		});
 	}
@@ -37,7 +47,8 @@ am.build = (function(prefix, enter, transform, undefined) {
 		if (type === ':enter') {
 			return function(cb) {
 				s = enter(param);
-				elm.addClass(s.initial);
+				classie.addClass(elm, s.initial);
+				//elm.addClass(s.initial);
 				doTransition(elm, s.initial, null, s.transition, function() {
 					//console.log('animation end ' + initial);
 					cb && cb();
@@ -59,18 +70,29 @@ am.build = (function(prefix, enter, transform, undefined) {
 				// duplicate code !!!!
 				hackStyle(elm);
 
-				elm
-					.addClass(initial)
-					.one(prefix.ANIMATION_END_EVENT, function() {
-						//console.log('animation end : ' + initial);
-						elm.removeClass(initial);
-						cb && cb();
-					});
+				classie.addClass(elm, initial);
+				//elm.addClass(initial);
+				evt.one(elm, prefix.ANIMATION_END_EVENT, function() {
+					console.log('animation end : ' + initial);
+					
+					classie.removeClass(elm, param);
+					classie.removeClass(elm, 'animated');
+					//elm.removeClass(initial);
+					cb && cb();
+				});
+				// elm.addEventListener(prefix.ANIMATION_END_EVENT, function() {
+				// //elm.one(prefix.ANIMATION_END_EVENT, function() {
+				// 		//console.log('animation end : ' + initial);
+				// 		classie.removeClass(elm, initial);
+				// 		//elm.removeClass(initial);
+				// 		cb && cb();
+				// 	}, false);
 			};
 		} else if (type === ':animate') {
 			return function(cb) {
 
 				var initial = param + ' animated';
+				console.log('animation start ' + initial);
 
 				if (loop) {
 					initial += ' loop' + loop;
@@ -78,13 +100,27 @@ am.build = (function(prefix, enter, transform, undefined) {
 
 				hackStyle(elm);
 
-				elm
-					.addClass(initial)
-					.one(prefix.ANIMATION_END_EVENT, function() {
-						//console.log('animation end : ' + initial);
-						elm.removeClass(initial);
+				classie.addClass(elm, param);
+				classie.addClass(elm, 'animated');
+				//elm.addClass(initial);
+
+				evt.one(elm, prefix.ANIMATION_END_EVENT, function() {
+					console.log('animation end : ' + initial);
+					
+					classie.removeClass(elm, param);
+					classie.removeClass(elm, 'animated');
+					//elm.removeClass(initial);
+					cb && cb();
+				});
+			/*	elm.addEventListener(prefix.ANIMATION_END_EVENT, function() {
+				//elm.one(prefix.ANIMATION_END_EVENT, function() {
+						console.log('animation end : ' + initial);
+						
+						classie.removeClass(elm, param);
+						classie.removeClass(elm, 'animated');
+						//elm.removeClass(initial);
 						cb && cb();
-					});
+					}, false);*/
 			};
 		} else { // only animate for now
 			return function(cb) {
