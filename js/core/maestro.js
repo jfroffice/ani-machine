@@ -19,7 +19,8 @@ am.maestro = (function(parser, frame, undefined) {
 					on = parser(tmp[1]);
 
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
-					el.addEventListener(on, function() {
+					evt.on(el, on, function() {
+					//el.addEventListener(on, function() {
 						self.changeState(state);
 					});
 				});
@@ -32,6 +33,8 @@ am.maestro = (function(parser, frame, undefined) {
 				}
 				initTrigger(state, trigger);
 			}
+
+			self.changeState('default');
 		},
 		changeState: function(state) {
 
@@ -120,13 +123,16 @@ am.maestro = (function(parser, frame, undefined) {
 					} 
 				}
 
+				var releaseEvent;
+
 				function gotoFn() {
 					if (!goto) {
 						return;
 					}
 
 					if (on !== ACTIVE) {
-						self.element.off(on, eventFn);
+						evt.off(releaseEvent);
+						//self.element.off(on, eventFn);
 					}
 					self.changeState(goto);
 				}
@@ -149,11 +155,15 @@ am.maestro = (function(parser, frame, undefined) {
 				if (on === ACTIVE) { // autostart animation
 					frame(eventFn);
 				} else {
-					self.element.on(on, eventFn);
+					releaseEvent = evt.on(self.element, on, eventFn);
+					//self.element.addEventListener(on, eventFn);
+					//self.element.on(on, eventFn);
 				}
 			
 				return function() {
-					self.element.off(on, eventFn);
+					releaseEvent && evt.off(releaseEvent);//self.element, on, eventFn);
+					//self.element.removeEventListener(on, eventFn);
+					//self.element.off(on, eventFn);
 				};
 			}
 

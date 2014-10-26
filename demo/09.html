@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
 	<link rel="stylesheet" href="../bower_components/csshake/css/csshake.min.css">
-	<script src='../bower_components/angular/angular.js'></script>
+	<script src='/js/classie.js'></script>
 	<script src='/js/core/prefix.js'></script>
 	<script src="/js/core/parser.js"></script>
 	<script src="/js/core/viewport.js"></script>
@@ -17,34 +17,15 @@
 	<script src='/js/core/transform.js'></script>
 	<script src='/js/core/frame.js'></script>
 	<script src='/js/core/build.js'></script>
-	<script src="/js/core/maestro.js"></script>
-	<script src="/js/am-directive.js"></script>
-	<script>
-	angular.module('app', ['aniMachine']);
-	</script>
+	<script src="/js/core/maestro.js"></script>	
 </head>
-<body ng-app="app">
+<body>
 	<div class="container">
 		<h2 class="title">Animate.CSS</h2>
-		<div class="element" 
-			am-element data-am="{
-				states: { 
-					default: [
-						{ on: 'active', do: ':enter left move 500px', goto: 'next'
-					}],
-					next: [
-						{ on: 'active', do: ':animate pulse' },
-						{ on: 'enter', 	do: ':animate tada'  },
-						{ on: 'leave', 	do: ':animate flash' 
-					}]
-				},
-				triggers: {
-					next: '.btn--next click'
-				}
-			}">
-			pulse
+		<div class="element" data-am>pulse
 			<div class="btn btn--next">Replay</div>
 		</div>
 	</div>
+	<script src="/js/am-bootstrap.js"></script>
 </body>
 </html>
