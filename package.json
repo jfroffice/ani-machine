@@ -35,6 +35,7 @@
   },
   "path": {
     "js": [
+      "js/classie.js",
       "js/core/prefix.js",
       "js/core/parser.js",
       "js/core/viewport.js",
@@ -46,7 +47,7 @@
       "js/core/frame.js",
       "js/core/build.js",
       "js/core/maestro.js",
-      "js/am-directive.js"
+      "js/core/facade.js"
     ],
     "deps": [
       "bower_components/angular/angular.js",
