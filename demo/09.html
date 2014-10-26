@@ -18,14 +18,40 @@
 	<script src='/js/core/frame.js'></script>
 	<script src='/js/core/build.js'></script>
 	<script src="/js/core/maestro.js"></script>	
+	<script src="/js/core/facade.js"></script>	
 </head>
 <body>
 	<div class="container">
 		<h2 class="title">Animate.CSS</h2>
-		<div class="element" data-am>pulse
-			<div class="btn btn--next">Replay</div>
-		</div>
+		<div class="element element--pulse" data-am>pulse<div class="btn btn--pulse-next">Replay</div></div>
+		<div class="element element--tada" data-am>tada<div class="btn btn--tada-next">Replay</div></div>
 	</div>
-	<script src="/js/am-bootstrap.js"></script>
+	<script>
+	am.init({
+		selector: '.element--pulse',
+		states: { 
+			default: [ { on: 'active', do: ':enter left move 500px', goto: 'next' }],
+			next: [
+				{ on: 'active', do: ':animate pulse' },
+				{ on: 'enter',  do: ':animate tada'  },	
+				{ on: 'leave',  do: ':animate flash' }
+			]
+		},
+		triggers: {
+			next: '.btn--pulse-next click'
+		}
+	});
+
+	am.init({
+		selector: '.element--tada',
+		states: { 
+			default: [ { on: 'active', do: ':enter bottom move 500px', goto: 'next'	}],
+			next: [ { on: 'active', do: ':animate tada' } ]
+		},
+		triggers: {
+			next: '.btn--tada-next click'
+		}
+	})
+	</script>
 </body>
 </html>
