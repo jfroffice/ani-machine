@@ -32,11 +32,32 @@
 			<div class="btn btn--pulse-next">Replay</div>
 		</div>
 		<div class="element" 
-			data-am=':enter left move 500px :go next'
+			data-am=':enter bottom move 500px :go next'
 			data-am-next=':animate tada
 						  :trigger .btn--tada-next click'>tada
 			<div class="btn btn--tada-next">Replay</div>
 		</div>
 	</div>
+	<script src="/js/parser/parser-state.js"></script>
+	<script>
+		[].forEach.call(document.querySelectorAll('[data-am]'), function(element) {
+
+			var input = element.getAttribute('data-am');
+			var def = [];
+				def.push(parser.getState(input));
+
+			var states = {
+				default: def
+			};
+
+			//console.log(states);
+
+			Object.create(am.maestro).init({
+			 	element: element,
+			 	states: states, //options.states,
+			 	triggers: {}//options.triggers
+			});
+		});
+	</script>
 </body>
 </html>
