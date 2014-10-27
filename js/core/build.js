@@ -73,7 +73,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 				classie.addClass(elm, initial);
 				//elm.addClass(initial);
 				evt.one(elm, prefix.ANIMATION_END_EVENT, function() {
-					console.log('animation end : ' + initial);
+					//console.log('animation end : ' + initial);
 					
 					classie.removeClass(elm, param);
 					classie.removeClass(elm, 'animated');
@@ -92,7 +92,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 			return function(cb) {
 
 				var initial = param + ' animated';
-				console.log('animation start ' + initial);
+				//console.log('animation start ' + initial);
 
 				if (loop) {
 					initial += ' loop' + loop;
@@ -105,7 +105,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 				//elm.addClass(initial);
 
 				evt.one(elm, prefix.ANIMATION_END_EVENT, function() {
-					console.log('animation end : ' + initial);
+					//console.log('animation end : ' + initial);
 					
 					classie.removeClass(elm, param);
 					classie.removeClass(elm, 'animated');
