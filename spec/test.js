@@ -43,7 +43,16 @@ describe('init state', function(){
       assert.equal('on', events[1].on);
       assert.equal(':animate pulse', events[1].do);
     })
-
+  })
+  describe(':trigger', function(){
+    it('defined', function() {      
+      data = parser.getTrigger('default', ':trigger .btn click');
+      assert.equal('.btn click', data.default);
+    })
+    it('defined', function() {      
+      data = parser.getTrigger('special', ':on active :enter value :trigger .btn--special click');
+      assert.equal('.btn--special click', data.special);
+    })
   })
   describe(':loop', function(){
     it('defined', function() {      

@@ -17,7 +17,8 @@
 	}
 
 	function getState(input) {
-		var events = [];
+		var events = [],
+			e;
 
 		if (input.indexOf(':on active') === -1) {
 			input = ':on active ' + input;
@@ -25,7 +26,7 @@
 
 		input.split(':o').forEach(function(sentence) {
 			if (sentence.length) {
-				var e = {};
+				e = {};
 				sentence.split(':').forEach(function (s) {
 					if (s.indexOf('n') === 0) {
 						e.on = rtrim(s.substring(2, s.length));
@@ -45,5 +46,21 @@
 		return events;
 	}
 
-	return { getState: getState };
+	return { 
+		getStates: function(states, state, input) {
+			var states = states || {};
+			states[state] = getState(input);
+			return states;
+		},
+		getTriggers: function(triggers, state, input) {
+			var triggers = triggers || {},
+				idx = input.indexOf(':trigger');
+
+			if (idx !== -1) {
+				triggers[state] = rtrim(input.substring(idx+9, input.length));
+			}
+
+			return triggers;
+		}
+	};
 }));

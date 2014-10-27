@@ -81,7 +81,7 @@ am.maestro = (function(parser, frame, undefined) {
 			}
 
 			function initEvent(event) {
-				var goto = event.goto,
+				var go = event.go,
 					before = event.before ? event.before.replace('()', '') : '',
 					after = event.after ? event.after.replace('()', '') : '',
 					loop = event.loop,
@@ -95,7 +95,7 @@ am.maestro = (function(parser, frame, undefined) {
 					before && callFn(before);
 					
 					if (!eventParam) {
-						gotoFn();
+						goFn();
 						return;
 					}
 
@@ -125,8 +125,8 @@ am.maestro = (function(parser, frame, undefined) {
 
 				var releaseEvent;
 
-				function gotoFn() {
-					if (!goto) {
+				function goFn() {
+					if (!go) {
 						return;
 					}
 
@@ -134,11 +134,11 @@ am.maestro = (function(parser, frame, undefined) {
 						evt.off(releaseEvent);
 						//self.element.off(on, eventFn);
 					}
-					self.changeState(goto);
+					self.changeState(go);
 				}
 
 				function finish() {
-					gotoFn();
+					goFn();
 					after && callFn(after);
 				}
 
