@@ -1,11 +1,11 @@
 (function(root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define(factory);
-  } else if (typeof exports === 'object') {
-    module.exports = factory(require, exports, module);
-  } else {
-    root.parser = factory();
-  }
+	if (typeof define === 'function' && define.amd) {
+		define(factory);
+	} else if (typeof exports === 'object') {
+		module.exports = factory(require, exports, module);
+	} else {
+		root.parser = factory();
+	}
 }(this, function(require, exports, module) {
 
 	/*function ltrim(s) { 
@@ -17,26 +17,32 @@
 	}
 
 	function getState(input) {
-		var state = {};
+		var events = [];
 
-		input.split(':').forEach(function (s) {
-			if (s.indexOf('enter') 	 === 0 ||
-			    s.indexOf('animate') === 0) {
-				state.do = ':' + rtrim(s);
-			} else if (s.indexOf('on') === 0) {
-				state.on = rtrim(s.substring(3, s.length));
-			} else if (s.indexOf('go') === 0) {
-				state.go = rtrim(s.substring(3, s.length));
-			} else if (s.indexOf('loop') === 0) {
-				state.loop = rtrim(s.substring(5, s.length));
+		if (input.indexOf(':on active') === -1) {
+			input = ':on active ' + input;
+		}
+
+		input.split(':o').forEach(function(sentence) {
+			if (sentence.length) {
+				var e = {};
+				sentence.split(':').forEach(function (s) {
+					if (s.indexOf('n') === 0) {
+						e.on = rtrim(s.substring(2, s.length));
+					} else if (s.indexOf('enter') 	 === 0 ||
+					    s.indexOf('animate') === 0) {
+						e.do = ':' + rtrim(s);
+					} else if (s.indexOf('go') === 0) {
+						e.go = rtrim(s.substring(3, s.length));
+					} else if (s.indexOf('loop') === 0) {
+						e.loop = rtrim(s.substring(5, s.length));
+					}
+				});	
+				events.push(e);			
 			}
 		});
 
-		if (!state.on) {
-			state.on = 'active';
-		}
-
-		return state;
+		return events;
 	}
 
 	return { getState: getState };

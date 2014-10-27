@@ -24,11 +24,13 @@
 	<div class="container">
 		<h2 class="title">Animate.CSS</h2>
 		<div class="element"
-			data-am=':enter left move 500px :go next'
-			data-am-next=':animate pulse
-					 :trigger .btn--pulse-next click
-					 :on enter :animate tada 
-					 :on leave :animate flash'>pulse
+			data-am=':enter left move 500px :go next
+					 :on enter :animate tada
+					 :on leave :animate pulse'
+			data-next=':animate pulse
+					   :on enter  :animate tada 
+					   :on leave  :animate flash
+					   :trigger .btn--pulse-next click'>pulse
 			<div class="btn btn--pulse-next">Replay</div>
 		</div>
 		<div class="element" 
@@ -43,14 +45,9 @@
 		[].forEach.call(document.querySelectorAll('[data-am]'), function(element) {
 
 			var input = element.getAttribute('data-am');
-			var def = [];
-				def.push(parser.getState(input));
-
 			var states = {
-				default: def
+				default: parser.getState(input)
 			};
-
-			//console.log(states);
 
 			Object.create(am.maestro).init({
 			 	element: element,
