@@ -8,9 +8,9 @@
 	}
 }(this, function(require, exports, module) {
 
-	/*function ltrim(s) { 
-	    return s.replace(/\s*((\S+\s*)*)/, "$1");
-	}*/
+	//function ltrim(s) { 
+	//    return s.replace(/\s*((\S+\s*)*)/, "$1");
+	//}
 
 	function rtrim(s) {
 		return s.replace(/((\s*\S+)*)\s*/, "$1");
@@ -48,7 +48,7 @@
 
 	return { 
 		getStates: function(states, state, input) {
-			var states = states || {};
+			states = states || {};
 			states[state] = getState(input);
 			return states;
 		},

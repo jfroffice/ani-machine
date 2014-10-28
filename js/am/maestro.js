@@ -1,4 +1,13 @@
-am.maestro = (function(parser, frame, undefined) {
+am.maestro = (function(frame, undefined) {
+
+	function parser(on) {
+		if (on === 'enter') {
+			on = 'mouseenter';
+		} else if (on === 'leave') {
+			on = 'mouseleave';
+		}
+		return on;
+	};
 
 	return {
 		init: function(options) {
@@ -19,7 +28,7 @@ am.maestro = (function(parser, frame, undefined) {
 					on = parser(tmp[1]);
 
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
-					evt.on(el, on, function() {
+					events.on(el, on, function() {
 					//el.addEventListener(on, function() {
 						self.changeState(state);
 					});
@@ -131,7 +140,7 @@ am.maestro = (function(parser, frame, undefined) {
 					}
 
 					if (on !== ACTIVE) {
-						evt.off(releaseEvent);
+						events.off(releaseEvent);
 						//self.element.off(on, eventFn);
 					}
 					self.changeState(go);
@@ -155,13 +164,13 @@ am.maestro = (function(parser, frame, undefined) {
 				if (on === ACTIVE) { // autostart animation
 					frame(eventFn);
 				} else {
-					releaseEvent = evt.on(self.element, on, eventFn);
+					releaseEvent = events.on(self.element, on, eventFn);
 					//self.element.addEventListener(on, eventFn);
 					//self.element.on(on, eventFn);
 				}
 			
 				return function() {
-					releaseEvent && evt.off(releaseEvent);//self.element, on, eventFn);
+					releaseEvent && events.off(releaseEvent);//self.element, on, eventFn);
 					//self.element.removeEventListener(on, eventFn);
 					//self.element.off(on, eventFn);
 				};
@@ -185,4 +194,4 @@ am.maestro = (function(parser, frame, undefined) {
 			}
 		}
 	};
-})(am.parser, am.frame);
+})(am.frame);

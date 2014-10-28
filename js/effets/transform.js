@@ -126,7 +126,7 @@ am.transform = (function(styles, transition, undefined) {
 		//console.log(key);
 
 		return {
-			target: styles.build(key, css),
+			target: styles(key, css),
 			reset: true,
 			transition: transition(over, easing, after)
 		};
