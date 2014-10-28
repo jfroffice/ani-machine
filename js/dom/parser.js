@@ -30,8 +30,9 @@
 				sentence.split(':').forEach(function (s) {
 					if (s.indexOf('n') === 0) {
 						e.on = rtrim(s.substring(2, s.length));
-					} else if (s.indexOf('enter') 	 === 0 ||
-					    s.indexOf('animate') === 0) {
+					} else if (s.indexOf('enter') 	 === 0
+						 || s.indexOf('animate') === 0
+						 || s.indexOf('shake') === 0) {
 						e.do = ':' + rtrim(s);
 					} else if (s.indexOf('go') === 0) {
 						e.go = rtrim(s.substring(3, s.length));

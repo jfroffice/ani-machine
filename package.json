@@ -36,19 +36,20 @@
   },
   "path": {
     "js": [
-      "js/classie.js",
+      "js/libs/classie.js",
+      "js/libs/events.js",
       "js/core/prefix.js",
-      "js/core/parser.js",
       "js/core/viewport.js",
       "js/core/styles.js",
-      "js/core/translate.js",
-      "js/core/transition.js",
-      "js/core/transform.js",
-      "js/core/enter.js",
       "js/core/frame.js",
-      "js/core/build.js",
-      "js/core/maestro.js",
-      "js/core/facade.js"
+      "js/effets/translate.js",
+      "js/effets/transition.js",
+      "js/effets/enter.js",
+      "js/effets/transform.js",
+      "js/dom/parser.js",
+      "js/am/build.js",
+      "js/am/maestro.js",
+      "js/am/facade.js"
     ],
     "deps": [
       "bower_components/angular/angular.js",

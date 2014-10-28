@@ -5,53 +5,40 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
-	<link rel="stylesheet" href="../bower_components/csshake/css/csshake.min.css">
-	<script src='/js/classie.js'></script>
+	<!-- <script src='/js/libs/classie.js'></script>
+	<script src='/js/libs/events.js'></script>
 	<script src='/js/core/prefix.js'></script>
-	<script src="/js/core/parser.js"></script>
 	<script src="/js/core/viewport.js"></script>
 	<script src='/js/core/styles.js'></script>
-	<script src='/js/core/translate.js'></script>
-	<script src='/js/core/transition.js'></script>
-	<script src='/js/core/enter.js'></script>
-	<script src='/js/core/transform.js'></script>
 	<script src='/js/core/frame.js'></script>
-	<script src='/js/core/build.js'></script>
-	<script src="/js/core/maestro.js"></script>	
-	<script src="/js/core/facade.js"></script>	
+	<script src='/js/effets/translate.js'></script>
+	<script src='/js/effets/transition.js'></script>
+	<script src='/js/effets/enter.js'></script>
+	<script src='/js/effets/transform.js'></script>
+	<script src="/js/dom/parser.js"></script>
+	<script src='/js/am/build.js'></script>
+	<script src="/js/am/maestro.js"></script>	
+	<script src="/js/am/facade.js"></script> -->
+	<script src='../dist/ani-machine.min.js'></script>
 </head>
 <body>
 	<div class="container">
 		<h2 class="title">Animate.CSS</h2>
-		<div class="element element--pulse">pulse<div class="btn btn--pulse-next">Replay</div></div>
-		<div class="element element--tada">tada<div class="btn btn--tada-next">Replay</div></div>
+		<div class="element"
+			data-am=':enter left move 500px :go next'
+			data-am-next=':animate pulse
+					   :on enter  :animate tada 
+					   :on leave  :animate flash
+					   :trigger .btn--pulse-next click'>pulse
+			<div class="btn btn--pulse-next">Replay</div>
+		</div>
+		<div class="element" 
+			data-am=':enter bottom move 500px :go next'
+			data-am-next=':animate tada
+						  :trigger .btn--tada-next click'>tada
+			<div class="btn btn--tada-next">Replay</div>
+		</div>
 	</div>
-	<script>
-	am.init({
-		selector: '.element--pulse',
-		states: { 
-			default: [ { on: 'active', do: ':enter left move 500px', goto: 'next' }],
-			next: [
-				{ on: 'active', do: ':animate pulse' },
-				{ on: 'enter',  do: ':animate tada'  },	
-				{ on: 'leave',  do: ':animate flash' }
-			]
-		},
-		triggers: {
-			next: '.btn--pulse-next click'
-		}
-	});
-
-	am.init({
-		selector: '.element--tada',
-		states: { 
-			default: [ { on: 'active', do: ':enter bottom move 500px', goto: 'next'	}],
-			next: [ { on: 'active', do: ':animate tada' } ]
-		},
-		triggers: {
-			next: '.btn--tada-next click'
-		}
-	})
-	</script>
+	<script>am.start();</script>
 </body>
 </html>
