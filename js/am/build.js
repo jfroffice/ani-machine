@@ -11,28 +11,28 @@ am.build = (function(prefix, enter, transform, undefined) {
 		hackStyle(elm);
 
 		if (target) {
-			classie.addClass(elm, target);
+			classie.add(elm, target);
 			//elm.addClass(target);
 		}
 
 		var previousTarget = elm.getAttribute('data-previous-target');
-		if (classie.hasClass(elm, previousTarget)) {
-			classie.removeClass(elm, previousTarget);
+		if (classie.has(elm, previousTarget)) {
+			classie.remove(elm, previousTarget);
 		}
 		//if (elm.hasClass(elm.data('previous-target'))) {
 		//	elm.removeClass(elm.data('previous-target'));
 		//}
 
-		classie.addClass(elm, transition);
+		classie.add(elm, transition);
 		//elm.addClass(transition);
 
 		if (initial) {
-			classie.removeClass(elm, initial);
+			classie.remove(elm, initial);
 			//elm.removeClass(initial);
 		}
-		evt.on(elm, prefix.TRANSITION_END_EVENT, function() {
+		events.on(elm, prefix.TRANSITION_END_EVENT, function() {
 		//elm.one(prefix.TRANSITION_END_EVENT, function() {
-			classie.removeClass(elm, transition);
+			classie.remove(elm, transition);
 			//elm.removeClass(transition);
 			elm.setAttribute('data-previous-target', target);
 			//elm.data('previous-target', target);
@@ -70,13 +70,13 @@ am.build = (function(prefix, enter, transform, undefined) {
 				// duplicate code !!!!
 				hackStyle(elm);
 
-				classie.addClass(elm, initial);
+				classie.add(elm, initial);
 				//elm.addClass(initial);
-				evt.one(elm, prefix.ANIMATION_END_EVENT, function() {
+				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
 					//console.log('animation end : ' + initial);
 					
-					classie.removeClass(elm, param);
-					classie.removeClass(elm, 'animated');
+					classie.remove(elm, param);
+					classie.remove(elm, 'animated');
 					//elm.removeClass(initial);
 					cb && cb();
 				});
@@ -100,15 +100,15 @@ am.build = (function(prefix, enter, transform, undefined) {
 
 				hackStyle(elm);
 
-				classie.addClass(elm, param);
-				classie.addClass(elm, 'animated');
+				classie.add(elm, param);
+				classie.add(elm, 'animated');
 				//elm.addClass(initial);
 
-				evt.one(elm, prefix.ANIMATION_END_EVENT, function() {
+				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
 					//console.log('animation end : ' + initial);
 					
-					classie.removeClass(elm, param);
-					classie.removeClass(elm, 'animated');
+					classie.remove(elm, param);
+					classie.remove(elm, 'animated');
 					//elm.removeClass(initial);
 					cb && cb();
 				});
