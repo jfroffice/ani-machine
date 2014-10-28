@@ -1,8 +1,39 @@
-am.start = (function(maestro, undefined) {
+am.start = (function(maestro, viewport, undefined) {
 	"use strict";
 
 	var ATTR = 'data-am',
-		DEFAULT = 'default';
+		DEFAULT = 'default',
+		sequencers = [],
+		debounce;
+
+	function enterLeaveFn() {
+		// TODO debounce
+		sequencers.forEach(function(s) {
+			if (s.states.enter || s.states.leave) {
+				if (viewport.isInside(s.element)) {
+					//if (!events.default) {
+					s.changeState('enter');
+					//}
+				} else {
+					s.changeState('leave');
+				}
+			}
+		});
+	}	
+
+	function debounceFn() {
+		if (debounce) {
+			clearTimeout(debounce);
+		}
+
+		debounce = setTimeout(function() {
+			debounce = null,
+			enterLeaveFn();
+		}, 50);	
+	}
+
+	events.on(window, 'scroll', debounceFn);
+	events.on(window, 'resize', debounceFn);
 
 	return function() {
 		[].forEach.call(document.querySelectorAll('[' + ATTR + ']'), function(element) {
@@ -25,12 +56,13 @@ am.start = (function(maestro, undefined) {
 				}
 			});
 
-			Object.create(am.maestro).init({
-			 	element: element,
-			 	states: states,
-			 	triggers: triggers
-			});
+			sequencers.push(
+				Object.create(am.maestro).init({
+					element: element,
+					states: states,
+					triggers: triggers
+			}));
 		});
-	}
+	};
 
-})(am.maestro);
+})(am.maestro, am.viewport);

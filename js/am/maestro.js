@@ -23,6 +23,8 @@ am.maestro = (function(frame, undefined) {
 			self.currentState;
 			self.running;
 
+			console.log(options);
+
 			function initTrigger(state, trigger) {
 				var tmp = trigger.split(' '),
 					selector = tmp[0],
@@ -31,7 +33,7 @@ am.maestro = (function(frame, undefined) {
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
 					events.on(el, on, function() {
 					//el.addEventListener(on, function() {
-						self.changeState(state);
+						self.changeState(state, true);
 					});
 				});
 			}
@@ -45,8 +47,9 @@ am.maestro = (function(frame, undefined) {
 			}
 
 			self.changeState('default');
+			return self;
 		},
-		changeState: function(state) {
+		changeState: function(state, force) {
 
 			var self = this,
 				ACTIVE = 'active';
@@ -96,7 +99,8 @@ am.maestro = (function(frame, undefined) {
 					after = event.after ? event.after.replace('()', '') : '',
 					loop = event.loop,
 					eventParam = event.do,
-					on = parser(event.on);
+					on = parser(event.on),
+					releaseEvent;
 
 				event.currentStep = event.currentStep || 0;
 
@@ -129,11 +133,8 @@ am.maestro = (function(frame, undefined) {
 								finish: finish
 							});	
 						} 
-
 					} 
 				}
-
-				var releaseEvent;
 
 				function goFn() {
 					if (!go) {
@@ -185,13 +186,11 @@ am.maestro = (function(frame, undefined) {
 				});
 			}
 
-			var future = self.states[state];
+			
 
-			if (sameState) {
-				initState(future);
-			} else {
+			if (!sameState || force) {
 				self.currentState = state;
-				self.offs = initState(future);
+				self.offs = initState(self.states[state]);
 			}
 		}
 	};
