@@ -1,4 +1,5 @@
 am.maestro = (function(frame, undefined) {
+	"use strict";
 
 	function parser(on) {
 		if (on === 'enter') {
@@ -78,7 +79,7 @@ am.maestro = (function(frame, undefined) {
 				}
 
 				var tmp = [];
-				for(key in state) {
+				for(var key in state) {
 					tmp.push(initEvent(state[key]));
 				}
 				return tmp;

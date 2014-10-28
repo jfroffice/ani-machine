@@ -5,66 +5,50 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../dist/animate.min.css">
-	<script src='../dist/angular.min.js'></script>
-	<script src='../dist/ani-machine.js'></script>
-	<script>
-	angular.module('app', ['aniMachine']);
-	</script>
+	<script src='../dist/ani-machine.min.js'></script>
 </head>
-<body ng-app="app">
+<body>
 	<div class="container">
-		<h2 class="title" am-element enter="top move 200px over 0.8s">Trigger animation</h2>
+		<h2 class="title" data-am=":enter top move 200px over 0.8s">Trigger animation</h2>
 		<span class="subtitle">Simple</span>
-		<div class="element" am-element>
-			<am-state trigger=".btn--tada click">
-				<am-event on="active" do=":animate tada"></am-event>
-			</am-state>
+		<div class="element"
+			 data-am=":animate tada :trigger .btn--tada click">
 		</div>
 		<p><a class="btn btn--tada">Tada</a></p>
 
 		<span class="subtitle">Simple Chained</span>
-		<div class="element element--blue" am-element>
-			<am-state trigger=".btn--tadaandbounce click">
-				<am-event on="active" do=":animate tada bounce"></am-event>
-			</am-state>
+		<div class="element element--blue"
+			 data-am=":animate tada bounce :trigger .btn--tadaandbounce click">
 		</div>
 		<p><a class="btn btn--tadaandbounce">Tada and Bounce</a></p>
 
 		<span class="subtitle">Multiple</span>
-		<div class="element" am-element>
-			<am-state trigger=".btn--multitrigger click">
-				<am-event on="active" do=":animate tada"></am-event>
-			</am-state>
+		<div class="element"
+			data-am=":animate tada :trigger .btn--multitrigger click">
 		</div>
-		<div class="element element--blue" am-element>
-			<am-state trigger=".btn--multitrigger click">
-				<am-event on="active" do=":animate bounce"></am-event>
-			</am-state>
+		<div class="element element--blue"
+			data-am=":animate bounce :trigger .btn--multitrigger click">
 		</div>
 		<p><a class="btn btn--multitrigger">Tada + Bounce</a></p>
 
-		<h2 class="title" am-element>Reveal animation</h2>
+		<h2 class="title">Reveal animation</h2>
 		<span class="subtitle">Enter</span>
-		<div class="element" am-element>
-			<am-state value="enter">
-				<am-event on="active" do=":animate bounceInLeft"></am-event>
-			</am-state>
+		<div class="element" 
+			data-am
+			data-am-enter=":animate bounceInLeft">
 		</div>
 		<span class="subtitle">Leave</span>
-		<div class="element element--blue" am-element>
-			<am-state value="leave">
-				<am-event on="active" do=":animate bounceOutRight"></am-event>
-			</am-state>
+		<div class="element element--blue"
+			data-am
+			data-am-leave=":animate bounceOutRight">
 		</div>
 		<span class="subtitle">Enter and Leave</span>
-		<div class="element" am-element>
-			<am-state value="enter">
-				<am-event on="active" do=":animate bounceInLeft"></am-event>
-			</am-state>
-			<am-state value="leave">
-				<am-event on="active" do=":animate bounceOutRight"></am-event>
-			</am-state>
+		<div class="element"
+			data-am
+			data-am-enter=":animate bounceInLeft"
+			data-am-leave=":animate bounceOutRight">
 		</div>
 	</div>
+	<script>am.start();</script>
 </body>
 </html>

@@ -47,7 +47,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 		if (type === ':enter') {
 			return function(cb) {
 				s = enter(param);
-				classie.addClass(elm, s.initial);
+				classie.add(elm, s.initial);
 				//elm.addClass(s.initial);
 				doTransition(elm, s.initial, null, s.transition, function() {
 					//console.log('animation end ' + initial);
@@ -65,18 +65,23 @@ am.build = (function(prefix, enter, transform, undefined) {
 		} else if (type === ':shake') {
 			return function(cb) {
 
-				var initial = 'shake shake-constant shake-' + param[1];
-
 				// duplicate code !!!!
 				hackStyle(elm);
 
-				classie.add(elm, initial);
+				classie.add(elm, 'shake');
+				classie.add(elm, 'shake-constant');
+				if (param[1]) {			
+					classie.add(elm, 'shake-' + param[1]);
+				}
 				//elm.addClass(initial);
 				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
 					//console.log('animation end : ' + initial);
 					
-					classie.remove(elm, param);
-					classie.remove(elm, 'animated');
+					classie.remove(elm, 'shake');
+					classie.remove(elm, 'shake-constant');
+					if (param[1]) {			
+						classie.remove(elm, 'shake-' + param[1]);
+					}
 					//elm.removeClass(initial);
 					cb && cb();
 				});

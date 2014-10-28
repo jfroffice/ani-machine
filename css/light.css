@@ -1,7 +1,7 @@
 body {
 	padding: 50px;
 	color: #AAA;
-	font: 18px "Arial","Verdana","sans-serif";
+	font: 17px "Arial","Verdana","sans-serif";
 	-webkit-font-smoothing: antialiased;
 	background-color: #f5e8d7;
 }
@@ -43,7 +43,6 @@ body {
 .element--yellow {
 	background-color: #eee319;
 }
-
 
 .element--hidden {
 	visibility: hidden;
