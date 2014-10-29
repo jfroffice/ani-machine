@@ -23,8 +23,6 @@ am.maestro = (function(frame, undefined) {
 			self.currentState;
 			self.running;
 
-			console.log(options);
-
 			function initTrigger(state, trigger) {
 				var tmp = trigger.split(' '),
 					selector = tmp[0],

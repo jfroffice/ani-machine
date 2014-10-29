@@ -5,52 +5,61 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../dist/animate.min.css">
-	<script src='../dist/angular.min.js'></script>
-	<script src='../dist/ani-machine.js'></script>
+	<script src='/js/libs/classie.js'></script>
+	<script src='/js/libs/events.js'></script>
+	<script src='/js/core/prefix.js'></script>
+	<script src="/js/core/viewport.js"></script>
+	<script src='/js/core/styles.js'></script>
+	<script src='/js/core/frame.js'></script>
+	<script src='/js/effets/translate.js'></script>
+	<script src='/js/effets/transition.js'></script>
+	<script src='/js/effets/enter.js'></script>
+	<script src='/js/effets/transform.js'></script>
+	<script src="/js/dom/parser.js"></script>
+	<script src='/js/am/build.js'></script>
+	<script src="/js/am/maestro.js"></script>
+	<script src="/js/am/facade.js"></script>
 	<script>
-	angular.module('app', ['aniMachine']);
+	function all(selector, cb) {
+		[].forEach.call(document.querySelectorAll(selector), function(elm) {
+			cb && cb(elm);
+		});
+	}
 
 	function changeColor() {
-		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			elm.classList.add('element--blue');
+		all('.element', function(elm) {
+			classie.add(elm, 'element--blue');
 		});
 	}
 
 	function hide() {
-		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			elm.classList.add('element--hidden');
+		all('.element', function(elm) {
+			classie.add(elm, 'element--hidden');
 		});
 	}
 
 	function show() {
-		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			elm.classList.remove('element--hidden');
-			elm.classList.remove('element--blue');
+		all('.element', function(elm) {
+			classie.remove(elm, 'element--hidden');
+			classie.remove(elm, 'element--blue');
 		});
 	}
 	</script>
 </head>
-<body ng-app="app">
+<body>
 	<div class="container">
 		<h2 class="title">Before & After Callback</h2>
 		<span class="subtitle">Move your mouse on cube and see what happend.</span>
 		<span class="subtitle">And Leave your mouse from cube and ...</span>
-		<div class="element" am-element>
-			<am-state value="trigger" trigger=".btn--reveal click">
-				<am-event on="active" before="show()" goto="enter"></am-event>
-			</am-state>
-			<am-state value="enter">
-				<am-event on="active" do=":enter left move 200px scale 40% over 1.0s" goto="intro"></am-event>
-			</am-state>
-			<am-state value="intro">
-				<am-event on="enter" do=":animate pulse" before="changeColor()"></am-event>
-				<am-event on="leave" do=":animate tada" goto="outro"></am-event>
-			</am-state>
-			<am-state value="outro">
-				<am-event on="active" do=":animate bounceOutRight" after="hide()"></am-event>
-			</am-state>
+		<div class="element" 
+			data-am=":before show() :go enter :trigger .btn--reveal click"
+			data-am-enter=":enter left move 200px scale 40% over 1.0s :go intro"
+			data-am-intro=":on enter :animate pulse :before changeColor()
+						   :on leave :animate tada :go outro"
+			data-am-outro=":animate bounceOutRight :after hide()"
 		</div>
 		<p><a class="btn btn--reveal">Restart</a></p>
 	</div>
+	<script>am.start();</script>
 </body>
 </html>

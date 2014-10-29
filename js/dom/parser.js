@@ -31,11 +31,15 @@
 					if (s.indexOf('n') === 0) {
 						e.on = rtrim(s.substring(2, s.length));
 					} else if (s.indexOf('enter') 	 === 0
-						 || s.indexOf('animate') === 0
-						 || s.indexOf('shake') === 0) {
+						 	|| s.indexOf('animate') === 0
+						 	|| s.indexOf('shake') === 0) {
 						e.do = ':' + rtrim(s);
 					} else if (s.indexOf('go') === 0) {
 						e.go = rtrim(s.substring(3, s.length));
+					} else if (s.indexOf('before') === 0) {
+						e.before = rtrim(s.substring(7, s.length));
+					} else if (s.indexOf('after') === 0) {
+						e.after = rtrim(s.substring(6, s.length));
 					} else if (s.indexOf('loop') === 0) {
 						e.loop = rtrim(s.substring(5, s.length));
 					}
