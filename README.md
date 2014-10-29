@@ -26,6 +26,7 @@ Enter Animation
 ---------------
 
 ![enter!](https://github.com/jfroffice/ani-machine/raw/master/tuts/enter.gif)
+
 Add __data-am__ attribute on DOM element with __":enter"__ special keyword
 ```
 <div data-am=":enter left move 500px over 1.0s">HelloWorld</div>
