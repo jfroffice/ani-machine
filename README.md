@@ -19,7 +19,7 @@ Add JS dependency
 <script src="../ani-machine.min.js"></script>
 ```
 
-And at the end of DOM
+At the end of DOM
 ```
 <script>am.start();</script>
 ```
@@ -52,7 +52,7 @@ If you want to declare a __next__
 
 How to change state ?
 ---------------------
-You need to use __":go"__ keyword to change state when played animation is finished
+You need to use __":go"__ keyword followed by state name to change state when played animation is finished
 ```
 <div class="element" 
 	data-am=":enter left move 500px :go next"
@@ -70,7 +70,7 @@ Add __":animate"__ keyword followed by animation CSS class name
 	data-am=":animate tada">
 </div>
 ```
-Here we use [animate.css](http://daneden.github.io/animate.css/) class name, but it might be whatever
+Here we use [animate.css](http://daneden.github.io/animate.css/) class name, but it might be another css class
 
 To chain CSS animation 
 ```
@@ -112,7 +112,7 @@ By default, all DOM element with __data-am__ attribute will be in __default__ st
 Reveal Animation
 ----------------
 
-Special state name are use to specify animations you want to play element is entering or leaving the viewport.
+Special state name are use to specify animations you want to play when element is entering or leaving the viewport.
 
 You can trigger animation with state __enter__
 ```
@@ -120,7 +120,6 @@ You can trigger animation with state __enter__
 	data-am-enter=":enter left move 500px">
 </div>
 ```
-
 or state __leave__
 ```
 <div class="element" 
@@ -131,7 +130,7 @@ or state __leave__
 Before and After Callbacks
 --------------------------
 
-You can add __":before"__ and __":after"__ callback animation event
+You can bind __":before"__ or __":after"__ callback animation event
 ```
 <div class="element" 
 	data-am-enter=":before beforeFn() :enter left move 500px :after afterFn()">
