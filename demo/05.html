@@ -5,44 +5,42 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../dist/animate.min.css">
-	<script src='../dist/angular.min.js'></script>
-	<script src='../dist/ani-machine.js'></script>
-	<script>
-	angular.module('app', ['aniMachine']);
-	</script>
+	<script src='/js/libs/classie.js'></script>
+	<script src='/js/libs/events.js'></script>
+	<script src='/js/core/prefix.js'></script>
+	<script src="/js/core/viewport.js"></script>
+	<script src='/js/core/styles.js'></script>
+	<script src='/js/core/frame.js'></script>
+	<script src='/js/effets/translate.js'></script>
+	<script src='/js/effets/transition.js'></script>
+	<script src='/js/effets/enter.js'></script>
+	<script src='/js/effets/transform.js'></script>
+	<script src="/js/dom/parser.js"></script>
+	<script src='/js/am/build.js'></script>
+	<script src="/js/am/maestro.js"></script>
+	<script src="/js/am/facade.js"></script>
 </head>
-<body ng-app="app">
+<body>
 	<div class="container">
-		<div class="letter-vertical letter-vertical--right letter--green" am-element>
-			<am-state value="default">
-				<am-event on="active" do=":enter left move 400px scale 40%"></am-event>
-			</am-state>
+		<div class="letter-vertical letter-vertical--right letter--green" 
+			data-am=":enter left move 400px scale 40%">
 		</div>
-		<div class="letter-vertical letter-vertical--left letter--yellow" am-element>
-			<am-state value="default">
-				<am-event on="active" do=":enter top move 400px scale 120% wait 0.4s"></am-event>
-			</am-state>
+		<div class="letter-vertical letter-vertical--left letter--yellow"
+			data-am=":enter top move 400px scale 120% wait 0.4s">
 		</div>
-		<div class="letter-horizontal letter--blue" am-element>
-			<am-state value="default">
-				<am-event on="active" do=":enter bottom move 400px scale 1000% wait 0.2s"></am-event>
-			</am-state>
+		<div class="letter-horizontal letter--blue" 
+			data-am=":enter bottom move 400px scale 1000% wait 0.2s">
 		</div>
-		<div class="letter-vertical letter--orange" am-element>
-			<am-state value="default">
-				<am-event on="active" do=":transform move left 10px"></am-event>
-			</am-state>
+		<div class="letter-vertical letter--orange" 
+			data-am=":transform move left 10px">
 		</div>
-		<div class="letter-vertical letter letter--lila" am-element>
-			<am-state value="default">
-				<am-event on="active" do=":transform twist left 25deg"></am-event>
-			</am-state>
+		<div class="letter-vertical letter letter--lila"
+			data-am=":transform twist left 25deg">
 		</div>
-		<div class="letter-vertical letter letter--blue" am-element>
-			<am-state value="default">
-				<am-event on="active" do=":transform move right 10px"></am-event>
-			</am-state>
+		<div class="letter-vertical letter letter--blue"
+			data-am=":transform move right 10px">
 		</div>
 	</div>
+	<script>am.start();</script>
 </body>
 </html>
