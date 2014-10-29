@@ -1,7 +1,7 @@
 AniMachine
 ==========
 
-Declarative animation and machine state build (11 KB minified)
+Declarative animation and machine state build
 
 Optional Dependencies
 ---------------------
@@ -9,31 +9,35 @@ Optional Dependencies
 - [csshake](http://elrumordelaluz.github.io/csshake/)
 
 How to start 
-------------
-Add JS dependency
+------------ 
+import JS dependency
 ```
 <script src="https://raw.githubusercontent.com/jfroffice/ani-machine/master/dist/ani-machine.min.js"></script>
+```
+
+When you DOM is ready, execute
+```
+<script>am.start();</script>
 ```
 
 Enter Animation
 ---------------
 
-Add __data-am__ attribute on DOM element to animate it
+Add __data-am__ attribute on DOM element with __":enter"__ special keyword to animate it
 ```
 <div data-am=":enter left move 500px over 1.0s">HelloWorld</div>
 ```
-using __:enter__ keyword
 
 State
 -----
-__default__ state can be declare like this
+__default state__ can be declare like this
 ```
 <div class="element" 
 	data-am=":on enter :animate pulse
 			 :on leave :animate tada">
 </div>
 ```
-If you want to declare another state called __next__
+If you want to declare a __next state__
 ```
 <div class="element" 
 	data-am=""
@@ -44,7 +48,7 @@ If you want to declare another state called __next__
 
 How to change state ?
 ---------------------
-You need to add __:go__ keyword to change state when animation play and is finished
+You need to use __":go"__ keyword to change state when animation played is finished
 ```
 <div class="element" 
 	data-am=":enter left move 500px :go next"
@@ -55,7 +59,7 @@ You need to add __:go__ keyword to change state when animation play and is finis
 
 How to launch CSS Animation
 ---------------------------
-Add __:animate__ to follow be animation css class name
+Add __":animate"__ followde by animation CSS class name
 
 ```
 <div class="element" 
@@ -63,16 +67,25 @@ Add __:animate__ to follow be animation css class name
 </div>
 ```
 
-To chain css animation 
+To chain CSS animation 
 ```
 <div class="element" 
-	data-am=":animate tada pulse flash">
+	data-am=":animate tada pulse">
+</div>
+```
+
+How to launch CSShake Animation
+---------------------------
+Add __":shake"__ follow shake animation you wna tot apply
+```
+<div class="element" 
+	data-am=":shake slow">
 </div>
 ```
 
 How to trigger animation
 ------------------------
-Use __:trigger__ keyword
+Use __":trigger"__ keyword
 ```
 <div class="element" 
 	data-am-special=":animate bounce
@@ -81,17 +94,15 @@ Use __:trigger__ keyword
 <div class=".btn--trigger"></div>
 ```
 You can use default event 
-
 - click (click 	    event)
 - enter (mouseenter event)
 - leave (mouseleave event)
 - ...
 
-
 Autostart
 ---------
 
-By default, element with __data-am__ attribute will be in __default__ state
+By default, all DOM element with __data-am__ attribute will be in __default__ state
 
 Reveal Animation
 ----------------
@@ -102,58 +113,35 @@ This might happend when user scroll or resize browser window.
 
 You can trigger animation with state __enter__
 ```
-<am-state value="enter">
-	<am-event on="active" animate="bounceInLeft"></am-event>
-</am-state>
+<div class="element" 
+	data-am-enter=":enter left move 500px">
+</div>
 ```
 
 or state __leave__
 ```
-<am-state value="leave">
-	<am-event on="active" animate="bounceOutRight"></am-event>
-</am-state>
+<div class="element" 
+	data-am-leave=":animate bounceOutRight">
+</div>
 ```
 
-Chaining
---------
-
-You can chain animation using separate animate class name.
-
-```
-<am-state value="special" trigger=".trigger click">
-	<am-event on="enter" animate="bounce rollOut"></am-event>
-</am-state>
-```
-
-Or you chain animation by current __state__ using special word __goto__ 
-
-```
-<am-state value="default" trigger=".trigger click">
-	<am-event on="enter" animate="bounce"></am-event>
-	<am-event on="leave" goto="chain"></am-event>
-</am-state>
-<am-state value="chain">
-	<am-event on="active" animate="rollOut"></am-event>
-</am-state>
-```
-
-in the second case, trigger event will be unregistered which might be useful
-
-Before and After Animation
+Before and After Callbacks
 --------------------------
 
-You can bind callback before and after animation event.
+You can bind __before__ and __after__ callback animation event.
+```
+<script>
+function beforeFn() {
+	console('before callback');
+}
+function afterFn() {
+	console('after callback');
+}
+</script>
+```
 
 ```
-<am-state value="enter">
-	<am-event on="active" before="show()" animate="bounceOutRight" after="hide()"></am-event>
-</am-state>
+<div class="element" 
+	data-am-enter=":before beforeFn() :enter left move 500px :after afterFn()">
+</div>
 ```
-
-
-
-Credits & Inspirations
-----------------------
-- [scrollReveal](https://github.com/julianlloyd/scrollReveal.js)
-- [animate.css](http://daneden.github.io/animate.css/)
-- [csshake](http://elrumordelaluz.github.io/csshake/)
