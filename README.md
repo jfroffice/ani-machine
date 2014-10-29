@@ -3,6 +3,10 @@ AniMachine
 
 Declarative animation and machine state build
 
+Size
+----
+Only 11KB Minified (No jQuery)
+
 Optional Dependencies
 ---------------------
 - [animate.css](http://daneden.github.io/animate.css/)
@@ -10,12 +14,12 @@ Optional Dependencies
 
 How to start 
 ------------ 
-import JS dependency
+Add JS dependency
 ```
-<script src="https://raw.githubusercontent.com/jfroffice/ani-machine/master/dist/ani-machine.min.js"></script>
+<script src="../ani-machine.min.js"></script>
 ```
 
-When you DOM is ready, execute
+Add at the end of DOM
 ```
 <script>am.start();</script>
 ```
@@ -23,7 +27,7 @@ When you DOM is ready, execute
 Enter Animation
 ---------------
 
-Add __data-am__ attribute on DOM element with __":enter"__ special keyword to animate it
+Add __data-am__ attribute on DOM element with __":enter"__ special keyword
 ```
 <div data-am=":enter left move 500px over 1.0s">HelloWorld</div>
 ```
@@ -59,13 +63,14 @@ You need to use __":go"__ keyword to change state when animation played is finis
 
 How to launch CSS Animation
 ---------------------------
-Add __":animate"__ followde by animation CSS class name
+Add __":animate"__ keyword followed by animation CSS class name
 
 ```
 <div class="element" 
 	data-am=":animate tada">
 </div>
 ```
+Here we use - [animate.css](http://daneden.github.io/animate.css/) class name, but it could something else
 
 To chain CSS animation 
 ```
@@ -76,7 +81,7 @@ To chain CSS animation
 
 How to launch CSShake Animation
 ---------------------------
-Add __":shake"__ follow shake animation you wna tot apply
+Add __":shake"__ follow by [csshake](http://elrumordelaluz.github.io/csshake/) animation name you want to apply
 ```
 <div class="element" 
 	data-am=":shake slow">
@@ -107,9 +112,7 @@ By default, all DOM element with __data-am__ attribute will be in __default__ st
 Reveal Animation
 ----------------
 
-Special state name are use to specify what animation you would like to play when entering or leaving the viewport.
-
-This might happend when user scroll or resize browser window.
+Special state name are use to specify animations you want to play element is entering or leaving the viewport.
 
 You can trigger animation with state __enter__
 ```
@@ -128,7 +131,13 @@ or state __leave__
 Before and After Callbacks
 --------------------------
 
-You can bind __before__ and __after__ callback animation event.
+You can add __":before"__ and __":after"__ callback animation event
+```
+<div class="element" 
+	data-am-enter=":before beforeFn() :enter left move 500px :after afterFn()">
+</div>
+```
+
 ```
 <script>
 function beforeFn() {
@@ -138,10 +147,4 @@ function afterFn() {
 	console('after callback');
 }
 </script>
-```
-
-```
-<div class="element" 
-	data-am-enter=":before beforeFn() :enter left move 500px :after afterFn()">
-</div>
 ```
