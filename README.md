@@ -1,11 +1,11 @@
 AniMachine
 ==========
 
-Declarative animation and machine state build
+Declarative Animation and Simple Machine State.
 
 Size
 ----
-Only 11KB Minified (No jQuery)
+Only 11KB Minified (no jQuery dependency)
 
 Optional Dependencies
 ---------------------
@@ -19,7 +19,7 @@ Add JS dependency
 <script src="../ani-machine.min.js"></script>
 ```
 
-Add at the end of DOM
+And at the end of DOM
 ```
 <script>am.start();</script>
 ```
@@ -34,14 +34,14 @@ Add __data-am__ attribute on DOM element with __":enter"__ special keyword
 
 State
 -----
-__default state__ can be declare like this
+__default__ state can be declare like this
 ```
 <div class="element" 
 	data-am=":on enter :animate pulse
 			 :on leave :animate tada">
 </div>
 ```
-If you want to declare a __next state__
+If you want to declare a __next__
 ```
 <div class="element" 
 	data-am=""
@@ -52,7 +52,7 @@ If you want to declare a __next state__
 
 How to change state ?
 ---------------------
-You need to use __":go"__ keyword to change state when animation played is finished
+You need to use __":go"__ keyword to change state when played animation is finished
 ```
 <div class="element" 
 	data-am=":enter left move 500px :go next"
@@ -70,7 +70,7 @@ Add __":animate"__ keyword followed by animation CSS class name
 	data-am=":animate tada">
 </div>
 ```
-Here we use - [animate.css](http://daneden.github.io/animate.css/) class name, but it could something else
+Here we use [animate.css](http://daneden.github.io/animate.css/) class name, but it might be whatever
 
 To chain CSS animation 
 ```
@@ -81,7 +81,7 @@ To chain CSS animation
 
 How to launch CSShake Animation
 ---------------------------
-Add __":shake"__ follow by [csshake](http://elrumordelaluz.github.io/csshake/) animation name you want to apply
+Add __":shake"__ followed by [csshake](http://elrumordelaluz.github.io/csshake/) animation name you want to apply
 ```
 <div class="element" 
 	data-am=":shake slow">
