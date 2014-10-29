@@ -5,22 +5,20 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
-	<script src='../bower_components/angular/angular.min.js'></script>
+	<script src='/js/libs/classie.js'></script>
+	<script src='/js/libs/events.js'></script>
 	<script src='/js/core/prefix.js'></script>
-	<script src="/js/core/parser.js"></script>
 	<script src="/js/core/viewport.js"></script>
 	<script src='/js/core/styles.js'></script>
-	<script src='/js/core/translate.js'></script>
-	<script src='/js/core/transition.js'></script>
-	<script src='/js/core/enter.js'></script>
-	<script src='/js/core/transform.js'></script>
 	<script src='/js/core/frame.js'></script>
-	<script src='/js/core/build.js'></script>
-	<script src="/js/core/maestro.js"></script>
-	<script src="/js/am-directive.js"></script>
-	<script>
-	angular.module('app', ['aniMachine']);
-	</script>
+	<script src='/js/effets/translate.js'></script>
+	<script src='/js/effets/transition.js'></script>
+	<script src='/js/effets/enter.js'></script>
+	<script src='/js/effets/transform.js'></script>
+	<script src="/js/dom/parser.js"></script>
+	<script src='/js/am/build.js'></script>
+	<script src="/js/am/maestro.js"></script>
+	<script src="/js/am/facade.js"></script>
 	<style>
 	.element {
 		opacity: 0.6;
@@ -31,29 +29,27 @@
 	}
 	</style>
 </head>
-<body ng-app="app">
+<body>
 	<div class="container">
 		<h2 class="title">Rotate</h2>
-		<div class="element" am-element>
-			<am-state value="right" trigger=".btn--action click">
-				<am-event on="active" do=":transform move right 300px rotate right 120deg scale 50% wait 0.02s" goto="stop"></am-event>
-			</am-state>
-			<am-state value="stop" >
-				<am-event on="active" do=":animate pulse"></am-event>
-			</am-state>
+		<div class="element" 
+			data-am=":transform move right 300px rotate right 120deg scale 50% wait 0.02s
+					 :trigger .btn--action click
+					 :go stop"
+			data-am-stop=":animate pulse">
 		</div>
-		<div class="element element--blue late" am-element>
-			<am-state value="right" trigger=".btn--action click">
-				<am-event on="active" do=":transform move right 300px rotate right 120deg" goto="bottom"></am-event>
-			</am-state>
-			<am-state value="bottom">
-				<am-event on="active" do=":transform move bottom 150px move right 150px rotate right 240deg" goto="left"></am-event>
-			</am-state>
-			<am-state value="left">
-				<am-event on="active" do=":transform move left 0 rotate right 0deg" goto="right"></am-event>
-			</am-state>
+		<div class="element element--blue late"
+			data-am
+			data-am-right=":transform move right 300px rotate right 120deg
+						   :trigger .btn--action click
+						   :go bottom"
+			data-am-bottom=":transform move bottom 150px move right 150px rotate right 240deg
+							:go left"
+			data-am-left=":transform move left 0 rotate right 0deg
+							:go right">
 		</div>
 		<p><a class="btn btn--action">Start</a></p>
 	</div>
+	<script>am.start();</script>
 </body>
 </html>
