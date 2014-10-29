@@ -49,9 +49,29 @@ describe('init state', function(){
       data = parser.getTriggers({}, 'default', ':trigger .btn click');
       assert.equal('.btn click', data.default);
     })
-    it('defined', function() {      
+    it('defined 2', function() {      
       data = parser.getTriggers({}, 'special', ':on active :enter value :trigger .btn--special click');
       assert.equal('.btn--special click', data.special);
+    })
+  })
+  describe(':before', function(){
+    it('defined', function() {      
+      data = parser.getStates({}, 'default', ':before test()');
+      assert.equal('test()', data.default[0].before);
+    })
+    it('undefined', function() {  
+      data = parser.getStates({}, 'default', ':enter value');
+      assert.equal(undefined, data.default[0].before);    
+    })
+  })
+  describe(':after', function(){
+    it('defined', function() {      
+      data = parser.getStates({}, 'default', ':after test()');
+      assert.equal('test()', data.default[0].after);
+    })
+    it('undefined', function() {  
+      data = parser.getStates({}, 'default', ':enter value');
+      assert.equal(undefined, data.default[0].after);    
     })
   })
   describe(':loop', function(){

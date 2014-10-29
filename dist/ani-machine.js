@@ -479,8 +479,6 @@ am.transform = (function(styles, transition, undefined) {
 			easing = attrs.easing || 'ease-in-out',
 			key = '',
 			tmp = '';
-		
-		//console.log(attrs);
 
 		if (skewx) {
 			tmp += 'skewx(' + skewx + ') ';
@@ -518,8 +516,6 @@ am.transform = (function(styles, transition, undefined) {
 		//css += ';  -webkit-transform-origin: 50% 50% ; transform-origin: 50% 50%';
 
 		key = key.replace(/-/g, 'm');
-
-		//console.log(key);
 
 		return {
 			target: styles(key, css),
@@ -766,7 +762,7 @@ am.maestro = (function(frame, undefined) {
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
 					events.on(el, on, function() {
 					//el.addEventListener(on, function() {
-						self.changeState(state);
+						self.changeState(state, true);
 					});
 				});
 			}
@@ -780,8 +776,9 @@ am.maestro = (function(frame, undefined) {
 			}
 
 			self.changeState('default');
+			return self;
 		},
-		changeState: function(state) {
+		changeState: function(state, force) {
 
 			var self = this,
 				ACTIVE = 'active';
@@ -831,7 +828,8 @@ am.maestro = (function(frame, undefined) {
 					after = event.after ? event.after.replace('()', '') : '',
 					loop = event.loop,
 					eventParam = event.do,
-					on = parser(event.on);
+					on = parser(event.on),
+					releaseEvent;
 
 				event.currentStep = event.currentStep || 0;
 
@@ -864,11 +862,8 @@ am.maestro = (function(frame, undefined) {
 								finish: finish
 							});	
 						} 
-
 					} 
 				}
-
-				var releaseEvent;
 
 				function goFn() {
 					if (!go) {
@@ -920,22 +915,51 @@ am.maestro = (function(frame, undefined) {
 				});
 			}
 
-			var future = self.states[state];
+			
 
-			if (sameState) {
-				initState(future);
-			} else {
+			if (!sameState || force) {
 				self.currentState = state;
-				self.offs = initState(future);
+				self.offs = initState(self.states[state]);
 			}
 		}
 	};
 })(am.frame);
-am.start = (function(maestro, undefined) {
+am.start = (function(maestro, viewport, undefined) {
 	"use strict";
 
 	var ATTR = 'data-am',
-		DEFAULT = 'default';
+		DEFAULT = 'default',
+		sequencers = [],
+		debounce;
+
+	function enterLeaveFn() {
+		// TODO debounce
+		sequencers.forEach(function(s) {
+			if (s.states.enter || s.states.leave) {
+				if (viewport.isInside(s.element)) {
+					//if (!events.default) {
+					s.changeState('enter');
+					//}
+				} else {
+					s.changeState('leave');
+				}
+			}
+		});
+	}	
+
+	function debounceFn() {
+		if (debounce) {
+			clearTimeout(debounce);
+		}
+
+		debounce = setTimeout(function() {
+			debounce = null,
+			enterLeaveFn();
+		}, 10);	
+	}
+
+	events.on(window, 'scroll', debounceFn);
+	events.on(window, 'resize', debounceFn);
 
 	return function() {
 		[].forEach.call(document.querySelectorAll('[' + ATTR + ']'), function(element) {
@@ -958,12 +982,13 @@ am.start = (function(maestro, undefined) {
 				}
 			});
 
-			Object.create(am.maestro).init({
-			 	element: element,
-			 	states: states,
-			 	triggers: triggers
-			});
+			sequencers.push(
+				Object.create(am.maestro).init({
+					element: element,
+					states: states,
+					triggers: triggers
+			}));
 		});
-	}
+	};
 
-})(am.maestro);
+})(am.maestro, am.viewport);

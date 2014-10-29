@@ -83,8 +83,6 @@ am.transform = (function(styles, transition, undefined) {
 			easing = attrs.easing || 'ease-in-out',
 			key = '',
 			tmp = '';
-		
-		//console.log(attrs);
 
 		if (skewx) {
 			tmp += 'skewx(' + skewx + ') ';
@@ -122,8 +120,6 @@ am.transform = (function(styles, transition, undefined) {
 		//css += ';  -webkit-transform-origin: 50% 50% ; transform-origin: 50% 50%';
 
 		key = key.replace(/-/g, 'm');
-
-		//console.log(key);
 
 		return {
 			target: styles(key, css),

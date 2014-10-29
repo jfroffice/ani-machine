@@ -29,7 +29,7 @@ am.start = (function(maestro, viewport, undefined) {
 		debounce = setTimeout(function() {
 			debounce = null,
 			enterLeaveFn();
-		}, 50);	
+		}, 10);	
 	}
 
 	events.on(window, 'scroll', debounceFn);
