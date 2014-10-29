@@ -740,7 +740,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 	};
 
 })(am.prefix, am.enter, am.transform);
-am.maestro = (function(frame, undefined) {
+am.sequencer = (function(frame, undefined) {
 	"use strict";
 
 	function parser(on) {
@@ -936,7 +936,7 @@ am.maestro = (function(frame, undefined) {
 		}
 	};
 })(am.frame);
-am.start = (function(maestro, viewport, undefined) {
+am.start = (function(sequencer, viewport, undefined) {
 	"use strict";
 
 	var ATTR = 'data-am',
@@ -952,6 +952,7 @@ am.start = (function(maestro, viewport, undefined) {
 		enterLeave = setTimeout(function() {
 			enterLeave = null;
 
+			// check if element need to change state to enter or leave
 			(function () {
 				sequencers.forEach(function(s) {
 					if (s.states.enter || s.states.leave) {
@@ -992,7 +993,7 @@ am.start = (function(maestro, viewport, undefined) {
 			});
 
 			sequencers.push(
-				Object.create(am.maestro).init({
+				Object.create(sequencer).init({
 					element: element,
 					states: states,
 					triggers: triggers
@@ -1000,4 +1001,4 @@ am.start = (function(maestro, viewport, undefined) {
 		});
 	};
 
-})(am.maestro, am.viewport);
+})(am.sequencer, am.viewport);

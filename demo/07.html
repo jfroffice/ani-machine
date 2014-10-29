@@ -4,38 +4,28 @@
 	<meta charset="UTF-8">
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
-	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
+	<link rel="stylesheet" href="../bower_components/csshake/css/csshake.min.css">
 	<script src='../dist/ani-machine.min.js'></script>
-	<style>
-	.element {
-		opacity: 0.6;
-	}
-	.late {
-		position: relative;
-		left: -138px;
-	}
-	</style>
 </head>
 <body>
 	<div class="container">
-		<h2 class="title">Rotate</h2>
+		<h2 class="title">CSShake</h2>
+		<div class="element"
+			data-am=":enter left move 500px :go shake"
+			data-am-shake=":shake slow">Slow Shake
+		</div>
+		<div class="element element--blue"
+			data-am=":enter right move 500px :go shake"
+			data-am-shake=":shake hard">Hard Shake
+		</div>
+		<div class="element element--yellow"
+			data-am=":enter top move 500px :go shake"
+			data-am-shake=":shake">Basic Shake
+		</div>
 		<div class="element" 
-			data-am=":transform move right 300px rotate right 120deg scale 50% wait 0.02s
-					 :trigger .btn--action click
-					 :go stop"
-			data-am-stop=":animate pulse">
+			data-am=":enter bottom move 500px :go shake"
+			data-am-shake=":shake little">Little Shake
 		</div>
-		<div class="element element--blue late"
-			data-am
-			data-am-right=":transform move right 300px rotate right 120deg
-						   :trigger .btn--action click
-						   :go bottom"
-			data-am-bottom=":transform move bottom 150px move right 150px rotate right 240deg
-							:go left"
-			data-am-left=":transform move left 0 rotate right 0deg
-							:go right">
-		</div>
-		<p><a class="btn btn--action">Start</a></p>
 	</div>
 	<script>am.start();</script>
 </body>

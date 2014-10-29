@@ -92,15 +92,6 @@ gulp.task('uglify', function() {
         }))
         .pipe(gulp.dest('dist'))
 });
-/*
-gulp.task('umd', function(){
-  gulp.src(['js/state/state-parser.js'])
-    .pipe(wrap({
-        namespace: 'am.stateParse'
-    }))
-    .pipe(gulp.dest('js/state'));
-});*/
 
 gulp.task('build', ['clean', 'concat', 'uglify', 'deps']);
-
 gulp.task('release', ['bump', 'build', 'build']);
