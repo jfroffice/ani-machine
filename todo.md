@@ -3,9 +3,7 @@ Font Geometric with AniMachine
 Roadmap
 -------
 new demo pages
-remove AngularJS dependencies
-try polymer
-
+try polymer ? why
 add loop style in css from sass
 
 scroll
@@ -20,9 +18,8 @@ Memo
 bug stop infinite loop animation
 disable css stylesheets
 
-
-Inspiration
------------
+Crédits
+-------
 http://www.benjystanton.co.uk/work/side-projects/web-animation-resources/
 http://bouncejs.com/
 http://hoverstat.es/

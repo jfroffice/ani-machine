@@ -48,7 +48,7 @@
       "js/effets/transform.js",
       "js/dom/parser.js",
       "js/am/build.js",
-      "js/am/maestro.js",
+      "js/am/sequencer.js",
       "js/am/facade.js"
     ],
     "deps": [

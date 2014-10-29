@@ -1,4 +1,4 @@
-am.maestro = (function(frame, undefined) {
+am.sequencer = (function(frame, undefined) {
 	"use strict";
 
 	function parser(on) {
