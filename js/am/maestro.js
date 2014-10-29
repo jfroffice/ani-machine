@@ -11,6 +11,9 @@ am.maestro = (function(frame, undefined) {
 	};
 
 	return {
+		getState: function() {
+			return this.currentState;
+		},
 		init: function(options) {
 
 			var self = this,
