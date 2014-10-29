@@ -24,7 +24,6 @@ At the end of DOM
 
 Enter Animation
 ---------------
-
 ![enter!](https://github.com/jfroffice/ani-machine/raw/master/tuts/enter.gif)
 
 Add __data-am__ attribute on DOM element with __":enter"__ special keyword
@@ -34,16 +33,17 @@ Add __data-am__ attribute on DOM element with __":enter"__ special keyword
 
 State
 -----
+![state](https://github.com/jfroffice/ani-machine/raw/master/tuts/state.gif)
+
 __default__ state is declare with __data-am__
 ```
 <div class="element" 
 	data-am=":on enter :animate pulse
 			 :on leave :animate tada">
 </div>
-Here we define animation on mouseenter and mouseleave
-![state!](https://github.com/jfroffice/ani-machine/raw/master/tuts/state.gif)
-
 ```
+Here we define animation on mouseenter and mouseleave
+
 If you want to declare a __next__ state
 ```
 <div class="element" 
