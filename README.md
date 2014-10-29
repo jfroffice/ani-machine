@@ -1,25 +1,38 @@
 AniMachine
 ==========
 
-Declarative animation and machine state build on top of AngularJS.
+Declarative animation and machine state build
 
-Dependencies
-------------
-- AngularJS 1.2+
+No Dependencies
+---------------
+10,4 Kb minified
+
+Optional Dependencies
+---------------------
 - Animate.css (optional)
+- CSShake.css (optional)
 
-Enter
---------
+Credits & Inspirations
+----------------------
+[scrollReveal](https://github.com/julianlloyd/scrollReveal.js)
+[animate.css](http://daneden.github.io/animate.css/)
+[csshake](http://elrumordelaluz.github.io/csshake/)
 
-it allows to add enter animation like below
+How to start 
+------------
+
+Add JS dependency
 ```
-<div class="element" am-element>
-	<am-state value="default">
-		<am-event on="active" animate=":enter left move 800px scale 20% over 2.0s"></am-event>
-	</am-state>
-</div>
+<script src="https://raw.githubusercontent.com/jfroffice/ani-machine/master/dist/ani-machine.min.js"></script>
 ```
-using attribute __am-element__ on DOM element with attribute __enter__
+
+Enter Animation
+---------------
+
+Add __data-am__ on DOM element to animate
+```
+<div data-am=":enter left move 500px over 1.0s">HelloWorld</div>
+```
 
 State
 -----
