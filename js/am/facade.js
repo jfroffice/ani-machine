@@ -12,9 +12,11 @@ am.start = (function(maestro, viewport, undefined) {
 			if (s.states.enter || s.states.leave) {
 				if (viewport.isInside(s.element)) {
 					//if (!events.default) {
+					console.log('change state to enter...');
 					s.changeState('enter');
 					//}
 				} else {
+					console.log('change state to leave...');
 					s.changeState('leave');
 				}
 			}
@@ -29,7 +31,7 @@ am.start = (function(maestro, viewport, undefined) {
 		debounce = setTimeout(function() {
 			debounce = null,
 			enterLeaveFn();
-		}, 10);	
+		}, 20);	
 	}
 
 	events.on(window, 'scroll', debounceFn);

@@ -30,7 +30,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 			classie.remove(elm, initial);
 			//elm.removeClass(initial);
 		}
-		events.on(elm, prefix.TRANSITION_END_EVENT, function() {
+		events.one(elm, prefix.TRANSITION_END_EVENT, function() {
 		//elm.one(prefix.TRANSITION_END_EVENT, function() {
 			classie.remove(elm, transition);
 			//elm.removeClass(transition);

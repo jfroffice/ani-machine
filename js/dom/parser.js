@@ -44,9 +44,9 @@
 					} else if (s.indexOf('transform') === 0) {
 						e.transform = getValue('transform', s);
 					} else if (s.indexOf('before') === 0) {
-						e.before = rtrim(s.substring(7, s.length));
+						e.before = rtrim(s.substring(7, s.length)).replace('()', '');
 					} else if (s.indexOf('after') === 0) {
-						e.after = rtrim(s.substring(6, s.length));
+						e.after = rtrim(s.substring(6, s.length)).replace('()', '');
 					} else if (s.indexOf('loop') === 0) {
 						e.loop = rtrim(s.substring(5, s.length));
 					}

@@ -51,7 +51,7 @@ body {
 .element--ball {
 	width: 50px;
 	height: 50px;
-	border-radius: 25px;
+	border-radius: 50px;
 }
 
 .letter-vertical {
