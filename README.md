@@ -1,11 +1,9 @@
 AniMachine
 ==========
-
 Declarative Animation and Simple Machine State.
+- 4.5KB minified and Gzipped
 
-Size
-----
-Only 11KB Minified (no jQuery dependency)
+### [→ Demo ←](http://jfroffice.github.io/ani-machine/)
 
 Optional Dependencies
 ---------------------
