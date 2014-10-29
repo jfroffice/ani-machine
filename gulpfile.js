@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
     $ = require('gulp-load-plugins')(),
+    wrap = require('gulp-wrap-umd'),
     pkg = require('./package.json'),
     stylish = require('jshint-stylish'),
     path = pkg.path,
@@ -93,5 +94,4 @@ gulp.task('uglify', function() {
 });
 
 gulp.task('build', ['clean', 'concat', 'uglify', 'deps']);
-
 gulp.task('release', ['bump', 'build', 'build']);

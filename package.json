@@ -1,6 +1,6 @@
 {
   "name": "ani-machine",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Declarative animation and machine state",
   "main": "gulpfile.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.8.8",
+    "gulp-bump": "*",
     "gulp-concat": "^2.4.1",
     "gulp-connect": "^2.0.6",
     "gulp-csslint": "^0.1.5",
@@ -27,32 +28,32 @@
     "gulp-load-plugins": "~0.5.0",
     "gulp-rename": "^1.2.0",
     "gulp-ruby-sass": "^0.7.1",
-    "gulp-bump": "*",
     "gulp-sass": "^1.0.0",
     "gulp-uglify": "^1.0.1",
+    "gulp-wrap-umd": "^0.2.1",
     "jshint-stylish": "^1.0.0",
     "rimraf": "^2.2.8"
   },
   "path": {
     "js": [
+      "js/libs/classie.js",
+      "js/libs/events.js",
       "js/core/prefix.js",
-      "js/core/parser.js",
       "js/core/viewport.js",
       "js/core/styles.js",
-      "js/core/translate.js",
-      "js/core/transition.js",
-      "js/core/transform.js",
-      "js/core/enter.js",
       "js/core/frame.js",
-      "js/core/build.js",
-      "js/core/maestro.js",
-      "js/am-directive.js"
+      "js/effets/translate.js",
+      "js/effets/transition.js",
+      "js/effets/enter.js",
+      "js/effets/transform.js",
+      "js/dom/parser.js",
+      "js/am/build.js",
+      "js/am/sequencer.js",
+      "js/am/facade.js"
     ],
     "deps": [
-      "bower_components/angular/angular.js",
-      "bower_components/angular/angular.min.js",
-      "bower_components/angular/angular.min.js.map",
-      "bower_components/animate.css/animate.min.css"
+      "bower_components/animate.css/animate.min.css",
+      "bower_components/csshake/csshake.min.css"
     ]
   }
 }

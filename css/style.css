@@ -21,7 +21,7 @@ h2 {
 }
 
 .special-header {
-	margin-top: 100px;
+	margin-top: 80px;
 }
 
 .container {
@@ -61,11 +61,11 @@ h2 {
 }
 
 .demolink--nice {
-	margin-top: 35px;	
+	margin-top: 26px;	
 }
 
 .link {
-font-size: 20px;
+font-size: 18px;
 text-decoration: none;
 color: #FFF;
 text-shadow: 1px 1px 3px #333;

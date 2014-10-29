@@ -4,6 +4,158 @@
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
+/*!
+ * classie - class helper functions
+ * from bonzo https://github.com/ded/bonzo
+ * 
+ * classie.has( elem, 'my-class' ) -> true/false
+ * classie.add( elem, 'my-new-class' )
+ * classie.remove( elem, 'my-unwanted-class' )
+ * classie.toggle( elem, 'my-class' )
+ */
+
+ /*jshint browser: true, strict: true, undef: true */
+ /*global define: false */
+
+ (function(window) {
+
+	'use strict';
+
+	// class helper functions from bonzo https://github.com/ded/bonzo
+
+	function classReg( className ) {
+	return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+	}
+
+	// classList support for class management
+	// altho to be fair, the api sucks because it won't accept multiple classes at once
+	var hasClass, addClass, removeClass;
+
+	if ( 'classList' in document.documentElement ) {
+		hasClass = function( elem, c ) {
+		  	return elem.classList.contains( c );
+		};
+		addClass = function( elem, c ) {
+		  	elem.classList.add( c );
+		};
+		removeClass = function( elem, c ) {
+		  	elem.classList.remove( c );
+		};
+	}
+	else {
+		hasClass = function( elem, c ) {
+		  	return classReg( c ).test( elem.className );
+		};
+		addClass = function( elem, c ) {
+		  	if ( !hasClass( elem, c ) ) {
+				elem.className = elem.className + ' ' + c;
+			}
+		};
+		removeClass = function( elem, c ) {
+		  	elem.className = elem.className.replace( classReg( c ), ' ' );
+		};
+	}
+
+	function toggleClass( elem, c ) {
+		var fn = hasClass( elem, c ) ? removeClass : addClass;
+		fn( elem, c );
+	}
+
+	var classie = {
+		// full names
+		hasClass: hasClass,
+		addClass: addClass,
+		removeClass: removeClass,
+		toggleClass: toggleClass,
+		// short names
+		has: hasClass,
+		add: addClass,
+		remove: removeClass,
+		toggle: toggleClass
+	};
+
+	// transport
+	if ( typeof define === 'function' && define.amd ) {
+		// AMD
+		define( classie );
+	} else {
+		// browser global
+		window.classie = classie;
+	}
+
+})(window);
+// Event helper from jsCore v0.6.1 github.com/Octane/jsCore
+var events = (function() {
+
+    function off(eventDetails) {
+       eventDetails.eventTypes.forEach(function (eventType) {
+           eventDetails.element.removeEventListener(
+               eventType,
+               eventDetails.callback
+               );
+       });
+    }
+
+    function on(element, selector, eventTypes, callback) {
+       var listener;
+       if (arguments.length == 3) {
+           callback = eventTypes;
+           eventTypes = selector;
+           selector = undefined;
+       }
+       if (selector) {
+           selector += ',' + selector + ' *';
+           listener = function (event) {
+               var target = event.target;
+               if (target.matches && target.matches(selector)) {
+                   if (callback.handleEvent) {
+                       callback.handleEvent(event);
+                   } else {
+                       callback.call(element, event);
+                   }
+               }
+           };
+       } else {
+           listener = callback;
+       }
+       if ('string' == typeof eventTypes) {
+           eventTypes = eventTypes.split(/[\s,]+/);
+       }
+       eventTypes.forEach(function (eventType) {
+           element.addEventListener(eventType, listener);
+       });
+       return {
+           element: element,
+           eventTypes: eventTypes,
+           callback: listener
+       };
+    }
+
+    function one(element, selector, eventTypes, callback) {
+       var details;
+       function listener(event) {
+           off(details);
+           if (callback.handleEvent) {
+               callback.handleEvent(event);
+           } else {
+               callback.call(element, event);
+           }
+       }
+       if (arguments.length == 3) {
+           callback = eventTypes;
+           eventTypes = selector;
+           selector = undefined;
+       }
+       details = on(element, selector, eventTypes, listener);
+    }
+
+    return {
+        one: one,
+        on: on,
+        off: off
+    };
+
+})();
 var am = {};
 am.prefix = (function() {
 	"use strict";
@@ -43,18 +195,6 @@ am.prefix = (function() {
 		ANIMATION_END_EVENT: ANIMATION_END_EVENTS[getPrefix('animation')]
 	};
 
-})();
-am.parser = (function() {
-	"use strict";
-
-	return function(on) {
-		if (on === 'enter') {
-			on = 'mouseenter';
-		} else if (on === 'leave') {
-			on = 'mouseleave';
-		}
-		return on;
-	};
 })();
 am.viewport = (function() {
 	"use strict";
@@ -112,22 +252,32 @@ am.styles = (function(undefined) {
 		return '.' + key + '{' + content + '}';
 	}
 
-	return {
-		build: function(key, content) {
-			var raw = buildCSS(key, content);
-			if (!raw) {
-				return key;
-			}
-			var style = document.createElement("style");
-			style.type = "text/css";
-			style.innerHTML = raw;
-			cache[key] = true; //style;
-			document.getElementsByTagName("head")[0].appendChild(style);
+	return function(key, content) {
+		var raw = buildCSS(key, content);
+		if (!raw) {
 			return key;
 		}
+		var style = document.createElement("style");
+		style.type = "text/css";
+		style.innerHTML = raw;
+		cache[key] = true; //style;
+		document.getElementsByTagName("head")[0].appendChild(style);
+		return key;
 	};
 
 })();
+am.frame = (function () {
+  	var frameFn = window.requestAnimationFrame 		||
+  		 		window.webkitRequestAnimationFrame 	||
+  		 		window.mozRequestAnimationFrame 	||
+        		function(cb) {
+          			window.setTimeout(cb, 1000/60);
+        		};
+
+     return function(cb) {
+     	frameFn.call(window, cb);
+     }
+}());
 am.translate = (function(styles, undefined) {
 	"use strict";
 
@@ -140,6 +290,7 @@ am.translate = (function(styles, undefined) {
 
 		if (scale !== undefined) {
 			tmp += ' scale(' + scale.value + ')';
+			key += ('_scale' + scale.value).replace('.', '_');
 		}
 
 		css = '-webkit-transform: ' + tmp + ';transform: ' + tmp + ';';
@@ -150,13 +301,7 @@ am.translate = (function(styles, undefined) {
 	
 		key += type + options.axis + '_' + options.move + '_' + options.opacity;
 
-		if (scale !== undefined) {
-			key += ('_scale' + scale.value).replace('.', '_');
-		}
-
-		key = key.replace(/-/g, 'm');
-
-		return styles.build(key, css);
+		return styles(key.replace(/-/g, 'm'), css);
 	};
 
 })(am.styles);
@@ -171,10 +316,84 @@ am.transition = (function(styles, undefined) {
 		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
 					       'transition: transform '			+ tmp2;
 
-		return styles.build(key, css);
+		return styles(key, css);
 	};
 
 })(am.styles);
+am.enter = (function(translate, transition, undefined) {
+	"use strict";
+
+	function parse(words) {
+		var attrs = {},
+			param;
+
+		words.forEach(function (word, i) {
+			param = words[i+1];
+			switch (word) {
+				case ":enter":
+					attrs.enter = param;
+					if (attrs.enter === 'top' || attrs.enter === 'bottom') {
+						attrs.axis = 'y';
+					} else {
+						attrs.axis = 'x';
+					}
+					return;
+				case "move":
+					attrs.move = param;
+					return;
+				case "after":
+				case "wait":
+					attrs.after = param;
+					return;
+				case "over":
+					attrs.over = param;
+					return;
+				case "easing":
+					attrs.easing = param;
+					return;
+				case 'scale':
+				  	attrs.scale = {};
+				  	if (param == 'up' || param == 'down') {
+				  		attrs.scale.direction = param;
+				    	attrs.scale.power    = words[i+2];
+				  	} else {
+				  		attrs.scale.power = param;
+				  	}
+				  	if (parseInt(attrs.scale.power) != 0) {
+				  		var delta = parseFloat(attrs.scale.power) * 0.01;
+				  		if (attrs.scale.direction == 'up') { delta = -delta; }
+				  	  	attrs.scale.value = 1 + delta;
+				  	}
+				  	return;
+				default:
+					return;
+			}
+		});
+		return attrs;
+	}
+
+	return function(lang) {
+
+		var attrs = parse(lang),
+			enter = attrs.enter || 'left',
+			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
+			over = attrs.over || '0.7s',
+			after = attrs.after || '0s',
+			easing = attrs.easing || 'ease-in-out',
+			tmp;
+
+		return {
+			initial: translate({
+				axis: attrs.axis,
+				move: move,
+				scale: attrs.scale,
+				opacity: false
+			}),
+			transition: transition(over, easing, after)
+		};
+	}
+
+})(am.translate, am.transition);
 am.transform = (function(styles, transition, undefined) {
 	"use strict";
 
@@ -260,8 +479,6 @@ am.transform = (function(styles, transition, undefined) {
 			easing = attrs.easing || 'ease-in-out',
 			key = '',
 			tmp = '';
-		
-		//console.log(attrs);
 
 		if (skewx) {
 			tmp += 'skewx(' + skewx + ') ';
@@ -300,104 +517,97 @@ am.transform = (function(styles, transition, undefined) {
 
 		key = key.replace(/-/g, 'm');
 
-		//console.log(key);
-
 		return {
-			target: styles.build(key, css),
+			target: styles(key, css),
 			reset: true,
 			transition: transition(over, easing, after)
 		};
 	}
 
 })(am.styles, am.transition);
-am.enter = (function(translate, transition, undefined) {
-	"use strict";
+(function(root, factory) {
+	if (typeof define === 'function' && define.amd) {
+		define(factory);
+	} else if (typeof exports === 'object') {
+		module.exports = factory(require, exports, module);
+	} else {
+		root.parser = factory();
+	}
+}(this, function(require, exports, module) {
 
-	function parse(words) {
-		var attrs = {},
-			param;
+	//function ltrim(s) { 
+	//    return s.replace(/\s*((\S+\s*)*)/, "$1");
+	//}
 
-		words.forEach(function (word, i) {
-			param = words[i+1];
-			switch (word) {
-				case ":enter":
-					attrs.enter = param;
-					if (attrs.enter === 'top' || attrs.enter === 'bottom') {
-						attrs.axis = 'y';
-					} else {
-						attrs.axis = 'x';
+	function rtrim(s) {
+		return s.replace(/((\s*\S+)*)\s*/, "$1");
+	}
+
+	function getValue(key, s) {
+		return rtrim(s.substring(key.length+1, s.length));
+	}
+
+	function getState(input) {
+		var events = [],
+			e;
+
+		if (input.indexOf(':on active') === -1) {
+			input = ':on active ' + input;
+		}
+
+		input.split(':o').forEach(function(sentence) {
+			if (sentence.length) {
+				e = {};
+				sentence.split(':').forEach(function (s) {
+					if (s.indexOf('n') === 0) {
+						e.on = rtrim(s.substring(2, s.length));
+					} else if (s.indexOf('enter') 		=== 0
+						 	|| s.indexOf('transform') 	=== 0
+						 	|| s.indexOf('animate') 	=== 0
+						 	|| s.indexOf('shake') 		=== 0) {
+						e.do = ':' + rtrim(s);
+					} else if (s.indexOf('go') === 0) {
+						e.go = rtrim(s.substring(3, s.length));
+					} else if (s.indexOf('transform') === 0) {
+						e.transform = getValue('transform', s);
+					} else if (s.indexOf('before') === 0) {
+						e.before = rtrim(s.substring(7, s.length)).replace('()', '');
+					} else if (s.indexOf('after') === 0) {
+						e.after = rtrim(s.substring(6, s.length)).replace('()', '');
+					} else if (s.indexOf('loop') === 0) {
+						e.loop = rtrim(s.substring(5, s.length));
 					}
-					return;
-				case "move":
-					attrs.move = param;
-					return;
-				case "after":
-				case "wait":
-					attrs.after = param;
-					return;
-				case "over":
-					attrs.over = param;
-					return;
-				case 'scale':
-				  	attrs.scale = {};
-				  	if (param == 'up' || param == 'down') {
-				  		attrs.scale.direction = param;
-				    	attrs.scale.power    = words[i+2];
-				  	} else {
-				  		attrs.scale.power = param;
-				  	}
-				  	if (parseInt(attrs.scale.power) != 0) {
-				  		var delta = parseFloat(attrs.scale.power) * 0.01;
-				  		if (attrs.scale.direction == 'up') { delta = -delta; }
-				  	  	attrs.scale.value = 1 + delta;
-				  	}
-				  	return;
-				default:
-					return;
+				});	
+				events.push(e);			
 			}
 		});
-		return attrs;
+
+		return events;
 	}
 
-	return function(lang) {
+	return { 
+		getStates: function(states, state, input) {
+			states = states || {};
+			states[state] = getState(input);
+			return states;
+		},
+		getTriggers: function(triggers, state, input) {
+			var triggers = triggers || {},
+				idx = input.indexOf(':trigger');
 
-		var attrs = parse(lang),
-			enter = attrs.enter || 'left',
-			move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
-			over = attrs.over || '0.7s',
-			after = attrs.after || '0s',
-			easing = attrs.easing || 'ease-in-out',
-			tmp;
+			if (idx !== -1) {
+				triggers[state] = rtrim(input.substring(idx+9, input.length));
+			}
 
-		return {
-			initial: translate({
-				axis: attrs.axis,
-				move: move,
-				scale: attrs.scale,
-				opacity: false
-			}),
-			transition: transition(over, easing, after)
-		};
-	}
-
-})(am.translate, am.transition);
-am.frame = (function () {
-  	var frameFn = window.requestAnimationFrame 		||
-  		 		window.webkitRequestAnimationFrame 	||
-  		 		window.mozRequestAnimationFrame 	||
-        		function(cb) {
-          			window.setTimeout(cb, 1000/60);
-        		};
-
-     return function(cb) {
-     	frameFn.call(window, cb);
-     }
-}());
+			return triggers;
+		}
+	};
+}));
 am.build = (function(prefix, enter, transform, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
-		getComputedStyle(elm[0], null).display;
+		getComputedStyle(elm, null).display;
 	}
 
 	function doTransition(elm, initial, target, transition, cb) {
@@ -406,33 +616,44 @@ am.build = (function(prefix, enter, transform, undefined) {
 		hackStyle(elm);
 
 		if (target) {
-			elm.addClass(target);
+			classie.add(elm, target);
+			//elm.addClass(target);
 		}
 
-		if (elm.hasClass(elm.data('previous-target'))) {
-			elm.removeClass(elm.data('previous-target'));
+		var previousTarget = elm.getAttribute('data-previous-target');
+		if (classie.has(elm, previousTarget)) {
+			classie.remove(elm, previousTarget);
 		}
+		//if (elm.hasClass(elm.data('previous-target'))) {
+		//	elm.removeClass(elm.data('previous-target'));
+		//}
 
-		elm.addClass(transition);
+		classie.add(elm, transition);
+		//elm.addClass(transition);
 
 		if (initial) {
-			elm.removeClass(initial);
+			classie.remove(elm, initial);
+			//elm.removeClass(initial);
 		}
-		elm.one(prefix.TRANSITION_END_EVENT, function() {
-			elm.removeClass(transition);
-			elm.data('previous-target', target);
+		events.one(elm, prefix.TRANSITION_END_EVENT, function() {
+		//elm.one(prefix.TRANSITION_END_EVENT, function() {
+			classie.remove(elm, transition);
+			//elm.removeClass(transition);
+			elm.setAttribute('data-previous-target', target);
+			//elm.data('previous-target', target);
 			cb && cb();
 		});
 	}
 
-	return function(elm, type, param) {
+	return function(elm, type, param, loop) {
 		var s, run, initial;
 
 		//console.log('animation start ' + initial);
 		if (type === ':enter') {
 			return function(cb) {
 				s = enter(param);
-				elm.addClass(s.initial);
+				classie.add(elm, s.initial);
+				//elm.addClass(s.initial);
 				doTransition(elm, s.initial, null, s.transition, function() {
 					//console.log('animation end ' + initial);
 					cb && cb();
@@ -449,32 +670,67 @@ am.build = (function(prefix, enter, transform, undefined) {
 		} else if (type === ':shake') {
 			return function(cb) {
 
+				// duplicate code !!!!
 				hackStyle(elm);
 
-				var initial = 'shake shake-constant shake-' + param[1];
-
-				elm
-					.addClass(initial)
-					.one(prefix.ANIMATION_END_EVENT, function() {
-						//console.log('animation end : ' + initial);
-						elm.removeClass(initial);
-						cb && cb();
-					});
+				classie.add(elm, 'shake');
+				classie.add(elm, 'shake-constant');
+				if (param[1]) {			
+					classie.add(elm, 'shake-' + param[1]);
+				}
+				//elm.addClass(initial);
+				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
+					//console.log('animation end : ' + initial);
+					
+					classie.remove(elm, 'shake');
+					classie.remove(elm, 'shake-constant');
+					if (param[1]) {			
+						classie.remove(elm, 'shake-' + param[1]);
+					}
+					//elm.removeClass(initial);
+					cb && cb();
+				});
+				// elm.addEventListener(prefix.ANIMATION_END_EVENT, function() {
+				// //elm.one(prefix.ANIMATION_END_EVENT, function() {
+				// 		//console.log('animation end : ' + initial);
+				// 		classie.removeClass(elm, initial);
+				// 		//elm.removeClass(initial);
+				// 		cb && cb();
+				// 	}, false);
 			};
 		} else if (type === ':animate') {
 			return function(cb) {
 
+				var initial = param + ' animated';
+				//console.log('animation start ' + initial);
+
+				if (loop) {
+					initial += ' loop' + loop;
+				}
+
 				hackStyle(elm);
 
-				var initial = param + ' animated';
+				classie.add(elm, param);
+				classie.add(elm, 'animated');
+				//elm.addClass(initial);
 
-				elm
-					.addClass(initial)
-					.one(prefix.ANIMATION_END_EVENT, function() {
-						//console.log('animation end : ' + initial);
-						elm.removeClass(initial);
+				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
+					//console.log('animation end : ' + initial);
+					
+					classie.remove(elm, param);
+					classie.remove(elm, 'animated');
+					//elm.removeClass(initial);
+					cb && cb();
+				});
+			/*	elm.addEventListener(prefix.ANIMATION_END_EVENT, function() {
+				//elm.one(prefix.ANIMATION_END_EVENT, function() {
+						console.log('animation end : ' + initial);
+						
+						classie.removeClass(elm, param);
+						classie.removeClass(elm, 'animated');
+						//elm.removeClass(initial);
 						cb && cb();
-					});
+					}, false);*/
 			};
 		} else { // only animate for now
 			return function(cb) {
@@ -484,19 +740,31 @@ am.build = (function(prefix, enter, transform, undefined) {
 	};
 
 })(am.prefix, am.enter, am.transform);
-am.maestro = (function(parser, frame, undefined) {
+am.sequencer = (function(frame, undefined) {
+	"use strict";
+
+	function parser(on) {
+		if (on === 'enter') {
+			on = 'mouseenter';
+		} else if (on === 'leave') {
+			on = 'mouseleave';
+		}
+		return on;
+	};
 
 	return {
+		getState: function() {
+			return this.currentState;
+		},
 		init: function(options) {
 
 			var self = this,
 				triggers = options.triggers;
 
-			self.events = options.events;
+			self.states = options.states;
 			self.element = options.element;
-			self.deferFn = options.timeoutFn;
 			self.jobs = [];
-			self.unregisters = [];
+			self.offs = [];
 			self.currentState;
 			self.running;
 
@@ -506,8 +774,9 @@ am.maestro = (function(parser, frame, undefined) {
 					on = parser(tmp[1]);
 
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
-					el.addEventListener(on, function() {
-						self.state(state);
+					events.on(el, on, function() {
+					//el.addEventListener(on, function() {
+						self.changeState(state, true);
 					});
 				});
 			}
@@ -519,8 +788,11 @@ am.maestro = (function(parser, frame, undefined) {
 				}
 				initTrigger(state, trigger);
 			}
+
+			self.changeState('default');
+			return self;
 		},
-		state: function(state) {
+		changeState: function(state, force) {
 
 			var self = this,
 				ACTIVE = 'active';
@@ -547,15 +819,15 @@ am.maestro = (function(parser, frame, undefined) {
 				});
 			}
 
-			function initEvents(events) {
-				if (!events) {
+			function initState(state) {
+				if (!state) {
 					return;
 				}
 
 				var tmp = [];
-				events.forEach(function(e) {
-					tmp.push(initEvent(e));
-				});
+				for(var key in state) {
+					tmp.push(initEvent(state[key]));
+				}
 				return tmp;
 			}
 
@@ -565,21 +837,26 @@ am.maestro = (function(parser, frame, undefined) {
 			}
 
 			function initEvent(event) {
-				var goto = event.goto,
-					before = event.before,
-					after = event.after,
-					on = event.on;
+				var go = event.go,
+					before = event.before ? event.before.replace('()', '') : '',
+					after = event.after ? event.after.replace('()', '') : '',
+					loop = event.loop,
+					eventParam = event.do,
+					on = parser(event.on),
+					releaseEvent;
+
+				event.currentStep = event.currentStep || 0;
 
 				function eventFn() {
 
 					before && callFn(before);
 					
-					if (!event.param) {
-						gotoFn();
+					if (!eventParam) {
+						goFn();
 						return;
 					}
 
-					var params = event.param.split(' '),
+					var params = eventParam.split(' '),
 						param = params[0];
 									
 					if (params) {
@@ -589,7 +866,7 @@ am.maestro = (function(parser, frame, undefined) {
 								console.warn('try to relaunch animation that is not finished');
 							} else {
 								addQueue({
-									run: am.build(self.element, param, params[event.currentStep]),
+									run: am.build(self.element, param, params[event.currentStep], loop),
 									finish: finishSequence
 								});	
 							}												
@@ -599,28 +876,28 @@ am.maestro = (function(parser, frame, undefined) {
 								finish: finish
 							});	
 						} 
-
 					} 
 				}
 
-				function gotoFn() {
-					if (!goto) {
+				function goFn() {
+					if (!go) {
 						return;
 					}
 
 					if (on !== ACTIVE) {
-						self.element.off(on, eventFn);
+						events.off(releaseEvent);
+						//self.element.off(on, eventFn);
 					}
-					self.state(goto);
+					self.changeState(go);
 				}
 
 				function finish() {
-					gotoFn();
+					goFn();
 					after && callFn(after);
 				}
 
 				function finishSequence() {
-					if (event.currentStep < (event.param.split(' ').length-1)) {
+					if (event.currentStep < (eventParam.split(' ').length-1)) {
 						frame(eventFn);
 					} else {
 						event.currentStep = 0;
@@ -632,129 +909,96 @@ am.maestro = (function(parser, frame, undefined) {
 				if (on === ACTIVE) { // autostart animation
 					frame(eventFn);
 				} else {
-					self.element.on(on, eventFn);
+					releaseEvent = events.on(self.element, on, eventFn);
+					//self.element.addEventListener(on, eventFn);
+					//self.element.on(on, eventFn);
 				}
 			
-				return function() { self.element.off(on, eventFn); };
+				return function() {
+					releaseEvent && events.off(releaseEvent);//self.element, on, eventFn);
+					//self.element.removeEventListener(on, eventFn);
+					//self.element.off(on, eventFn);
+				};
 			}
 
 			var sameState = self.currentState === state;
 
-			if (self.currentState && self.unregisters && !sameState) {
-				for (var i=0; i<self.unregisters.length; i++) {
-					self.unregisters[i]();
-				}
+			if (self.currentState && self.offs && !sameState) {
+				self.offs.forEach(function(off) {
+					off();
+				});
 			}
 
-			if (sameState) {
-				initEvents(self.events[state]);
-			} else {
+			if (!sameState || force) {
 				self.currentState = state;
-				self.unregisters = initEvents(self.events[state]);
+				self.offs = initState(self.states[state]);
 			}
 		}
 	};
-})(am.parser, am.frame);
-angular.module('aniMachine', [])
-.directive('amElement', ['$window', function($window) {
+})(am.frame);
+am.start = (function(sequencer, viewport, undefined) {
+	"use strict";
 
-	return {
-		restrict: 'A',
-		scope: {
-			enter: '@'
-		},
-		link: function(scope, element, options) {
+	var ATTR = 'data-am',
+		DEFAULT = 'default',
+		sequencers = [],
+		enterLeave;
 
-			var events = scope.events,
-				triggers = scope.triggers;
+	function enterLeaveFn() {
+		if (enterLeave) {
+			clearTimeout(enterLeave);
+		}
 
-			var musician = Object.create(am.maestro);
-			musician.init({
-				triggers: triggers,
-				events: events,
-				element: element
-			});			
+		enterLeave = setTimeout(function() {
+			enterLeave = null;
 
-			if (events.enter || events.leave) {
-
-				if (am.viewport.isInside(element[0])) {
-					if (!events['default']) {
-						musician.state('enter');
+			// check if element need to change state to enter or leave
+			(function () {
+				sequencers.forEach(function(s) {
+					if (s.states.enter || s.states.leave) {
+						if (viewport.isInside(s.element)) {
+							s.changeState('enter');
+						} else {
+							s.changeState('leave');
+						}
 					}
+				});
+			})();
+
+		}, 10);	
+	}
+
+	events.on(window, 'scroll', enterLeaveFn);
+	events.on(window, 'resize', enterLeaveFn);
+
+	return function() {
+		[].forEach.call(document.querySelectorAll('[' + ATTR + ']'), function(element) {
+
+			var states = {},
+				triggers = {};
+
+			[].forEach.call(element.attributes, function(attribute) {
+				if (attribute.name.indexOf(ATTR) !== -1) {
+
+					var state = attribute.name.replace(ATTR + '-', ''),
+						input = attribute.value;
+
+					if (state === ATTR) {
+						state = DEFAULT;
+					}
+
+					states = parser.getStates(states, state, input)
+					triggers = parser.getTriggers(triggers, state, input);
 				}
-
-				scope.$watch(function() {
-						return am.viewport.isInside(element[0]);
-					}, function(newValue, oldValue) {
-						if (newValue !== oldValue) {
-							musician.state(newValue ? 'enter' : 'leave');
-					   }
-					}, true);
-
-				// should be outside !?
-				angular.element($window)
-					.bind('resize', function () {
-						scope.$apply();
-					})
-					.bind('scroll', function () {
-						scope.$apply();
-					});
-			}
-
-			musician.state('default');
-		},
-		controller: ['$scope', '$element', function($scope, $element) {
-
-			$scope.events = {};
-			$scope.triggers = {};
-
-			this.setEvents = function(state, trigger, events) {
-				state = state || 'default';
-				$scope.events[state] = events;
-				$scope.triggers[state] = trigger;
-			};
-		}]
-	};
-}])
-.directive('amState', function() {
-	return {
-		restrict: 'E',
-		scope: {
-			value: '@',
-			trigger: '@'
-		},
-		require: '^amElement',
-		link: function (scope, element, attrs, elementCtrl) {
-			elementCtrl.setEvents(scope.value, scope.trigger, scope.events);
-		},
-		controller: ['$scope', function($scope) {
-			$scope.events = [];
-			this.addEvent = function(event) {
-				$scope.events.push(event);
-			};
-		}]
-	};
-})
-.directive('amEvent', function() {
-	return {
-		restrict: 'E',
-		scope: {
-			on: '@',
-			before: '@',
-			after: '@',
-			do: '@',
-			goto: '@'
-		},
-		require: '^amState',
-		link: function(scope, elm, options, stateCtrl) {
-			stateCtrl.addEvent({
-				on: am.parser(scope.on),
-				param: scope.do,
-				currentStep: 0,
-				before: scope.before ? scope.before.replace('()', '') : '',
-				after: scope.after ? scope.after.replace('()', '') : '',
-				goto: scope.goto
 			});
-		}
+
+			sequencers.push(
+				Object.create(sequencer).init({
+					element: element,
+					states: states,
+					triggers: triggers
+			}));
+		});
 	};
-});
+
+})(am.sequencer, am.viewport);

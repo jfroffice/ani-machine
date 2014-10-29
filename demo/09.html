@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>AniMachine</title>
+	<link rel="stylesheet" href="../css/light.css">
+	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
+	<script src='../dist/ani-machine.min.js'></script>
+</head>
+<body>
+	<div class="container">
+		<h2 class="title">Animate.CSS</h2>
+		<div class="element"
+			data-am=':enter left move 500px :go next'
+			data-am-next=':animate pulse
+					   :on enter  :animate tada 
+					   :on leave  :animate flash
+					   :trigger .btn--pulse-next click'>pulse
+			<div class="btn btn--pulse-next">Replay</div>
+		</div>
+		<div class="element" 
+			data-am=':enter bottom move 500px :go next'
+			data-am-next=':animate tada
+						  :trigger .btn--tada-next click'>tada
+			<div class="btn btn--tada-next">Replay</div>
+		</div>
+	</div>
+	<script>am.start();</script>
+</body>
+</html>

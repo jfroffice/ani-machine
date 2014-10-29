@@ -1,7 +1,8 @@
 body {
 	padding: 50px;
 	color: #AAA;
-	font: 22px 'Helvetica';
+	font: 17px "Arial","Verdana","sans-serif";
+	-webkit-font-smoothing: antialiased;
 	background-color: #f5e8d7;
 }
 
@@ -30,7 +31,7 @@ body {
 	padding: 0;
 	color: white;
 	padding: 5px;
-	margin: 0 20px 0 0;
+	margin: 0 22px 25px 0;
 	display: inline-block;
 	border: 1px solid rgba(255, 255, 255, 0.6);
 }
@@ -43,7 +44,6 @@ body {
 	background-color: #eee319;
 }
 
-
 .element--hidden {
 	visibility: hidden;
 }
@@ -51,7 +51,7 @@ body {
 .element--ball {
 	width: 50px;
 	height: 50px;
-	border-radius: 25px;
+	border-radius: 50px;
 }
 
 .letter-vertical {
