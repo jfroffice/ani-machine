@@ -9,7 +9,7 @@ am.transition = (function(styles, undefined) {
 		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
 					       'transition: transform '			+ tmp2;
 
-		return styles.build(key, css);
+		return styles(key, css);
 	};
 
 })(am.styles);

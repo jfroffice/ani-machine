@@ -1,113 +1,149 @@
 AniMachine
 ==========
 
-Declarative animation and machine state build on top of AngularJS.
+Declarative Animation and Simple Machine State.
 
-Dependencies
-------------
-- AngularJS 1.2+
-- Animate.css (optional)
+Size
+----
+Only 11KB Minified (no jQuery dependency)
 
-Enter
---------
+Optional Dependencies
+---------------------
+- [animate.css](http://daneden.github.io/animate.css/)
+- [csshake](http://elrumordelaluz.github.io/csshake/)
 
-it allows to add enter animation like below
+How to start 
+------------ 
+Add JS dependency
 ```
-<div class="element" am-element>
-	<am-state value="default">
-		<am-event on="active" animate=":enter left move 800px scale 20% over 2.0s"></am-event>
-	</am-state>
-</div>
+<script src="../ani-machine.min.js"></script>
 ```
-using attribute __am-element__ on DOM element with attribute __enter__
+
+At the end of DOM
+```
+<script>am.start();</script>
+```
+
+Enter Animation
+---------------
+
+Add __data-am__ attribute on DOM element with __":enter"__ special keyword
+```
+<div data-am=":enter left move 500px over 1.0s">HelloWorld</div>
+```
 
 State
 -----
-
-by default you can declare a __default__ state like this
+__default__ state can be declare like this
 ```
-<div class="element" am-element>
-	<am-state value="default">
-		<am-event on="enter" animate="pulse"></am-event>
-		<am-event on="leave" animate="tada"></am-event>
-	</am-state>
+<div class="element" 
+	data-am=":on enter :animate pulse
+			 :on leave :animate tada">
+</div>
+```
+If you want to declare a __next__
+```
+<div class="element" 
+	data-am=""
+ 	data-am-next=":on enter :animate pulse
+			 	  :on leave :animate tada">
 </div>
 ```
 
-inside you declare you would like to bind and special animation you would like to trigger on events
-
-(Here is animation from animate.css)
-
-Trigger Event
---------------
-
-State can be change from a trigger
+How to change state ?
+---------------------
+You need to use __":go"__ keyword followed by state name to change state when played animation is finished
 ```
-<am-state value="triggered" trigger=".btn click">
-	<am-event on="enter" animate="bounce"></am-event>
-</am-state>
+<div class="element" 
+	data-am=":enter left move 500px :go next"
+	data-am-next=":on enter :animate pulse
+				  :on leave :animate tada">
+</div>
 ```
 
-In this case, when user click on element selector by class ".btn" element will is state defined by value
+How to launch CSS Animation
+---------------------------
+Add __":animate"__ keyword followed by animation CSS class name
+
+```
+<div class="element" 
+	data-am=":animate tada">
+</div>
+```
+Here we use [animate.css](http://daneden.github.io/animate.css/) class name, but it might be another css class
+
+To chain CSS animation 
+```
+<div class="element" 
+	data-am=":animate tada pulse">
+</div>
+```
+
+How to launch CSShake Animation
+---------------------------
+Add __":shake"__ followed by [csshake](http://elrumordelaluz.github.io/csshake/) animation name you want to apply
+```
+<div class="element" 
+	data-am=":shake slow">
+</div>
+```
+
+How to trigger animation
+------------------------
+Use __":trigger"__ keyword
+```
+<div class="element" 
+	data-am-special=":animate bounce
+					 :trigger .btn--trigger click">
+</div>
+<div class=".btn--trigger"></div>
+```
+You can use default event 
+- click (click 	    event)
+- enter (mouseenter event)
+- leave (mouseleave event)
+- ...
 
 Autostart
 ---------
 
-You can play animation on state activation using keyword __active__
+By default, all DOM element with __data-am__ attribute will be in __default__ state
 
 Reveal Animation
 ----------------
 
-Special state name are use to specify what animation you would like to play when entering or leaving the viewport.
-
-This might happend when user scroll or resize browser window.
+Special state name are use to specify animations you want to play when element is entering or leaving the viewport.
 
 You can trigger animation with state __enter__
 ```
-<am-state value="enter">
-	<am-event on="active" animate="bounceInLeft"></am-event>
-</am-state>
+<div class="element" 
+	data-am-enter=":enter left move 500px">
+</div>
 ```
-
 or state __leave__
 ```
-<am-state value="leave">
-	<am-event on="active" animate="bounceOutRight"></am-event>
-</am-state>
+<div class="element" 
+	data-am-leave=":animate bounceOutRight">
+</div>
 ```
 
-Chaining
---------
-
-You can chain animation using separate animate class name.
-
-```
-<am-state value="special" trigger=".trigger click">
-	<am-event on="enter" animate="bounce rollOut"></am-event>
-</am-state>
-```
-
-Or you chain animation by current __state__ using special word __goto__ 
-
-```
-<am-state value="default" trigger=".trigger click">
-	<am-event on="enter" animate="bounce"></am-event>
-	<am-event on="leave" goto="chain"></am-event>
-</am-state>
-<am-state value="chain">
-	<am-event on="active" animate="rollOut"></am-event>
-</am-state>
-```
-
-in the second case, trigger event will be unregistered which might be useful
-
-Before and After Animation
+Before and After Callbacks
 --------------------------
 
-You can bind callback before and after animation event.
+You can bind __":before"__ or __":after"__ callback animation event
+```
+<div class="element" 
+	data-am-enter=":before beforeFn() :enter left move 500px :after afterFn()">
+</div>
+```
 
 ```
-<am-state value="enter">
-	<am-event on="active" before="show()" animate="bounceOutRight" after="hide()"></am-event>
-</am-state>
+<script>
+function beforeFn() {
+	console('before callback');
+}
+function afterFn() {
+	console('after callback');
+}
+</script>
 ```

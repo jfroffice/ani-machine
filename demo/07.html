@@ -4,56 +4,29 @@
 	<meta charset="UTF-8">
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
-	<link rel="stylesheet" href="../bower_components/animate.css/animate.min.css">
-	<script src='../bower_components/angular/angular.min.js'></script>
-	<script src='/js/core/prefix.js'></script>
-	<script src="/js/core/parser.js"></script>
-	<script src="/js/core/viewport.js"></script>
-	<script src='/js/core/styles.js'></script>
-	<script src='/js/core/translate.js'></script>
-	<script src='/js/core/transition.js'></script>
-	<script src='/js/core/enter.js'></script>
-	<script src='/js/core/transform.js'></script>
-	<script src='/js/core/frame.js'></script>
-	<script src='/js/core/build.js'></script>
-	<script src="/js/core/maestro.js"></script>
-	<script src="/js/am-directive.js"></script>
-	<script>
-	angular.module('app', ['aniMachine']);
-	</script>
-	<style>
-	.element {
-		opacity: 0.6;
-	}
-	.late {
-		position: relative;
-		left: -138px;
-	}
-	</style>
+	<link rel="stylesheet" href="../bower_components/csshake/css/csshake.min.css">
+	<script src='../dist/ani-machine.min.js'></script>
 </head>
-<body ng-app="app">
+<body>
 	<div class="container">
-		<h2 class="title">Rotate</h2>
-		<div class="element" am-element>
-			<am-state value="right" trigger=".btn--action click">
-				<am-event on="active" do=":transform move right 300px rotate right 120deg scale 50% wait 0.02s" goto="stop"></am-event>
-			</am-state>
-			<am-state value="stop" >
-				<am-event on="active" do=":animate pulse"></am-event>
-			</am-state>
+		<h2 class="title">CSShake</h2>
+		<div class="element"
+			data-am=":enter left move 500px :go shake"
+			data-am-shake=":shake slow">Slow Shake
 		</div>
-		<div class="element element--blue late" am-element>
-			<am-state value="right" trigger=".btn--action click">
-				<am-event on="active" do=":transform move right 300px rotate right 120deg" goto="bottom"></am-event>
-			</am-state>
-			<am-state value="bottom">
-				<am-event on="active" do=":transform move bottom 150px move right 150px rotate right 240deg" goto="left"></am-event>
-			</am-state>
-			<am-state value="left">
-				<am-event on="active" do=":transform move left 0 rotate right 0deg" goto="right"></am-event>
-			</am-state>
+		<div class="element element--blue"
+			data-am=":enter right move 500px :go shake"
+			data-am-shake=":shake hard">Hard Shake
 		</div>
-		<p><a class="btn btn--action">Start</a></p>
+		<div class="element element--yellow"
+			data-am=":enter top move 500px :go shake"
+			data-am-shake=":shake">Basic Shake
+		</div>
+		<div class="element" 
+			data-am=":enter bottom move 500px :go shake"
+			data-am-shake=":shake little">Little Shake
+		</div>
 	</div>
+	<script>am.start();</script>
 </body>
 </html>

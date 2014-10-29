@@ -26,6 +26,9 @@ am.enter = (function(translate, transition, undefined) {
 				case "over":
 					attrs.over = param;
 					return;
+				case "easing":
+					attrs.easing = param;
+					return;
 				case 'scale':
 				  	attrs.scale = {};
 				  	if (param == 'up' || param == 'down') {

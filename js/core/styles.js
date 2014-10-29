@@ -10,19 +10,17 @@ am.styles = (function(undefined) {
 		return '.' + key + '{' + content + '}';
 	}
 
-	return {
-		build: function(key, content) {
-			var raw = buildCSS(key, content);
-			if (!raw) {
-				return key;
-			}
-			var style = document.createElement("style");
-			style.type = "text/css";
-			style.innerHTML = raw;
-			cache[key] = true; //style;
-			document.getElementsByTagName("head")[0].appendChild(style);
+	return function(key, content) {
+		var raw = buildCSS(key, content);
+		if (!raw) {
 			return key;
 		}
+		var style = document.createElement("style");
+		style.type = "text/css";
+		style.innerHTML = raw;
+		cache[key] = true; //style;
+		document.getElementsByTagName("head")[0].appendChild(style);
+		return key;
 	};
 
 })();
