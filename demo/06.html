@@ -5,56 +5,49 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../dist/animate.min.css">
-	<script src='../dist/angular.min.js'></script>
-	<script src='../dist/ani-machine.js'></script>
+	<script src='/js/libs/classie.js'></script>
+	<script src='/js/libs/events.js'></script>
+	<script src='/js/core/prefix.js'></script>
+	<script src="/js/core/viewport.js"></script>
+	<script src='/js/core/styles.js'></script>
+	<script src='/js/core/frame.js'></script>
+	<script src='/js/effets/translate.js'></script>
+	<script src='/js/effets/transition.js'></script>
+	<script src='/js/effets/enter.js'></script>
+	<script src='/js/effets/transform.js'></script>
+	<script src="/js/dom/parser.js"></script>
+	<script src='/js/am/build.js'></script>
+	<script src="/js/am/maestro.js"></script>
+	<script src="/js/am/facade.js"></script>
 	<script>
-	angular.module('app', ['aniMachine']);
-
 	function blueColor() {
 		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			elm.classList.add('element--blue');
+			classie.add(elm, 'element--blue');
 		});
 	}
 
 	function pinkColor() {
 		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			elm.classList.remove('element--blue');
+			classie.remove(elm, 'element--blue');
 		});
 	}
 	</script>
 </head>
-<body ng-app="app">
+<body>
 	<div class="container">
 		<h2 class="title">Transform Animation</h2>
 		<span class="subtitle">with some before callbacks.</span>
-		<div class="element element--yellow element--ball" am-element>
-			<am-state value="default">
-				<am-event on="active" goto="bottomleft"></am-event>
-			</am-state>
-			<am-state value="bottomleft">
-				<am-event on="active" do=":transform move bottom 250px move left 0" goto="topleft"></am-event>
-			</am-state>
-			<am-state value="topleft">
-				<am-event on="active" do=":transform move left 0" goto="bottomleft"></am-event>
-			</am-state>
+		<div class="element element--yellow element--ball" 
+			data-am=":transform move bottom 250px move left 0 :go up"
+			data-am-up=":transform move bottom 0 left 0 :go default">
 		</div>
-		<div class="element element--blue element--ball" am-element>
-			<am-state value="default">
-				<am-event on="active" goto="topright"></am-event>
-			</am-state>
-			<am-state value="topright">
-				<am-event on="active" do=":transform move right 250px" before="blueColor()" goto="bottomright"></am-event>
-			</am-state>
-			<am-state value="bottomright">
-				<am-event on="active" do=":transform move bottom 250px move right 250px" goto="bottomleft"></am-event>
-			</am-state>
-			<am-state value="bottomleft">
-				<am-event on="active" do=":transform move bottom 250px move left 0" before="pinkColor()" goto="topleft"></am-event>
-			</am-state>
-			<am-state value="topleft">
-				<am-event on="active" do=":transform move left 0" goto="topright"></am-event>
-			</am-state>
+		<div class="element element--blue element--ball" 
+			data-am=":transform move right 250px :before blueColor() :go bottomright"
+			data-am-bottomright=":transform move bottom 250px move right 250px :go bottomleft"
+			data-am-bottomleft=":transform move bottom 250px move left 0 :before pinkColor() :go topleft"
+			data-am-topleft=":transform move left 0 :go default">
 		</div>
+		<script>am.start();</script>
 	</div>
 </body>
 </html>

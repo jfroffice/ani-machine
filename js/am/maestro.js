@@ -184,8 +184,6 @@ am.maestro = (function(frame, undefined) {
 				});
 			}
 
-			
-
 			if (!sameState || force) {
 				self.currentState = state;
 				self.offs = initState(self.states[state]);
