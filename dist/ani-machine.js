@@ -543,6 +543,10 @@ am.transform = (function(styles, transition, undefined) {
 		return s.replace(/((\s*\S+)*)\s*/, "$1");
 	}
 
+	function getValue(key, s) {
+		return rtrim(s.substring(key.length+1, s.length));
+	}
+
 	function getState(input) {
 		var events = [],
 			e;
@@ -557,12 +561,19 @@ am.transform = (function(styles, transition, undefined) {
 				sentence.split(':').forEach(function (s) {
 					if (s.indexOf('n') === 0) {
 						e.on = rtrim(s.substring(2, s.length));
-					} else if (s.indexOf('enter') 	 === 0
-						 || s.indexOf('animate') === 0
-						 || s.indexOf('shake') === 0) {
+					} else if (s.indexOf('enter') 		=== 0
+						 	|| s.indexOf('transform') 	=== 0
+						 	|| s.indexOf('animate') 	=== 0
+						 	|| s.indexOf('shake') 		=== 0) {
 						e.do = ':' + rtrim(s);
 					} else if (s.indexOf('go') === 0) {
 						e.go = rtrim(s.substring(3, s.length));
+					} else if (s.indexOf('transform') === 0) {
+						e.transform = getValue('transform', s);
+					} else if (s.indexOf('before') === 0) {
+						e.before = rtrim(s.substring(7, s.length)).replace('()', '');
+					} else if (s.indexOf('after') === 0) {
+						e.after = rtrim(s.substring(6, s.length)).replace('()', '');
 					} else if (s.indexOf('loop') === 0) {
 						e.loop = rtrim(s.substring(5, s.length));
 					}
@@ -624,7 +635,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 			classie.remove(elm, initial);
 			//elm.removeClass(initial);
 		}
-		events.on(elm, prefix.TRANSITION_END_EVENT, function() {
+		events.one(elm, prefix.TRANSITION_END_EVENT, function() {
 		//elm.one(prefix.TRANSITION_END_EVENT, function() {
 			classie.remove(elm, transition);
 			//elm.removeClass(transition);
@@ -915,8 +926,6 @@ am.maestro = (function(frame, undefined) {
 				});
 			}
 
-			
-
 			if (!sameState || force) {
 				self.currentState = state;
 				self.offs = initState(self.states[state]);
@@ -938,9 +947,11 @@ am.start = (function(maestro, viewport, undefined) {
 			if (s.states.enter || s.states.leave) {
 				if (viewport.isInside(s.element)) {
 					//if (!events.default) {
+					console.log('change state to enter...');
 					s.changeState('enter');
 					//}
 				} else {
+					console.log('change state to leave...');
 					s.changeState('leave');
 				}
 			}
@@ -955,7 +966,7 @@ am.start = (function(maestro, viewport, undefined) {
 		debounce = setTimeout(function() {
 			debounce = null,
 			enterLeaveFn();
-		}, 10);	
+		}, 20);	
 	}
 
 	events.on(window, 'scroll', debounceFn);

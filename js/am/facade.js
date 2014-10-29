@@ -31,7 +31,7 @@ am.start = (function(maestro, viewport, undefined) {
 		debounce = setTimeout(function() {
 			debounce = null,
 			enterLeaveFn();
-		}, 20);	
+		}, 10);	
 	}
 
 	events.on(window, 'scroll', debounceFn);
