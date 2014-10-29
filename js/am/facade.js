@@ -4,38 +4,33 @@ am.start = (function(maestro, viewport, undefined) {
 	var ATTR = 'data-am',
 		DEFAULT = 'default',
 		sequencers = [],
-		debounce;
+		enterLeave;
 
 	function enterLeaveFn() {
-		// TODO debounce
-		sequencers.forEach(function(s) {
-			if (s.states.enter || s.states.leave) {
-				if (viewport.isInside(s.element)) {
-					//if (!events.default) {
-					console.log('change state to enter...');
-					s.changeState('enter');
-					//}
-				} else {
-					console.log('change state to leave...');
-					s.changeState('leave');
-				}
-			}
-		});
-	}	
-
-	function debounceFn() {
-		if (debounce) {
-			clearTimeout(debounce);
+		if (enterLeave) {
+			clearTimeout(enterLeave);
 		}
 
-		debounce = setTimeout(function() {
-			debounce = null,
-			enterLeaveFn();
+		enterLeave = setTimeout(function() {
+			enterLeave = null;
+
+			(function () {
+				sequencers.forEach(function(s) {
+					if (s.states.enter || s.states.leave) {
+						if (viewport.isInside(s.element)) {
+							s.changeState('enter');
+						} else {
+							s.changeState('leave');
+						}
+					}
+				});
+			})();
+
 		}, 10);	
 	}
 
-	events.on(window, 'scroll', debounceFn);
-	events.on(window, 'resize', debounceFn);
+	events.on(window, 'scroll', enterLeaveFn);
+	events.on(window, 'resize', enterLeaveFn);
 
 	return function() {
 		[].forEach.call(document.querySelectorAll('[' + ATTR + ']'), function(element) {
