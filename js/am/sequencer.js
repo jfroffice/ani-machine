@@ -96,8 +96,8 @@ am.sequencer = (function(frame, undefined) {
 
 			function initEvent(event) {
 				var go = event.go,
-					before = event.before ? event.before.replace('()', '') : '',
-					after = event.after ? event.after.replace('()', '') : '',
+					before = event.before,
+					after = event.after,
 					loop = event.loop,
 					eventParam = event.do,
 					on = parser(event.on),
