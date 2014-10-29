@@ -1,26 +1,15 @@
 AniMachine
 ==========
 
-Declarative animation and machine state build
-
-No Dependencies
----------------
-10,4 Kb minified
+Declarative animation and machine state build (11 KB minified)
 
 Optional Dependencies
 ---------------------
-- Animate.css (optional)
-- CSShake.css (optional)
-
-Credits & Inspirations
-----------------------
-[scrollReveal](https://github.com/julianlloyd/scrollReveal.js)
-[animate.css](http://daneden.github.io/animate.css/)
-[csshake](http://elrumordelaluz.github.io/csshake/)
+- [animate.css](http://daneden.github.io/animate.css/)
+- [csshake](http://elrumordelaluz.github.io/csshake/)
 
 How to start 
 ------------
-
 Add JS dependency
 ```
 <script src="https://raw.githubusercontent.com/jfroffice/ani-machine/master/dist/ani-machine.min.js"></script>
@@ -29,44 +18,80 @@ Add JS dependency
 Enter Animation
 ---------------
 
-Add __data-am__ on DOM element to animate
+Add __data-am__ attribute on DOM element to animate it
 ```
 <div data-am=":enter left move 500px over 1.0s">HelloWorld</div>
 ```
+using __:enter__ keyword
 
 State
 -----
-
-by default you can declare a __default__ state like this
+__default__ state can be declare like this
 ```
-<div class="element" am-element>
-	<am-state value="default">
-		<am-event on="enter" animate="pulse"></am-event>
-		<am-event on="leave" animate="tada"></am-event>
-	</am-state>
+<div class="element" 
+	data-am=":on enter :animate pulse
+			 :on leave :animate tada">
+</div>
+```
+If you want to declare another state called __next__
+```
+<div class="element" 
+	data-am=""
+ 	data-am-next=":on enter :animate pulse
+			 	  :on leave :animate tada">
 </div>
 ```
 
-inside you declare you would like to bind and special animation you would like to trigger on events
-
-(Here is animation from animate.css)
-
-Trigger Event
---------------
-
-State can be change from a trigger
+How to change state ?
+---------------------
+You need to add __:go__ keyword to change state when animation play and is finished
 ```
-<am-state value="triggered" trigger=".btn click">
-	<am-event on="enter" animate="bounce"></am-event>
-</am-state>
+<div class="element" 
+	data-am=":enter left move 500px :go next"
+	data-am-next=":on enter :animate pulse
+				  :on leave :animate tada">
+</div>
 ```
 
-In this case, when user click on element selector by class ".btn" element will is state defined by value
+How to launch CSS Animation
+---------------------------
+Add __:animate__ to follow be animation css class name
+
+```
+<div class="element" 
+	data-am=":animate tada">
+</div>
+```
+
+To chain css animation 
+```
+<div class="element" 
+	data-am=":animate tada pulse flash">
+</div>
+```
+
+How to trigger animation
+------------------------
+Use __:trigger__ keyword
+```
+<div class="element" 
+	data-am-special=":animate bounce
+					 :trigger .btn--trigger click">
+</div>
+<div class=".btn--trigger"></div>
+```
+You can use default event 
+
+- click (click 	    event)
+- enter (mouseenter event)
+- leave (mouseleave event)
+- ...
+
 
 Autostart
 ---------
 
-You can play animation on state activation using keyword __active__
+By default, element with __data-am__ attribute will be in __default__ state
 
 Reveal Animation
 ----------------
@@ -124,3 +149,11 @@ You can bind callback before and after animation event.
 	<am-event on="active" before="show()" animate="bounceOutRight" after="hide()"></am-event>
 </am-state>
 ```
+
+
+
+Credits & Inspirations
+----------------------
+- [scrollReveal](https://github.com/julianlloyd/scrollReveal.js)
+- [animate.css](http://daneden.github.io/animate.css/)
+- [csshake](http://elrumordelaluz.github.io/csshake/)
