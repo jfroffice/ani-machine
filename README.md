@@ -40,7 +40,7 @@ __default__ state is declare with __data-am__
 	data-am=":on enter :animate pulse
 			 :on leave :animate tada">
 </div>
-Here we define animation on mouseenter and mouseleave
+_Here we define animation on mouseenter and mouseleave_
 ![state!](https://github.com/jfroffice/ani-machine/raw/master/tuts/state.gif)
 
 ```
@@ -54,6 +54,8 @@ If you want to declare a __next__ state
 
 How to change state ?
 ---------------------
+![changestate!](https://github.com/jfroffice/ani-machine/raw/master/tuts/changestate.gif)
+
 You need to use __":go"__ keyword followed by state name to change state when played animation is finished
 ```
 <div class="element" 
@@ -83,6 +85,8 @@ To chain CSS animation
 
 How to launch CSShake Animation
 ---------------------------
+![shake!](https://github.com/jfroffice/ani-machine/raw/master/tuts/shake.gif)
+
 Add __":shake"__ followed by [csshake](http://elrumordelaluz.github.io/csshake/) animation name you want to apply
 ```
 <div class="element" 

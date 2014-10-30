@@ -1,11 +1,11 @@
+revue README.md + gif
+add loop style in css from sass
+
 Font Geometric with AniMachine
 
 Roadmap
 -------
 new demo pages
-try polymer ? why
-add loop style in css from sass
-
 scroll
 reverse (animation-direction only on animation not transition)
 template animation
