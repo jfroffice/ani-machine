@@ -43,7 +43,6 @@ __default__ state is declare with __data-am__
 </div>
 ```
 _Here we define animation on mouseenter and mouseleave_
-![state!](https://github.com/jfroffice/ani-machine/raw/master/tuts/state.gif)
 
 If you want to declare a __next__ state
 ```
@@ -97,6 +96,8 @@ Add __":shake"__ followed by [csshake](http://elrumordelaluz.github.io/csshake/)
 
 How to trigger animation
 ------------------------
+![trigger!](https://github.com/jfroffice/ani-machine/raw/master/tuts/trigger.gif)
+
 Use __":trigger"__ keyword
 ```
 <div class="element" 
