@@ -155,3 +155,13 @@ function afterFn() {
 }
 </script>
 ```
+
+Release History
+---------------
+v0.1.8: remove all dependencies
+v0.1.7: initial revision working with AngularJS
+
+License
+-------
+Copyright (c) 2014 John Fischer
+Licensed under the MIT license.
