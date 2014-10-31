@@ -20,6 +20,7 @@ disable css stylesheets
 
 Crédits
 -------
+http://imakewebthings.com/jquery-waypoints/#docs
 http://www.benjystanton.co.uk/work/side-projects/web-animation-resources/
 http://bouncejs.com/
 http://hoverstat.es/
