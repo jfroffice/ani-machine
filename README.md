@@ -159,6 +159,13 @@ Release History
 - v0.1.8: remove all dependencies
 - v0.1.7: initial revision working with AngularJS
 
+Browser Support
+---------------
+IE10+
+Chrome4+
+FF5+
+Opera12+
+
 License
 -------
 Copyright (c) 2014 John Fischer
