@@ -1,6 +1,6 @@
 /**
  * ani-machine - Declarative animation and machine state
- * @version v0.1.8
+ * @version v0.1.9
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
@@ -18,44 +18,20 @@
  /*global define: false */
 
  (function(window) {
-
 	'use strict';
+	
+	var hasClass = function( elem, c ) {
+		  return elem.classList.contains( c );
+	};
 
-	// class helper functions from bonzo https://github.com/ded/bonzo
+	var addClass = function( elem, c ) {
+	  	elem.classList.add( c );
+	};
 
-	function classReg( className ) {
-	return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
-	}
-
-	// classList support for class management
-	// altho to be fair, the api sucks because it won't accept multiple classes at once
-	var hasClass, addClass, removeClass;
-
-	if ( 'classList' in document.documentElement ) {
-		hasClass = function( elem, c ) {
-		  	return elem.classList.contains( c );
-		};
-		addClass = function( elem, c ) {
-		  	elem.classList.add( c );
-		};
-		removeClass = function( elem, c ) {
-		  	elem.classList.remove( c );
-		};
-	}
-	else {
-		hasClass = function( elem, c ) {
-		  	return classReg( c ).test( elem.className );
-		};
-		addClass = function( elem, c ) {
-		  	if ( !hasClass( elem, c ) ) {
-				elem.className = elem.className + ' ' + c;
-			}
-		};
-		removeClass = function( elem, c ) {
-		  	elem.className = elem.className.replace( classReg( c ), ' ' );
-		};
-	}
-
+	var removeClass = function( elem, c ) {
+		elem.classList.remove( c );
+	};
+	
 	function toggleClass( elem, c ) {
 		var fn = hasClass( elem, c ) ? removeClass : addClass;
 		fn( elem, c );
@@ -298,28 +274,33 @@ am.translate = (function(styles, undefined) {
 		if (options.opacity !== undefined) {
 			css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
 		}
-	
+
+		//css += '-webkit-perspective: 1000; -webkit-backface-visibility: hidden;'
+
+
 		key += type + options.axis + '_' + options.move + '_' + options.opacity;
 
 		return styles(key.replace(/-/g, 'm'), css);
 	};
 
 })(am.styles);
+
 am.transition = (function(styles, undefined) {
 	"use strict";
 
 	return function(over, easing, after) {
 		var tmp = over + ' ' + easing + ' ' + after,
-			tmp2 = tmp + ', rotate, skew, scale, opacity ' + tmp + ';';
+			tmp2 = tmp + ', all ' + tmp + ';'; /* all for Safari */
 
 		var key = '_' + tmp.replace(/ /g, '_').replace(/\./g, '_');
-		var css =  '-webkit-transition: -webkit-transform ' + tmp2 +
-					       'transition: transform '			+ tmp2;
+		var css = '-webkit-transition: -webkit-transform ' + tmp2 +
+				          'transition: transform '		   + tmp2;
 
 		return styles(key, css);
 	};
 
 })(am.styles);
+
 am.enter = (function(translate, transition, undefined) {
 	"use strict";
 
@@ -611,7 +592,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 	}
 
 	function doTransition(elm, initial, target, transition, cb) {
-		
+
 		// hack: access style to apply transition
 		hackStyle(elm);
 
@@ -639,7 +620,9 @@ am.build = (function(prefix, enter, transform, undefined) {
 		//elm.one(prefix.TRANSITION_END_EVENT, function() {
 			classie.remove(elm, transition);
 			//elm.removeClass(transition);
-			elm.setAttribute('data-previous-target', target);
+			if (target) {
+				elm.setAttribute('data-previous-target', target);
+			}
 			//elm.data('previous-target', target);
 			cb && cb();
 		});
@@ -675,16 +658,16 @@ am.build = (function(prefix, enter, transform, undefined) {
 
 				classie.add(elm, 'shake');
 				classie.add(elm, 'shake-constant');
-				if (param[1]) {			
+				if (param[1]) {
 					classie.add(elm, 'shake-' + param[1]);
 				}
 				//elm.addClass(initial);
 				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
 					//console.log('animation end : ' + initial);
-					
+
 					classie.remove(elm, 'shake');
 					classie.remove(elm, 'shake-constant');
-					if (param[1]) {			
+					if (param[1]) {
 						classie.remove(elm, 'shake-' + param[1]);
 					}
 					//elm.removeClass(initial);
@@ -716,7 +699,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 
 				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
 					//console.log('animation end : ' + initial);
-					
+
 					classie.remove(elm, param);
 					classie.remove(elm, 'animated');
 					//elm.removeClass(initial);
@@ -725,7 +708,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 			/*	elm.addEventListener(prefix.ANIMATION_END_EVENT, function() {
 				//elm.one(prefix.ANIMATION_END_EVENT, function() {
 						console.log('animation end : ' + initial);
-						
+
 						classie.removeClass(elm, param);
 						classie.removeClass(elm, 'animated');
 						//elm.removeClass(initial);
@@ -740,6 +723,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 	};
 
 })(am.prefix, am.enter, am.transform);
+
 am.sequencer = (function(frame, undefined) {
 	"use strict";
 
@@ -838,8 +822,8 @@ am.sequencer = (function(frame, undefined) {
 
 			function initEvent(event) {
 				var go = event.go,
-					before = event.before ? event.before.replace('()', '') : '',
-					after = event.after ? event.after.replace('()', '') : '',
+					before = event.before,
+					after = event.after,
 					loop = event.loop,
 					eventParam = event.do,
 					on = parser(event.on),
