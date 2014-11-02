@@ -66,6 +66,7 @@ body {
 	height: 30px;
 	opacity: 0.9;
 	display: inline-block;
+	-webkit-transform: skewx(-15deg) translatex(-108px) translatey(-52px);
 	transform: skewx(-15deg) translatex(-108px) translatey(-52px);
 }
 
@@ -90,10 +91,12 @@ body {
 }
 
 .letter-vertical--right {
+	-webkit-transform: skewx(-15deg);
 	transform: skewx(-15deg);
 }
 
 .letter-vertical--left {
+	-webkit-transform: skewx(15deg) translatex(17px);
 	transform: skewx(15deg) translatex(17px);
 }
 

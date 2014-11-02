@@ -18,7 +18,10 @@ am.translate = (function(styles, undefined) {
 		if (options.opacity !== undefined) {
 			css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
 		}
-	
+
+		//css += '-webkit-perspective: 1000; -webkit-backface-visibility: hidden;'
+
+
 		key += type + options.axis + '_' + options.move + '_' + options.opacity;
 
 		return styles(key.replace(/-/g, 'm'), css);

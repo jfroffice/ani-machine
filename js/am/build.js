@@ -6,7 +6,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 	}
 
 	function doTransition(elm, initial, target, transition, cb) {
-		
+
 		// hack: access style to apply transition
 		hackStyle(elm);
 
@@ -34,7 +34,9 @@ am.build = (function(prefix, enter, transform, undefined) {
 		//elm.one(prefix.TRANSITION_END_EVENT, function() {
 			classie.remove(elm, transition);
 			//elm.removeClass(transition);
-			elm.setAttribute('data-previous-target', target);
+			if (target) {
+				elm.setAttribute('data-previous-target', target);
+			}
 			//elm.data('previous-target', target);
 			cb && cb();
 		});
@@ -70,16 +72,16 @@ am.build = (function(prefix, enter, transform, undefined) {
 
 				classie.add(elm, 'shake');
 				classie.add(elm, 'shake-constant');
-				if (param[1]) {			
+				if (param[1]) {
 					classie.add(elm, 'shake-' + param[1]);
 				}
 				//elm.addClass(initial);
 				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
 					//console.log('animation end : ' + initial);
-					
+
 					classie.remove(elm, 'shake');
 					classie.remove(elm, 'shake-constant');
-					if (param[1]) {			
+					if (param[1]) {
 						classie.remove(elm, 'shake-' + param[1]);
 					}
 					//elm.removeClass(initial);
@@ -111,7 +113,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 
 				events.one(elm, prefix.ANIMATION_END_EVENT, function() {
 					//console.log('animation end : ' + initial);
-					
+
 					classie.remove(elm, param);
 					classie.remove(elm, 'animated');
 					//elm.removeClass(initial);
@@ -120,7 +122,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 			/*	elm.addEventListener(prefix.ANIMATION_END_EVENT, function() {
 				//elm.one(prefix.ANIMATION_END_EVENT, function() {
 						console.log('animation end : ' + initial);
-						
+
 						classie.removeClass(elm, param);
 						classie.removeClass(elm, 'animated');
 						//elm.removeClass(initial);
