@@ -33,7 +33,6 @@ am.sequencer = (function(frame, undefined) {
 
 				[].forEach.call(document.querySelectorAll(selector), function(el) {
 					events.on(el, on, function() {
-					//el.addEventListener(on, function() {
 						self.changeState(state, true);
 					});
 				});
@@ -91,13 +90,14 @@ am.sequencer = (function(frame, undefined) {
 
 			function callFn(fn) {
 				fn = window[fn];					 
-				if (typeof fn === "function") fn.apply(null, self);
+				if (typeof fn === "function") fn.apply(null, [self.element]);
 			}
 
 			function initEvent(event) {
 				var go = event.go,
 					before = event.before,
 					after = event.after,
+					wait = event.wait,
 					loop = event.loop,
 					eventParam = event.do,
 					on = parser(event.on),
@@ -144,7 +144,6 @@ am.sequencer = (function(frame, undefined) {
 
 					if (on !== ACTIVE) {
 						events.off(releaseEvent);
-						//self.element.off(on, eventFn);
 					}
 					self.changeState(go);
 				}
@@ -165,17 +164,17 @@ am.sequencer = (function(frame, undefined) {
 				}
 
 				if (on === ACTIVE) { // autostart animation
-					frame(eventFn);
+					if (wait) {
+						setTimeout(function() { frame(eventFn); }, wait);
+					} else {
+						frame(eventFn);
+					}
 				} else {
 					releaseEvent = events.on(self.element, on, eventFn);
-					//self.element.addEventListener(on, eventFn);
-					//self.element.on(on, eventFn);
 				}
 			
 				return function() {
-					releaseEvent && events.off(releaseEvent);//self.element, on, eventFn);
-					//self.element.removeEventListener(on, eventFn);
-					//self.element.off(on, eventFn);
+					releaseEvent && events.off(releaseEvent);
 				};
 			}
 

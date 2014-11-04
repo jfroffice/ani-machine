@@ -11,13 +11,24 @@ describe('init state', function(){
   })
   describe(':go', function(){
     it('defined', function() {      
-      data = parser.getStates({}, 'default', ':enter value :go next');
+      data = parser.getStates({}, 'default', ':enter value :go next :after 2.0s');
       assert.equal('next', data.default[0].go);
+      assert.equal('2.0s', data.default[0].after);
     })
   	it('undefined by default', function() {      
   	  data = parser.getStates({}, 'default', ':enter value');
   	  assert.equal(undefined, data.default[0].go);
   	})
+  })
+  describe(':wait', function(){
+    it('defined', function() {      
+      data = parser.getStates({}, 'default', ':enter value :wait 2.0s :go next');
+      assert.equal('2000', data.default[0].wait);
+    })
+    it('undefined by default', function() {      
+      data = parser.getStates({}, 'default', ':enter value');
+      assert.equal(undefined, data.default[0].wait);
+    })
   })
   describe(':on', function(){
     it('defined', function() {      

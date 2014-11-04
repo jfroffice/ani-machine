@@ -47,6 +47,8 @@
 						e.before = rtrim(s.substring(7, s.length)).replace('()', '');
 					} else if (s.indexOf('after') === 0) {
 						e.after = rtrim(s.substring(6, s.length)).replace('()', '');
+					} else if (s.indexOf('wait') === 0) {
+						e.wait = +(rtrim(s.substring(5, s.length)).replace('s', '')) * 1000;
 					} else if (s.indexOf('loop') === 0) {
 						e.loop = rtrim(s.substring(5, s.length));
 					}
