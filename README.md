@@ -65,7 +65,7 @@ You need to use __":go"__ keyword followed by state name to change state when pl
 </div>
 ```
 
-How to launch CSS Animation
+How to launch CSS Animation ?
 ---------------------------
 Add __":animate"__ keyword followed by animation CSS class name
 ```html
@@ -82,7 +82,7 @@ To chain CSS animation
 </div>
 ```
 
-How to launch CSShake Animation
+How to launch CSShake Animation ?
 ---------------------------
 ![shake!](https://github.com/jfroffice/ani-machine/raw/master/tuts/shake.gif)
 
@@ -93,7 +93,7 @@ Add __":shake"__ followed by [csshake](http://elrumordelaluz.github.io/csshake/)
 </div>
 ```
 
-How to trigger animation
+How to trigger animation ?
 ------------------------
 ![trigger!](https://github.com/jfroffice/ani-machine/raw/master/tuts/trigger.gif)
 
@@ -154,8 +154,21 @@ function afterFn() {
 </script>
 ```
 
+How to add a pause ?
+------------------
+You can use __":wait"__ to make a pause before running animation or after
+```html
+<div class="element" 
+	data-am-enter=":wait 0.2s :animate pulse">
+</div>
+```
+
 Release History
 ---------------
+- v0.1.9: 
+	add :wait operator
+	add element as first parameter in before and after callbacks
+	remove some old browser compatibility codes
 - v0.1.8: remove all dependencies
 - v0.1.7: initial revision working with AngularJS
 

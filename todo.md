@@ -1,4 +1,5 @@
-revue README.md + gif
+add machine as second element in callback to allow dynamic changing state
+
 add loop style in css from sass
 
 Font Geometric with AniMachine
@@ -29,3 +30,4 @@ http://vimeo.com/93206523
 http://tympanus.net/codrops/2014/10/24/wobbly-slideshow-effect/
 http://www.benjystanton.co.uk/work/side-projects/web-animation-resources/
 SVG Morph http://tavmjong.free.fr/blog/?p=741
+https://github.com/ConnorAtherton/walkway

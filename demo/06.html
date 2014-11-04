@@ -7,16 +7,12 @@
 	<link rel="stylesheet" href="../dist/animate.min.css">
 	<script src='../dist/ani-machine.min.js'></script>
 	<script>
-	function blueColor() {
-		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			classie.add(elm, 'element--blue');
-		});
+	function blueColor(elm) {
+		classie.add(elm, 'element--blue');
 	}
 
-	function pinkColor() {
-		[].forEach.call(document.querySelectorAll('.element'), function(elm) {
-			classie.remove(elm, 'element--blue');
-		});
+	function pinkColor(elm) {
+		classie.remove(elm, 'element--blue');
 	}
 	</script>
 </head>

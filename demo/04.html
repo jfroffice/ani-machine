@@ -5,31 +5,19 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../dist/animate.min.css">
-	<script src='../dist/ani-machine.min.js'></script>
+	<script src='../dist/ani-machine.js'></script>
 	<script>
-	function all(selector, cb) {
-		[].forEach.call(document.querySelectorAll(selector), function(elm) {
-			cb && cb(elm);
-		});
+	function changeColor(elm) {
+		classie.add(elm, 'element--blue');
 	}
 
-	function changeColor() {
-		all('.element', function(elm) {
-			classie.add(elm, 'element--blue');
-		});
+	function hide(elm) {
+		classie.add(elm, 'element--hidden');
 	}
 
-	function hide() {
-		all('.element', function(elm) {
-			classie.add(elm, 'element--hidden');
-		});
-	}
-
-	function show() {
-		all('.element', function(elm) {
-			classie.remove(elm, 'element--hidden');
-			classie.remove(elm, 'element--blue');
-		});
+	function show(elm) {
+		classie.remove(elm, 'element--hidden');
+		classie.remove(elm, 'element--blue');
 	}
 	</script>
 </head>
