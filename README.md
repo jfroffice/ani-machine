@@ -176,10 +176,10 @@ Release History
 
 Browser Support
 ---------------
-IE10+
-Chrome4+
-FF5+
-Opera12+
+- IE10+
+- Chrome4+
+- FF5+
+- Opera12+
 
 License
 -------
