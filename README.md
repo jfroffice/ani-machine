@@ -145,14 +145,16 @@ You can bind __":before"__ or __":after"__ callback animation event
 
 ```html
 <script>
-function beforeFn() {
+function beforeFn(element) {
 	console('before callback');
 }
-function afterFn() {
+function afterFn(element) {
 	console('after callback');
 }
 </script>
 ```
+
+> element is DOM element which call the callback
 
 How to add a pause ?
 ------------------
@@ -166,9 +168,9 @@ You can use __":wait"__ to make a pause before running animation or after
 Release History
 ---------------
 - v0.1.9: 
-	add :wait operator
-	add element as first parameter in before and after callbacks
-	remove some old browser compatibility codes
+	- add :wait operator
+	- add element as first parameter in before and after callbacks
+	- remove some old browser compatibility codes
 - v0.1.8: remove all dependencies
 - v0.1.7: initial revision working with AngularJS
 
