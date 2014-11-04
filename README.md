@@ -178,6 +178,7 @@ Browser Support
 ---------------
 - IE10+
 - Chrome4+
+- Safari8+
 - FF5+
 - Opera12+
 
