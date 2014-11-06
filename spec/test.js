@@ -9,6 +9,12 @@ describe('init state', function(){
       assert.equal(':enter value', data.default[0].do);
     })
   })
+  describe(':leave', function(){
+    it('defined', function() {
+      data = parser.getStates({}, 'default', ':leave value');
+      assert.equal(':leave value', data.default[0].do);
+    })
+  })
   describe(':go', function(){
     it('defined', function() {      
       data = parser.getStates({}, 'default', ':enter value :go next :after 2.0s');
