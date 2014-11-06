@@ -2,6 +2,7 @@
   "name": "ani-machine",
   "version": "0.1.9",
   "homepage": "https://github.com/jfroffice/ani-machine",
+  "description": "Declarative HTML Web-Animation and Simple Machine State written in JS / CSS - also works with Animate.css, CSShake",
   "authors": [
     "jfroffice <me@jfroffice.me>"
   ],
@@ -20,5 +21,6 @@
   "dependencies": {
     "angular": "*",
     "animate.css": "*"
-  }
+  },
+  "keywords": ["css animations", "declarative", "animate.css", "csshake"]
 }
