@@ -1,4 +1,4 @@
-am.build = (function(prefix, enter, transform, undefined) {
+am.build = (function(prefix, enter, leave, transform, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
@@ -28,6 +28,9 @@ am.build = (function(prefix, enter, transform, undefined) {
 			classie.remove(elm, transition);
 			if (target) {
 				elm.setAttribute('data-previous-target', target);
+			} else {
+				elm.removeAttribute('data-previous-target');
+				console.log(elm);
 			}
 			cb && cb();
 		});
@@ -42,6 +45,14 @@ am.build = (function(prefix, enter, transform, undefined) {
 				s = enter(param);
 				classie.add(elm, s.initial);
 				doTransition(elm, s.initial, null, s.transition, function() {
+					cb && cb();
+				});
+			};
+		} if (type === ':leave') {
+			return function(cb) {
+				s = leave(param);
+				//classie.add(elm, s.initial);
+				doTransition(elm, null, s.target, s.transition, function() {
 					cb && cb();
 				});
 			};
@@ -99,4 +110,4 @@ am.build = (function(prefix, enter, transform, undefined) {
 		}
 	};
 
-})(am.prefix, am.enter, am.transform);
+})(am.prefix, am.enter, am.leave, am.transform);
