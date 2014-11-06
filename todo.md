@@ -1,3 +1,5 @@
+add :leave animation
+
 add machine as second element in callback to allow dynamic changing state
 
 add loop style in css from sass

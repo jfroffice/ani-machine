@@ -5,7 +5,22 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="../css/light.css">
 	<link rel="stylesheet" href="../dist/animate.min.css">
-	<script src='../dist/ani-machine.min.js'></script>
+	<!-- <script src='../dist/ani-machine.min.js'></script> -->
+	<script src="../js/libs/classie.js"></script>
+	<script src="../js/libs/events.js"></script>
+	<script src="../js/core/prefix.js"></script>
+	<script src="../js/core/viewport.js"></script>
+	<script src="../js/core/styles.js"></script>
+	<script src="../js/core/frame.js"></script>
+	<script src="../js/effets/translate.js"></script>
+	<script src="../js/effets/transition.js"></script>
+	<script src="../js/effets/enter.js"></script>
+	<script src="../js/effets/leave.js"></script>
+	<script src="../js/effets/transform.js"></script>
+	<script src="../js/dom/parser.js"></script>
+	<script src="../js/am/build.js"></script>
+	<script src="../js/am/sequencer.js"></script>
+	<script src="../js/am/facade.js"></script>
 </head>
 <body>
 	<div class="container">
@@ -13,13 +28,24 @@
 			<h2 class="title">Trigger Reveal animation</h2>
 			<span class="subtitle">Enter Left</span>
 			<div class="element"
-				data-am=":enter left move 500px scale up 100% over 1.0s :trigger .btn--action click">
+				data-am=":enter left move 500px scale up 100% over 1.0s :trigger .btn--enter click">
 			</div>
 			<span class="subtitle">Enter Right</span>
 			<div class="element"
-				data-am=":enter right move 500px scale down 100% over 1.0s :trigger .btn--action click">
+				data-am=":enter right move 500px scale down 100% over 1.0s :trigger .btn--enter click">
 			</div>
-			<p><a class="btn btn--action">Reveal</a></p>
+			<p><a class="btn btn--enter">Enter</a></p>
+			<span class="subtitle">Leave Left</span>
+			<div class="element"
+				data-am=""
+				data-am-next=":leave left move 500px scale up 100% over 1.0s :trigger .btn--leave click">
+			</div>
+			<span class="subtitle">Leave Right</span>
+			<div class="element"
+				data-am=""
+				data-am-next=":leave right move 500px scale down 100% over 1.0s :trigger .btn--leave click">
+			</div>
+			<p><a class="btn btn--leave">Leave</a></p>
 		</div>
 	</div>
 	<script>am.start();</script>
