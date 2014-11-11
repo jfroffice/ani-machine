@@ -22,5 +22,5 @@
     "angular": "*",
     "animate.css": "*"
   },
-  "keywords": ["css animations", "declarative", "animate.css", "csshake"]
+  "keywords": ["machine", "state", "transition", "scroll", "reveal", "css animations", "declarative", "animate.css", "csshake"]
 }

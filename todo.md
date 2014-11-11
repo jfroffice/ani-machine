@@ -1,3 +1,12 @@
+WebFont
+-------
+Gloria HAlleluhia
+Open Sans
+
+Source Sans Pro
+Lato
+
+
 add machine as second element in callback to allow dynamic changing state
 
 add loop style in css from sass

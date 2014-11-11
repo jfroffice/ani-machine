@@ -5,68 +5,76 @@
 	<title>AniMachine</title>
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="dist/animate.min.css">
+	<script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+	<script>
+	  WebFont.load({
+	    google: {
+	      families: ['Oswald']
+	    }
+	  });
+	</script>
 	<script src='./dist/ani-machine.min.js'></script>
 </head>
 <body>
 	<div class="container">
-		<h2 am-element class="special-header"
+		<h1 am-element class="special-header"
 			data-am=":enter top move 200px">Ani Machine
-		</h2>
+		</h1>
 		<span class="subtitle" data-am=":enter left move 500px">Declarative animation and machine state</span>
-		<div class="element" 
+		<div class="element"
 			data-am=":enter left move 400px scale 200% over 0.3s :go next"
 			data-am-next=":animate tada :on enter :animate pulse :on leave :animate tada">
 		</div>
-		<div class="element" 
+		<div class="element"
 			data-am=":enter top move 400px scale 400% over 0.6s :go next"
 			data-am-next=":animate tada :on enter :animate pulse :on leave :animate tada">
 		</div>
-		<div class="element element--white" 
+		<div class="element element--white"
 			data-am=":enter bottom move 400px scale 600% over 0.9s :go next"
 			data-am-next=":animate tada :on enter :animate pulse :on leave :animate tada">
 		</div>
-		<div class="element" 
+		<div class="element"
 			data-am=":enter right move 400px scale 800% over 1.2s :go next"
 			data-am-next=":animate tada :on enter :animate pulse :on leave :animate tada">
 		</div>
 		<div class="demolink">
-			<a class="link" href="./demo/01.html" 
+			<a class="link" href="./demo/01.html"
 				data-am=":enter top move 800px over 1.5s :go next"
 				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Trigger & Reveal Animation
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/02.html" 
+			<a class="link" href="./demo/02.html"
 				data-am=":enter left move 800px over 1.5s :go next"
 				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Trigger Reveal Animation
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/03.html" 
+			<a class="link" href="./demo/03.html"
 				data-am=":enter right move 800px over 1.5s :go next"
 				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Animation Element Event
 		   	</a>
 		</div>
 		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/04.html" 
+			<a class="link" href="./demo/04.html"
 				data-am=":enter left move 800px over 1.5s :go next"
 				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Before & After Callback
 			</a>
 		</div>
 		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/05.html" 
+			<a class="link" href="./demo/05.html"
 				data-am=":enter right move 800px over 1.5s :go next"
 				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Advanced Animation
 			</a>
 		</div>
 		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/06.html" 
+			<a class="link" href="./demo/06.html"
 				data-am=":enter left move 800px over 1.5s :go next"
 				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Transform Animation
 			</a>
 		</div>
 		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/07.html" 
+			<a class="link" href="./demo/07.html"
 				data-am=":enter bottom move 800px over 1.5s :go next"
 				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Shake Animation
 			</a>
