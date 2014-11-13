@@ -37,6 +37,7 @@
   unicode-range: U0 -0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
 
 /* http://coolors.co/15c7ef-cd5e30-ffffff-dccba0-633e14 */
+/* http://coolors.co/112838-cd5e30-ffffff-dccba0-633e14 */
 * {
   box-sizing: border-box; }
   *:before, *:after {
@@ -59,22 +60,46 @@ h1 {
   font-family: 'Oswald';
   font-size: 3em; }
 
+a {
+  text-decoration: none;
+  color: inherit; }
+
 .header {
   color: #CD5E30;
   /*#15C7EF;*/
   width: 7em; }
 
-.subtitle {
+h2 {
   font-family: 'Open Sans Condensed';
-  font-size: 2em;
-  color: white;
+  font-size: 1.7em;
+  color: white; }
+
+.subtitle {
   position: relative;
   -webkit-transform: translateX(400px) translateY(-200px);
   transform: translateX(400px) translateY(-200px); }
 
 p {
   color: #633e14;
-  text-align: justify; }
+  line-height: 1.6em; }
+
+.very-light {
+  font-weight: 700;
+  color: #3F9E63;
+  padding: 0 0.2em;
+  border-radius: 3px; }
+
+.light {
+  font-weight: 600;
+  color: #CD5E30;
+  padding: 0 0.2em;
+  border-radius: 3px; }
+
+.dark {
+  font-weight: 600;
+  color: #633e14;
+  padding: 0 0.2em;
+  border-radius: 3px; }
 
 .container {
   margin: 0 auto;
