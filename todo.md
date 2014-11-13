@@ -1,3 +1,6 @@
+=> add class related to state starting & finish
+=> enter-pending enter-done (pour mieux controller l'affichage)
+
 => generate a compile task to transform html and simplify déclaration like the title
 => have a nop animation to cancel shake animation on :leave event
 => have a way to launch infinite animation with animate.css

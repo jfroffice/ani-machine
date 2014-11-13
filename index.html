@@ -13,94 +13,76 @@
 	      families: ['Open Sans Condensed']
 	    }
 	  });
-	</script>-->
-	<script src='./dist/ani-machine.min.js'></script>
+	</script>
+	<script src='./dist/ani-machine.min.js'></script>-->
+	<script src='js/libs/classie.js'></script>
+    <script src='js/libs/events.js'></script>
+    <script src='js/core/prefix.js'></script>
+    <script src='js/core/viewport.js'></script>
+    <script src='js/core/styles.js'></script>
+    <script src='js/core/frame.js'></script>
+    <script src='js/effets/translate.js'></script>
+    <script src='js/effets/transition.js'></script>
+    <script src='js/effets/enter.js'></script>
+    <script src='js/effets/transform.js'></script>
+    <script src='js/dom/parser.js'></script>
+    <script src='js/am/build.js'></script>
+    <script src='js/am/sequencer.js'></script>
+    <script src='js/am/facade.js'></script>
 	<script>
 	function show(elm) { classie.add(elm, 'show'); }
-	function hide(elm) { classie.add(elm, 'hide'); }
+	function hide(elm) { classie.remove(elm, 'show'); }
 	</script>
 </head>
 <body>
 	<div class="container">
-		<section class="section">
+		<div class="section">
 			<h1 class="header">
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.0s
-					  		   :before show()"
-					  data-am-leave="before hide()">A</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.1s
-					  		   :before show()"
-					  data-am-leave="before hide()">n</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.2s
-					  		   :before show()"
-					  data-am-leave="before hide()">i</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.3s
-					  		   :before show()"
-					  data-am-leave="before hide()">M</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.4s
-					  		   :before show()"
-					  data-am-leave="before hide()">a</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.5s
-					  		   :before show()"
-					  data-am-leave="before hide()">c</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.6s
-					  		   :before show()"
-					  data-am-leave="before hide()">h</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.7s
-					  		   :before show()"
-					  data-am-leave="before hide()">i</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.8s
-					  		   :before show()"
-					  data-am-leave="before hide()">n</span>
-				<span class="header-letter"
-					  data-am=":go enter"
-					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.9s
-					  		   :before show()"
-					  data-am-leave="before hide()">e</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.0s">A</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.1s">n</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.2s">i</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.3s">M</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.4s">a</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.5s">c</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.6s">h</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.7s">i</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.8s">n</span>
+				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.9s">e</span>
 			</h1>
-			<h2 class="subtitle"
-				  data-am=":transform move bottom 0 move right 400px :go left"
-				  data-am-left=":transform move bottom 0 move right 0">
-				  Declarative animation and machine state</h2>
-			<p data-am=":enter left move 200px">AniMachine is a simple declarative animation framework bases on machine state.</p>
-			<p data-am=":enter left move 200px">It allows developpers to declare multiple type of animation. It is bases on HTML declaration in attribute <span class="light">data-am</span>.</p>
-			<h2 data-am=":enter left move 500px">What kind of animation you can do ?</h2>
-			<p data-am=":animate bounceInUp">You can declaration <span class="light">reveal</span> animation when DOM element is <span class="dark">entering</span> or <span class="dark">leaving</span> in the viewport.</p>
-			<p data-am=":animate bounceInUp">You can declaration <span class="very-light" data-am=":on enter :animate tada"><a href="http://daneden.github.io/animate.css">Animate.css</a></span> or <span class="very-light" data-am=":on enter :shake :on leave :animate pulse"><a href="http://elrumordelaluz.github.io/csshake">CSShake</a></span> animations.</p>
-			<h2 data-am=":enter left move 500px">How you can play the animations ?</h2>
-			<p data-am=":animate bounceInUp">You can <span class="light">play</span> animation when an <span class="dark">event</span> occurs on element defined by <span class="dark">CSS selector</span>.</p>
-		</section>
-		<section class="section">
-			<h1 class="header"
-				data-am
-				data-am-enter=":enter left move 200px">Reveal Animation
-			</h1>
-		</section>
-		<section class="section">
-			<h1 class="header"
-				data-am
-				data-am-enter=":enter right move 400px">Trigger Animation
-			</h1>
-		</section>
+
+			<div class="info"
+				data-am-enter=":enter left move 500px">
+				<h2 class="subtitle"
+					  data-am=":transform move bottom 0 move right 400px :go left"
+					  data-am-left=":transform move bottom 0 move right 0">
+					  Declarative animation</h2>
+				<p><span class="dark">AniMachine</span> is a declarative animation engine to sexy up your frontend. It is based on machine state to gain flexibility.</p>
+			</div>
+			<h2 data-am=":enter left move 500px">How to declare animation ?</h2>
+			<p data-am=":enter right move 200px">You can declare animation on DOM element by adding <span class="dark">HTML attribute</span> <span class="light mono">data-am</span> or <span class="light mono">data-am-enter</span></p>
+
+			<h2 data-am=":enter left move 500px">How to start the sequencer ?</h2>
+			<p data-am=":enter right move 200px">Add <span class="dark">script</span><span class="light mono">am.start()</span><span class="dark">script</span> at the end of your DOM.</p>
+
+			<h2 data-am=":enter left move 500px">What kind of animation can you play ?</h2>
+			<p data-am=":animate bounceInUp">You can play <span class="light">Reveal</span> animation, <span class="very-light" data-am=":on enter :animate tada"><a href="http://daneden.github.io/animate.css">Animate.css</a></span>, <span class="very-light" data-am=":on enter :shake :on leave :animate pulse"><a href="http://elrumordelaluz.github.io/csshake">CSShake</a></span> or any other <span class="dark">CSS animations</span>.</p>
+
+			<h2 data-am=":enter left move 500px">When can you start animation ?</h2>
+			<p>When DOM element is <span class="dark">entering</span> or <span class="dark">leaving</span> the viewport.</p>
+			<p>When <span class="dark">events</span> occur on element with <span class="light mono">data-am</span>.</p>
+			<p>When <span class="dark">other events</span> occur on <span class="very-light">other DOM element</span> defined by <span class="dark">CSS selector</span> declared on element with <span class="light mono">data-am</span>.</p>
+
+			<h2 data-am=":enter left move 500px">Can you chained animation ?</h2>
+			<p>Yes, you can.</p>
+		</div>
+		<div class="section">
+			<h1 class="header" data-am-enter=":enter left move 200px">Reveal Animation</h1>
+		</div>
+		<div class="section">
+			<h1 class="header" data-am-enter=":enter right move 400px">Trigger Animation</h1>
+		</div>
 	</div>
-	<a data-am=":enter right move 100px after 2.0s" href="https://github.com/jfroffice/ani-machine"><img style="position: fixed; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+	<a data-am=":enter right move 100px after 2.0s" class="github-forkme" href="https://github.com/jfroffice/ani-machine"><img style="position: fixed; top: 0; right: 0; border: 0;"></a>
 	<script>am.start();</script>
 </body>
 </html>

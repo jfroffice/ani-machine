@@ -46,7 +46,7 @@ am.sequencer = (function(frame, undefined) {
 				initTrigger(state, trigger);
 			}
 
-			self.changeState('default');
+			self.changeState(options.state);
 			return self;
 		},
 		changeState: function(state, force) {
@@ -89,7 +89,7 @@ am.sequencer = (function(frame, undefined) {
 			}
 
 			function callFn(fn) {
-				fn = window[fn];					 
+				fn = window[fn];
 				if (typeof fn === "function") fn.apply(null, [self.element]);
 			}
 
@@ -108,7 +108,7 @@ am.sequencer = (function(frame, undefined) {
 				function eventFn() {
 
 					before && callFn(before);
-					
+
 					if (!eventParam) {
 						goFn();
 						return;
@@ -116,7 +116,7 @@ am.sequencer = (function(frame, undefined) {
 
 					var params = eventParam.split(' '),
 						param = params[0];
-									
+
 					if (params) {
 						if (param === ':animate') {
 							event.currentStep += 1;
@@ -126,15 +126,15 @@ am.sequencer = (function(frame, undefined) {
 								addQueue({
 									run: am.build(self.element, param, params[event.currentStep], loop),
 									finish: finishSequence
-								});	
-							}												
+								});
+							}
 						} else {
 							addQueue({
 								run: am.build(self.element, param, params),
 								finish: finish
-							});	
-						} 
-					} 
+							});
+						}
+					}
 				}
 
 				function goFn() {
@@ -172,7 +172,7 @@ am.sequencer = (function(frame, undefined) {
 				} else {
 					releaseEvent = events.on(self.element, on, eventFn);
 				}
-			
+
 				return function() {
 					releaseEvent && events.off(releaseEvent);
 				};

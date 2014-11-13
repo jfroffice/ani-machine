@@ -4,7 +4,7 @@
   font-style: normal;
   font-weight: 400;
   src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v10/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format('woff2');
-  unicode-range: U0 -0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
+  unicode-range: U0 0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
 
 @font-face {
   font-family: 'Open Sans Condensed';
@@ -16,17 +16,17 @@
 @font-face {
   font-family: 'Lato';
   font-style: normal;
-  font-weight: 400;
-  src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v11/MDadn8DQ_3oT6kvnUq_2rxTbgVql8nDJpwnrE27mub0.woff2) format('woff2');
-  unicode-range: U0 -0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
+  font-weight: 300;
+  src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v11/fJ22-hkNvqdD_3TXCrYlmPY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+  unicode-range: U0 0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
 
 /* latin */
 @font-face {
   font-family: 'Lato';
   font-style: normal;
-  font-weight: 300;
-  src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v11/fJ22-hkNvqdD_3TXCrYlmPY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
-  unicode-range: U0 -0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v11/MDadn8DQ_3oT6kvnUq_2rxTbgVql8nDJpwnrE27mub0.woff2) format('woff2');
+  unicode-range: U0 0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
 
 /* latin */
 @font-face {
@@ -34,7 +34,7 @@
   font-style: normal;
   font-weight: 400;
   src: local('Oswald Regular'), local('Oswald-Regular'), url(http://fonts.gstatic.com/s/oswald/v10/_P8jt3Y65hJ9c4AzRE0V1H-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
-  unicode-range: U0 -0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
+  unicode-range: U0 0FF, U131, U152 -153, U2C6, U2DA, U2DC, U2000 -206F, U2074, U20AC, U2212, U2215, UE0FF, UEFFD, UF000; }
 
 /* http://coolors.co/15c7ef-cd5e30-ffffff-dccba0-633e14 */
 /* http://coolors.co/112838-cd5e30-ffffff-dccba0-633e14 */
@@ -52,27 +52,26 @@ html, body {
 
 body {
   background-color: #dccba0;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Open Sans", "Helvetica", sans-serif;
   font-size: 1em;
   font-weight: 400; }
 
 h1 {
-  font-family: 'Oswald';
-  font-size: 3em; }
+  font-family: 'Oswald', 'Gill Sans';
+  font-size: 2.3em; }
 
 a {
   text-decoration: none;
   color: inherit; }
 
 .header {
-  color: #CD5E30;
-  /*#15C7EF;*/
-  width: 7em; }
+  color: #CD5E30; }
 
 h2 {
-  font-family: 'Open Sans Condensed';
-  font-size: 1.7em;
-  color: white; }
+  font-family: 'Open Sans Condensed', 'Helvetica Neue';
+  font-size: 1.3em;
+  color: white;
+  margin-top: 3.6em; }
 
 .subtitle {
   position: relative;
@@ -86,19 +85,22 @@ p {
 .very-light {
   font-weight: 700;
   color: #3F9E63;
-  padding: 0 0.2em;
+  padding: 0 0.1em;
   border-radius: 3px; }
 
 .light {
   font-weight: 600;
   color: #CD5E30;
-  padding: 0 0.2em;
+  padding: 0 0.1em;
   border-radius: 3px; }
+
+.mono {
+  font-family: 'PT Mono', sans-serif; }
 
 .dark {
   font-weight: 600;
   color: #633e14;
-  padding: 0 0.2em;
+  padding: 0 0.1em;
   border-radius: 3px; }
 
 .container {
@@ -110,17 +112,17 @@ p {
 @media screen and (max-width: 960px) {
   .container {
     min-width: 0;
-    width: 100%; } }
+    width: 100%; }
+ }
 
 .section {
   padding: 20px 50px;
-  height: 100%; }
+  /*height: 100%;*/ }
 
-.header-letter {
-  display: none; }
-
-.show {
+.header span {
   display: inline-block; }
 
-.hide {
-  display: none; }
+.github-fork {
+  width: 120px;
+  height: 120px;
+  background-image: url('https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67'); }
