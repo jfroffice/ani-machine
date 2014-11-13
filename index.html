@@ -3,84 +3,97 @@
 <head>
 	<meta charset="UTF-8">
 	<title>AniMachine</title>
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/styles.css">
 	<link rel="stylesheet" href="dist/animate.min.css">
-	<script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+	<!--<script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
 	<script>
 	  WebFont.load({
 	    google: {
-	      families: ['Oswald']
+	      families: ['Open Sans Condensed']
 	    }
 	  });
-	</script>
+	</script>-->
 	<script src='./dist/ani-machine.min.js'></script>
+	<script>
+	function show(elm) { classie.add(elm, 'show'); }
+	function hide(elm) { classie.add(elm, 'hide'); }
+	</script>
 </head>
 <body>
 	<div class="container">
-		<h1 am-element class="special-header"
-			data-am=":enter top move 200px">Ani Machine
-		</h1>
-		<span class="subtitle" data-am=":enter left move 500px">Declarative animation and machine state</span>
-		<div class="element"
-			data-am=":enter left move 400px scale 200% over 0.3s :go next"
-			data-am-next=":animate tada :on enter :animate pulse :on leave :animate tada">
-		</div>
-		<div class="element"
-			data-am=":enter top move 400px scale 400% over 0.6s :go next"
-			data-am-next=":animate tada :on enter :animate pulse :on leave :animate tada">
-		</div>
-		<div class="element element--white"
-			data-am=":enter bottom move 400px scale 600% over 0.9s :go next"
-			data-am-next=":animate tada :on enter :animate pulse :on leave :animate tada">
-		</div>
-		<div class="element"
-			data-am=":enter right move 400px scale 800% over 1.2s :go next"
-			data-am-next=":animate tada :on enter :animate pulse :on leave :animate tada">
-		</div>
-		<div class="demolink">
-			<a class="link" href="./demo/01.html"
-				data-am=":enter top move 800px over 1.5s :go next"
-				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Trigger & Reveal Animation
-		   	</a>
-		</div>
-		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/02.html"
-				data-am=":enter left move 800px over 1.5s :go next"
-				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Trigger Reveal Animation
-		   	</a>
-		</div>
-		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/03.html"
-				data-am=":enter right move 800px over 1.5s :go next"
-				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Animation Element Event
-		   	</a>
-		</div>
-		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/04.html"
-				data-am=":enter left move 800px over 1.5s :go next"
-				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Before & After Callback
-			</a>
-		</div>
-		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/05.html"
-				data-am=":enter right move 800px over 1.5s :go next"
-				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Advanced Animation
-			</a>
-		</div>
-		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/06.html"
-				data-am=":enter left move 800px over 1.5s :go next"
-				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Transform Animation
-			</a>
-		</div>
-		<div class="demolink demolink--nice">
-			<a class="link" href="./demo/07.html"
-				data-am=":enter bottom move 800px over 1.5s :go next"
-				data-am-next=":animate pulse :on enter :animate pulse :on enter :animate tada">Shake Animation
-			</a>
-		</div>
+		<section class="section">
+			<h1 class="header">
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.0s
+					  		   :before show()"
+					  data-am-leave="before hide()">A</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.1s
+					  		   :before show()"
+					  data-am-leave="before hide()">n</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.2s
+					  		   :before show()"
+					  data-am-leave="before hide()">i</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.3s
+					  		   :before show()"
+					  data-am-leave="before hide()">M</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.4s
+					  		   :before show()"
+					  data-am-leave="before hide()">a</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.5s
+					  		   :before show()"
+					  data-am-leave="before hide()">c</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.6s
+					  		   :before show()"
+					  data-am-leave="before hide()">h</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.7s
+					  		   :before show()"
+					  data-am-leave="before hide()">i</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.8s
+					  		   :before show()"
+					  data-am-leave="before hide()">n</span>
+				<span class="header-letter"
+					  data-am=":go enter"
+					  data-am-enter=":enter top move 30px scale up 10% over 1.0s :wait 0.9s
+					  		   :before show()"
+					  data-am-leave="before hide()">e</span>
+			</h1>
+			<span class="subtitle"
+				  data-am=":transform move bottom 0 move right 400px :go left"
+				  data-am-left=":transform move bottom 0 move right 0">
+				  Declarative animation and machine state</span>
+			<p data-am=":enter left move 200px">Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.</p>
+		</section>
+		<section class="section">
+			<h1 class="header"
+				data-am
+				data-am-enter=":enter left move 200px">Reveal Animation
+			</h1>
+		</section>
+		<section class="section">
+			<h1 class="header"
+				data-am
+				data-am-enter=":enter right move 400px">Trigger Animation
+			</h1>
+		</section>
 	</div>
-	<a href="https://github.com/jfroffice/ani-machine"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+	<a data-am=":enter right move 100px over 3.0s" href="https://github.com/jfroffice/ani-machine"><img style="position: fixed; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
 	<script>am.start();</script>
 </body>
 </html>

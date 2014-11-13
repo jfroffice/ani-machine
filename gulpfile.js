@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     pkg = require('./package.json'),
     stylish = require('jshint-stylish'),
     path = pkg.path,
-    port = 6003;
+    port = 3000;
 
 gulp.task('js', function() {
     return gulp.src('./js/*.js')
@@ -12,18 +12,23 @@ gulp.task('js', function() {
         .pipe($.jshint())
         .pipe($.jshint.reporter(stylish));
 });
-
+/*
 gulp.task('css', function() {
     gulp.src('./css/*.css')
         .pipe($.connect.reload())
         .pipe($.csslint())
         .pipe($.csslint.reporter());
-});
+});*/
 
-gulp.task('scss', function() {
-    gulp.src('./scss/*.scss')
-        .pipe($.rubySass())
-        .pipe(gulp.dest('css'));
+gulp.task('sass', function() {
+  gulp.src('./css/src/*.scss')
+    .pipe($.sass())
+    .pipe($.autoprefixer({
+      browsers: ['last 2 versions'],
+      cascade: false
+    }))
+    .pipe(gulp.dest('./css'))
+    .pipe($.connect.reload());
 });
 
 gulp.task('connect', function() {
@@ -42,8 +47,8 @@ gulp.task('html', function () {
 gulp.task('watch', function () {
     gulp.watch(['./*.html'], ['html']);
     gulp.watch(['./js/*.js'], ['js']);
-    gulp.watch(['./css/*.css'], ['css']);
-    gulp.watch(['./scss/*.scss'], ['scss']);
+  /*  gulp.watch(['./css/*.css'], ['css']);*/
+    gulp.watch(['./css/**/*.scss'], ['sass']);
 });
 
 gulp.task('default', ['connect', 'watch']);
