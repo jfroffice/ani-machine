@@ -120,7 +120,8 @@ p {
   /*height: 100%;*/ }
 
 .header span {
-  display: inline-block; }
+  display: inline-block;
+  letter-spacing: -1px; }
 
 .github-fork {
   width: 120px;

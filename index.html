@@ -29,10 +29,6 @@
     <script src='js/am/build.js'></script>
     <script src='js/am/sequencer.js'></script>
     <script src='js/am/facade.js'></script>
-	<script>
-	function show(elm) { classie.add(elm, 'show'); }
-	function hide(elm) { classie.remove(elm, 'show'); }
-	</script>
 </head>
 <body>
 	<div class="container">
@@ -50,36 +46,49 @@
 				<span data-am-enter=":enter top move 30px scale up 20% over 1.0s :wait 0.9s">e</span>
 			</h1>
 
-			<div class="info"
-				data-am-enter=":enter left move 500px">
+			<div data-am-enter=":enter top move 20px scale up 5%">
 				<h2 class="subtitle"
 					  data-am=":transform move bottom 0 move right 400px :go left"
 					  data-am-left=":transform move bottom 0 move right 0">
 					  Declarative animation</h2>
-				<p><span class="dark">AniMachine</span> is a declarative animation engine to sexy up your frontend. It is based on machine state to gain flexibility.</p>
+				<p><span class="dark">AniMachine</span> is a declarative animation engine. It is based on machine state to gain flexibility.</p>
 			</div>
-			<h2 data-am=":enter left move 500px">How to declare animation ?</h2>
-			<p data-am=":enter right move 200px">You can declare animation on DOM element by adding <span class="dark">HTML attribute</span> <span class="light mono">data-am</span> or <span class="light mono">data-am-enter</span></p>
 
-			<h2 data-am=":enter left move 500px">How to start the sequencer ?</h2>
-			<p data-am=":enter right move 200px">Add <span class="dark">script</span><span class="light mono">am.start()</span><span class="dark">script</span> at the end of your DOM.</p>
+			<div data-am-enter=":enter top move 20px scale up 5%">
+				<h2>How to declare an animation ?</h2>
+				<p>You can declare an animation on DOM element by adding a <span class="dark">HTML attribute</span> <span class="light mono">data-am</span> or <span class="light mono">data-am-enter</span></p>
+			</div>
 
-			<h2 data-am=":enter left move 500px">What kind of animation can you play ?</h2>
-			<p data-am=":animate bounceInUp">You can play <span class="light">Reveal</span> animation, <span class="very-light" data-am=":on enter :animate tada"><a href="http://daneden.github.io/animate.css">Animate.css</a></span>, <span class="very-light" data-am=":on enter :shake :on leave :animate pulse"><a href="http://elrumordelaluz.github.io/csshake">CSShake</a></span> or any other <span class="dark">CSS animations</span>.</p>
+			<div data-am-enter=":enter top move 20px scale up 5%">
+				<h2>How to start the sequencer ?</h2>
+				<p>Add <span class="very-light">&lt;script&gt;</span><span class="light mono">am.start()</span><span class="very-light">&lt;script&gt;</span> at the end of your DOM.</p>
+			</div>
 
-			<h2 data-am=":enter left move 500px">When can you start animation ?</h2>
-			<p>When DOM element is <span class="dark">entering</span> or <span class="dark">leaving</span> the viewport.</p>
-			<p>When <span class="dark">events</span> occur on element with <span class="light mono">data-am</span>.</p>
-			<p>When <span class="dark">other events</span> occur on <span class="very-light">other DOM element</span> defined by <span class="dark">CSS selector</span> declared on element with <span class="light mono">data-am</span>.</p>
+			<div data-am-enter=":enter top move 20px scale up 5%">
+				<h2>What kind of animation can you play ?</h2>
+				<p>You can play <span class="light">Reveal</span> animation, <span class="very-light"><a href="http://daneden.github.io/animate.css">Animate.css</a></span>, <span class="very-light"><a href="http://elrumordelaluz.github.io/csshake">CSShake</a></span> or any other <span class="dark">CSS animations</span>.</p>
+			</div>
 
-			<h2 data-am=":enter left move 500px">Can you chained animation ?</h2>
-			<p>Yes, you can.</p>
+			<div data-am-enter=":enter top move 20px scale up 5%">
+				<h2>How to does it works ?</h2>
+				<p>Animation are launched by adding and removing CSS classes at runtime in order to preserve your own CSS styling.</p>
+				<p>If the same animations are launched, it use the same CSS classes for better performance.</p>
+			</div>
+
+			<div data-am-enter=":enter top move 20px scale up 5%">
+				<h2>When can you start animation ?</h2>
+				<p>When DOM element is <span class="dark">entering</span> or <span class="dark">leaving</span> the viewport.</p>
+				<p>When <span class="dark">events</span> occur on element with <span class="light mono">data-am</span>.</p>
+				<p>When <span class="dark">other events</span> occur on an <span class="very-light">other DOM element</span> defined by <span class="dark">CSS selector</span> declared on element with <span class="light mono">data-am</span>.</p>
+			</div>
+
+			<div data-am-enter=":enter top move 20px scale up 5%">
+				<h2>Can you chained the animations ?</h2>
+				<p>Yes, you can.</p>
+			</div>
 		</div>
-		<div class="section">
-			<h1 class="header" data-am-enter=":enter left move 200px">Reveal Animation</h1>
-		</div>
-		<div class="section">
-			<h1 class="header" data-am-enter=":enter right move 400px">Trigger Animation</h1>
+		<div class="section" data-am-enter=":enter right move 200px">
+			<h1 class="header">Samples</h1>
 		</div>
 	</div>
 	<a data-am=":enter right move 100px after 2.0s" class="github-forkme" href="https://github.com/jfroffice/ani-machine"><img style="position: fixed; top: 0; right: 0; border: 0;"></a>

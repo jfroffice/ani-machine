@@ -35,6 +35,7 @@
 					if (s.indexOf('n') === 0) {
 						e.on = rtrim(s.substring(2, s.length));
 					} else if (s.indexOf('enter') 		=== 0
+						 	|| s.indexOf('leave') 		=== 0
 						 	|| s.indexOf('transform') 	=== 0
 						 	|| s.indexOf('animate') 	=== 0
 						 	|| s.indexOf('shake') 		=== 0) {
