@@ -543,6 +543,7 @@ am.transform = (function(styles, transition, undefined) {
 					if (s.indexOf('n') === 0) {
 						e.on = rtrim(s.substring(2, s.length));
 					} else if (s.indexOf('enter') 		=== 0
+						 	|| s.indexOf('leave') 		=== 0
 						 	|| s.indexOf('transform') 	=== 0
 						 	|| s.indexOf('animate') 	=== 0
 						 	|| s.indexOf('shake') 		=== 0) {
@@ -586,7 +587,7 @@ am.transform = (function(styles, transition, undefined) {
 		}
 	};
 }));
-am.build = (function(prefix, enter, transform, undefined) {
+am.build = (function(prefix, enter, leave, transform, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
@@ -616,6 +617,8 @@ am.build = (function(prefix, enter, transform, undefined) {
 			classie.remove(elm, transition);
 			if (target) {
 				elm.setAttribute('data-previous-target', target);
+			} else {
+				elm.removeAttribute('data-previous-target');
 			}
 			cb && cb();
 		});
@@ -630,6 +633,14 @@ am.build = (function(prefix, enter, transform, undefined) {
 				s = enter(param);
 				classie.add(elm, s.initial);
 				doTransition(elm, s.initial, null, s.transition, function() {
+					cb && cb();
+				});
+			};
+		} if (type === ':leave') {
+			return function(cb) {
+				s = leave(param);
+				//classie.add(elm, s.initial);
+				doTransition(elm, null, s.target, s.transition, function() {
 					cb && cb();
 				});
 			};
@@ -687,7 +698,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 		}
 	};
 
-})(am.prefix, am.enter, am.transform);
+})(am.prefix, am.enter, am.leave, am.transform);
 
 am.sequencer = (function(frame, undefined) {
 	"use strict";
@@ -737,7 +748,7 @@ am.sequencer = (function(frame, undefined) {
 				initTrigger(state, trigger);
 			}
 
-			self.changeState('default');
+			self.changeState(options.state);
 			return self;
 		},
 		changeState: function(state, force) {
@@ -780,7 +791,7 @@ am.sequencer = (function(frame, undefined) {
 			}
 
 			function callFn(fn) {
-				fn = window[fn];					 
+				fn = window[fn];
 				if (typeof fn === "function") fn.apply(null, [self.element]);
 			}
 
@@ -799,7 +810,7 @@ am.sequencer = (function(frame, undefined) {
 				function eventFn() {
 
 					before && callFn(before);
-					
+
 					if (!eventParam) {
 						goFn();
 						return;
@@ -807,7 +818,7 @@ am.sequencer = (function(frame, undefined) {
 
 					var params = eventParam.split(' '),
 						param = params[0];
-									
+
 					if (params) {
 						if (param === ':animate') {
 							event.currentStep += 1;
@@ -817,15 +828,15 @@ am.sequencer = (function(frame, undefined) {
 								addQueue({
 									run: am.build(self.element, param, params[event.currentStep], loop),
 									finish: finishSequence
-								});	
-							}												
+								});
+							}
 						} else {
 							addQueue({
 								run: am.build(self.element, param, params),
 								finish: finish
-							});	
-						} 
-					} 
+							});
+						}
+					}
 				}
 
 				function goFn() {
@@ -863,7 +874,7 @@ am.sequencer = (function(frame, undefined) {
 				} else {
 					releaseEvent = events.on(self.element, on, eventFn);
 				}
-			
+
 				return function() {
 					releaseEvent && events.off(releaseEvent);
 				};
@@ -884,11 +895,14 @@ am.sequencer = (function(frame, undefined) {
 		}
 	};
 })(am.frame);
+
 am.start = (function(sequencer, viewport, undefined) {
 	"use strict";
 
 	var ATTR = 'data-am',
+		ATTR_ENTER = 'data-am-enter',
 		DEFAULT = 'default',
+		ENTER = 'enter',
 		sequencers = [],
 		enterLeave;
 
@@ -913,7 +927,7 @@ am.start = (function(sequencer, viewport, undefined) {
 				});
 			})();
 
-		}, 10);	
+		}, 10);
 	}
 
 	events.on(window, 'scroll', enterLeaveFn);
@@ -942,10 +956,46 @@ am.start = (function(sequencer, viewport, undefined) {
 
 			sequencers.push(
 				Object.create(sequencer).init({
+					state: DEFAULT,
 					element: element,
 					states: states,
 					triggers: triggers
 			}));
+		});
+
+		// below to start attribut with only data-am-enter and no data-am
+		[].forEach.call(document.querySelectorAll('[' + ATTR_ENTER + ']'), function(element) {
+
+			// TODO: remove duplicate code !!
+			var states = {},
+				triggers = {};
+
+			[].forEach.call(element.attributes, function(attribute) {
+				if (attribute.name.indexOf(ATTR) !== -1) {
+
+					var state = attribute.name.replace(ATTR + '-', ''),
+						input = attribute.value;
+
+					if (state === ATTR) {
+						state = DEFAULT;
+					}
+
+					states = parser.getStates(states, state, input)
+					triggers = parser.getTriggers(triggers, state, input);
+				}
+			});
+
+			if (!states.default) {
+				//console.log(triggers);
+
+				sequencers.push(
+					Object.create(sequencer).init({
+						state: ENTER,
+						element: element,
+						states: states,
+						triggers: triggers
+				}));
+			}
 		});
 	};
 
