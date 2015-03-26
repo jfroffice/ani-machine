@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     pkg = require('./package.json'),
     stylish = require('jshint-stylish'),
     path = pkg.path,
-    port = 3000;
+    port = 6003;
 
 gulp.task('js', function() {
     return gulp.src('./js/*.js')
