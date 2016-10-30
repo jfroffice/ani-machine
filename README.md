@@ -10,8 +10,8 @@ Optional Dependencies
 - [animate.css](http://daneden.github.io/animate.css/)
 - [csshake](http://elrumordelaluz.github.io/csshake/)
 
-How to start 
------------- 
+How to start
+------------
 Add JS dependency
 ```html
 <script src="../ani-machine.min.js"></script>
@@ -37,7 +37,7 @@ State
 
 __default__ state is declare with __data-am__
 ```html
-<div class="element" 
+<div class="element"
 	data-am=":on enter :animate pulse
 			 :on leave :animate tada">
 </div>
@@ -46,9 +46,9 @@ _Here we define animation on mouseenter and mouseleave_
 
 If you want to declare a __next__ state
 ```html
-<div class="element" 
+<div class="element"
 	data-am=""
- 	data-am-next=":on enter :animate bounce">
+	data-am-next=":on enter :animate bounce">
 </div>
 ```
 
@@ -58,7 +58,7 @@ How to change state ?
 
 You need to use __":go"__ keyword followed by state name to change state when played animation is finished
 ```html
-<div class="element" 
+<div class="element"
 	data-am=":enter left move 500px :go next"
 	data-am-next=":on enter :animate pulse
 				  :on leave :animate tada">
@@ -69,15 +69,15 @@ How to launch CSS Animation ?
 ---------------------------
 Add __":animate"__ keyword followed by animation CSS class name
 ```html
-<div class="element" 
+<div class="element"
 	data-am=":animate tada">
 </div>
 ```
 Here we use [animate.css](http://daneden.github.io/animate.css/) class name, but it might be another css class
 
-To chain CSS animation 
+To chain CSS animation
 ```html
-<div class="element" 
+<div class="element"
 	data-am=":animate tada pulse">
 </div>
 ```
@@ -88,7 +88,7 @@ How to launch CSShake Animation ?
 
 Add __":shake"__ followed by [csshake](http://elrumordelaluz.github.io/csshake/) animation name you want to apply
 ```html
-<div class="element" 
+<div class="element"
 	data-am=":shake slow">
 </div>
 ```
@@ -99,13 +99,13 @@ How to trigger animation ?
 
 Use __":trigger"__ keyword
 ```html
-<div class="element" 
+<div class="element"
 	data-am-special=":animate bounce
 					 :trigger .btn--trigger click">
 </div>
 <div class=".btn--trigger"></div>
 ```
-You can use default event 
+You can use default event
 - click (click 	    event)
 - enter (mouseenter event)
 - leave (mouseleave event)
@@ -122,13 +122,13 @@ Special state name are use to specify animations you want to play when element i
 
 You can trigger animation with state __enter__
 ```html
-<div class="element" 
+<div class="element"
 	data-am-enter=":enter left move 500px">
 </div>
 ```
 or state __leave__
 ```html
-<div class="element" 
+<div class="element"
 	data-am-leave=":animate bounceOutRight">
 </div>
 ```
@@ -138,7 +138,7 @@ Before and After Callbacks
 
 You can bind __":before"__ or __":after"__ callback animation event
 ```html
-<div class="element" 
+<div class="element"
 	data-am-enter=":before beforeFn() :enter left move 500px :after afterFn()">
 </div>
 ```
@@ -160,14 +160,14 @@ How to add a pause ?
 ------------------
 You can use __":wait"__ to make a pause before running animation or after
 ```html
-<div class="element" 
+<div class="element"
 	data-am-enter=":wait 0.2s :animate pulse">
 </div>
 ```
 
 Release History
 ---------------
-- v0.1.9: 
+- v0.1.9:
 	- add :wait operator
 	- add element as first parameter in before and after callbacks
 	- remove some old browser compatibility codes
@@ -184,5 +184,5 @@ Browser Support
 
 License
 -------
-Copyright (c) 2014 John Fischer
+Copyright (c) 2017 John Fischer
 Licensed under the MIT license.
