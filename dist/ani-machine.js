@@ -1,6 +1,6 @@
 /**
  * ani-machine - Declarative animation and machine state
- * @version v0.1.9
+ * @version v0.1.10
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
@@ -543,6 +543,7 @@ am.transform = (function(styles, transition, undefined) {
 					if (s.indexOf('n') === 0) {
 						e.on = rtrim(s.substring(2, s.length));
 					} else if (s.indexOf('enter') 		=== 0
+							|| s.indexOf('leave') 		=== 0
 						 	|| s.indexOf('transform') 	=== 0
 						 	|| s.indexOf('animate') 	=== 0
 						 	|| s.indexOf('shake') 		=== 0) {
@@ -586,7 +587,7 @@ am.transform = (function(styles, transition, undefined) {
 		}
 	};
 }));
-am.build = (function(prefix, enter, transform, undefined) {
+am.build = (function(prefix, enter, leave, transform, undefined) {
 	"use strict";
 
 	function hackStyle(elm) {
@@ -616,6 +617,9 @@ am.build = (function(prefix, enter, transform, undefined) {
 			classie.remove(elm, transition);
 			if (target) {
 				elm.setAttribute('data-previous-target', target);
+			} else {
+				elm.removeAttribute('data-previous-target');
+				console.log(elm);
 			}
 			cb && cb();
 		});
@@ -630,6 +634,14 @@ am.build = (function(prefix, enter, transform, undefined) {
 				s = enter(param);
 				classie.add(elm, s.initial);
 				doTransition(elm, s.initial, null, s.transition, function() {
+					cb && cb();
+				});
+			};
+		} if (type === ':leave') {
+			return function(cb) {
+				s = leave(param);
+				//classie.add(elm, s.initial);
+				doTransition(elm, null, s.target, s.transition, function() {
 					cb && cb();
 				});
 			};
@@ -687,7 +699,7 @@ am.build = (function(prefix, enter, transform, undefined) {
 		}
 	};
 
-})(am.prefix, am.enter, am.transform);
+})(am.prefix, am.enter, am.leave, am.transform);
 
 am.sequencer = (function(frame, undefined) {
 	"use strict";
