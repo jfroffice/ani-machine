@@ -8,49 +8,48 @@
  * classie.toggle( elem, 'my-class' )
  */
 
- /*jshint browser: true, strict: true, undef: true */
- /*global define: false */
+/*jshint browser: true, strict: true, undef: true */
+/*global define: false */
 
- (function(window) {
-	'use strict';
-	
-	var hasClass = function( elem, c ) {
-		  return elem.classList.contains( c );
-	};
+(function(window) {
+  "use strict";
 
-	var addClass = function( elem, c ) {
-	  	elem.classList.add( c );
-	};
+  var hasClass = function(elem, c) {
+    return elem.classList.contains(c);
+  };
 
-	var removeClass = function( elem, c ) {
-		elem.classList.remove( c );
-	};
-	
-	function toggleClass( elem, c ) {
-		var fn = hasClass( elem, c ) ? removeClass : addClass;
-		fn( elem, c );
-	}
+  var addClass = function(elem, c) {
+    elem.classList.add(c);
+  };
 
-	var classie = {
-		// full names
-		hasClass: hasClass,
-		addClass: addClass,
-		removeClass: removeClass,
-		toggleClass: toggleClass,
-		// short names
-		has: hasClass,
-		add: addClass,
-		remove: removeClass,
-		toggle: toggleClass
-	};
+  var removeClass = function(elem, c) {
+    elem.classList.remove(c);
+  };
 
-	// transport
-	if ( typeof define === 'function' && define.amd ) {
-		// AMD
-		define( classie );
-	} else {
-		// browser global
-		window.classie = classie;
-	}
+  function toggleClass(elem, c) {
+    var fn = hasClass(elem, c) ? removeClass : addClass;
+    fn(elem, c);
+  }
 
+  var classie = {
+    // full names
+    hasClass: hasClass,
+    addClass: addClass,
+    removeClass: removeClass,
+    toggleClass: toggleClass,
+    // short names
+    has: hasClass,
+    add: addClass,
+    remove: removeClass,
+    toggle: toggleClass
+  };
+
+  // transport
+  if (typeof define === "function" && define.amd) {
+    // AMD
+    define(classie);
+  } else {
+    // browser global
+    window.classie = classie;
+  }
 })(window);
