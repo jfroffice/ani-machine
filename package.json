@@ -16,7 +16,9 @@
     "url": "https://github.com/jfroffice/ani-machine/issues"
   },
   "homepage": "https://github.com/jfroffice/ani-machine",
-  "dependencies": {},
+  "dependencies": {
+    "prettier": "1.7.4"
+  },
   "devDependencies": {
     "gulp": "^3.8.8",
     "gulp-bump": "*",
