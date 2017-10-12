@@ -184,5 +184,5 @@ Browser Support
 
 License
 -------
-Copyright (c) 2016 John Fischer
+Copyright (c) 2017 John Fischer
 Licensed under the MIT license.
