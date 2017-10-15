@@ -2,9 +2,12 @@
   "name": "ani-machine",
   "version": "0.1.10",
   "description": "Declarative animation and machine state",
-  "main": "gulpfile.js",
+  "main": "js/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/webpack",
+    "dev": "./node_modules/.bin/webpack --watch",
+    "jshint": "./node_modules/.bin/jshint ./js/"
   },
   "repository": {
     "type": "git",
@@ -18,21 +21,15 @@
   "homepage": "https://github.com/jfroffice/ani-machine",
   "dependencies": {},
   "devDependencies": {
-    "gulp": "^3.8.8",
-    "gulp-bump": "*",
-    "gulp-concat": "^2.4.1",
-    "gulp-connect": "^2.0.6",
-    "gulp-csslint": "^0.1.5",
-    "gulp-header": "^1.1.1",
-    "gulp-jshint": "*",
-    "gulp-load-plugins": "~0.5.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-ruby-sass": "^0.7.1",
-    "gulp-sass": "^1.0.0",
-    "gulp-uglify": "^1.0.1",
-    "gulp-wrap-umd": "^0.2.1",
-    "jshint-stylish": "^1.0.0",
-    "rimraf": "^2.2.8"
+    "animate.css": "^3.5.2",
+    "classie": "^1.0.0",
+    "css-loader": "^0.28.7",
+    "csshake": "^1.5.2",
+    "jshint": "^2.9.5",
+    "postcss-loader": "^2.0.8",
+    "style-loader": "^0.19.0",
+    "uglifyjs-webpack-plugin": "^1.0.0-beta.2",
+    "webpack": "^2.7.0"
   },
   "path": {
     "js": [
