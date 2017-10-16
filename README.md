@@ -167,6 +167,8 @@ You can use __":wait"__ to make a pause before running animation or after
 
 Release History
 ---------------
+- v0.1.11:
+	- Moving to webpack
 - v0.1.9:
 	- add :wait operator
 	- add element as first parameter in before and after callbacks

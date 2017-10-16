@@ -1,24 +1,19 @@
 {
   "name": "ani-machine",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Declarative animation and machine state",
   "main": "js/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/webpack",
     "dev": "./node_modules/.bin/webpack --watch",
     "prettier": "prettier --tab-width 4 --single-quote --trailing-comma es5 '{js,spec}/**/*.js' --write"
   },
+  "author": "jfroffice <me@jfroffice.me>",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jfroffice/ani-machine.git"
   },
-  "author": "jfroffice",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/jfroffice/ani-machine/issues"
-  },
-  "homepage": "https://github.com/jfroffice/ani-machine",
   "dependencies": {},
   "devDependencies": {
     "animate.css": "^3.5.2",
@@ -29,27 +24,5 @@
     "style-loader": "^0.19.0",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.2",
     "webpack": "^2.7.0"
-  },
-  "path": {
-    "js": [
-      "js/libs/classie.js",
-      "js/libs/events.js",
-      "js/core/prefix.js",
-      "js/core/viewport.js",
-      "js/core/styles.js",
-      "js/core/frame.js",
-      "js/effets/translate.js",
-      "js/effets/transition.js",
-      "js/effets/enter.js",
-      "js/effets/transform.js",
-      "js/dom/parser.js",
-      "js/am/build.js",
-      "js/am/sequencer.js",
-      "js/am/facade.js"
-    ],
-    "deps": [
-      "bower_components/animate.css/animate.min.css",
-      "bower_components/csshake/csshake.min.css"
-    ]
   }
 }

@@ -1,6 +1,6 @@
 /*!
  * ani-machine - Declarative animation and machine state
- * @version v0.1.10
+ * @version v0.1.11
  * @link https://github.com/jfroffice/ani-machine
  * @license MIT
  */
@@ -77,27 +77,26 @@ window["am"] =
 /* 0 */
 /***/ (function(module, exports) {
 
-
 var cache = {};
 
 function buildCSS(key, content) {
-  if (cache[key]) {
-    return;
-  }
-  return '.' + key + '{' + content + '}';
+    if (cache[key]) {
+        return;
+    }
+    return '.' + key + '{' + content + '}';
 }
 
-module.exports =  function styles(key, content) {
-  var raw = buildCSS(key, content);
-  if (!raw) {
+module.exports = function styles(key, content) {
+    var raw = buildCSS(key, content);
+    if (!raw) {
+        return key;
+    }
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = raw;
+    cache[key] = true; //style;
+    document.getElementsByTagName('head')[0].appendChild(style);
     return key;
-  }
-  var style = document.createElement("style");
-  style.type = "text/css";
-  style.innerHTML = raw;
-  cache[key] = true; //style;
-  document.getElementsByTagName("head")[0].appendChild(style);
-  return key;
 };
 
 
@@ -108,15 +107,18 @@ module.exports =  function styles(key, content) {
 var styles = __webpack_require__(0);
 
 module.exports = function transition(over, easing, after) {
-  "use strict";
-  var tmp = over + ' ' + easing + ' ' + after,
-      tmp2 = tmp + ', all ' + tmp + ';'; /* all for Safari */
+    'use strict';
+    var tmp = over + ' ' + easing + ' ' + after,
+        tmp2 = tmp + ', all ' + tmp + ';'; /* all for Safari */
 
-  var key = '_' + tmp.replace(/ /g, '_').replace(/\./g, '_');
-  var css = '-webkit-transition: -webkit-transform ' + tmp2 +
-      'transition: transform ' + tmp2;
+    var key = '_' + tmp.replace(/ /g, '_').replace(/\./g, '_');
+    var css =
+        '-webkit-transition: -webkit-transform ' +
+        tmp2 +
+        'transition: transform ' +
+        tmp2;
 
-  return styles(key, css);
+    return styles(key, css);
 };
 
 
@@ -127,30 +129,29 @@ module.exports = function transition(over, easing, after) {
 var styles = __webpack_require__(0);
 
 module.exports = function translate(options) {
-  "use strict";
-  var type = 'translate',
-      tmp = type + options.axis + '(' + options.move + ')',
-      scale = options.scale,
-      key = '',
-      css;
+    'use strict';
+    var type = 'translate',
+        tmp = type + options.axis + '(' + options.move + ')',
+        scale = options.scale,
+        key = '',
+        css;
 
-  if (scale !== undefined) {
-    tmp += ' scale(' + scale.value + ')';
-    key += ('_scale' + scale.value).replace('.', '_');
-  }
+    if (scale !== undefined) {
+        tmp += ' scale(' + scale.value + ')';
+        key += ('_scale' + scale.value).replace('.', '_');
+    }
 
-  css = '-webkit-transform: ' + tmp + ';transform: ' + tmp + ';';
+    css = '-webkit-transform: ' + tmp + ';transform: ' + tmp + ';';
 
-  if (options.opacity !== undefined) {
-    css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
-  }
+    if (options.opacity !== undefined) {
+        css += ' opacity: ' + (options.opacity ? '1' : '0') + ';';
+    }
 
-  //css += '-webkit-perspective: 1000; -webkit-backface-visibility: hidden;'
+    //css += '-webkit-perspective: 1000; -webkit-backface-visibility: hidden;'
 
+    key += type + options.axis + '_' + options.move + '_' + options.opacity;
 
-  key += type + options.axis + '_' + options.move + '_' + options.opacity;
-
-  return styles(key.replace(/-/g, 'm'), css);
+    return styles(key.replace(/-/g, 'm'), css);
 };
 
 
@@ -160,71 +161,71 @@ module.exports = function translate(options) {
 
 // Event helper from jsCore v0.6.1 github.com/Octane/jsCore
 function off(eventDetails) {
-  eventDetails.eventTypes.forEach(function (eventType) {
-    eventDetails.element.removeEventListener(
-      eventType,
-      eventDetails.callback
-    );
-  });
+    eventDetails.eventTypes.forEach(function(eventType) {
+        eventDetails.element.removeEventListener(
+            eventType,
+            eventDetails.callback
+        );
+    });
 }
 
 function on(element, selector, eventTypes, callback) {
-  var listener;
-  if (arguments.length == 3) {
-    callback = eventTypes;
-    eventTypes = selector;
-    selector = undefined;
-  }
-  if (selector) {
-    selector += ',' + selector + ' *';
-    listener = function (event) {
-      var target = event.target;
-      if (target.matches && target.matches(selector)) {
-        if (callback.handleEvent) {
-          callback.handleEvent(event);
-        } else {
-          callback.call(element, event);
-        }
-      }
+    var listener;
+    if (arguments.length == 3) {
+        callback = eventTypes;
+        eventTypes = selector;
+        selector = undefined;
+    }
+    if (selector) {
+        selector += ',' + selector + ' *';
+        listener = function(event) {
+            var target = event.target;
+            if (target.matches && target.matches(selector)) {
+                if (callback.handleEvent) {
+                    callback.handleEvent(event);
+                } else {
+                    callback.call(element, event);
+                }
+            }
+        };
+    } else {
+        listener = callback;
+    }
+    if ('string' == typeof eventTypes) {
+        eventTypes = eventTypes.split(/[\s,]+/);
+    }
+    eventTypes.forEach(function(eventType) {
+        element.addEventListener(eventType, listener);
+    });
+    return {
+        element: element,
+        eventTypes: eventTypes,
+        callback: listener,
     };
-  } else {
-    listener = callback;
-  }
-  if ('string' == typeof eventTypes) {
-    eventTypes = eventTypes.split(/[\s,]+/);
-  }
-  eventTypes.forEach(function (eventType) {
-    element.addEventListener(eventType, listener);
-  });
-  return {
-    element: element,
-    eventTypes: eventTypes,
-    callback: listener
-  };
 }
 
 function one(element, selector, eventTypes, callback) {
-  var details;
-  function listener(event) {
-    off(details);
-    if (callback.handleEvent) {
-      callback.handleEvent(event);
-    } else {
-      callback.call(element, event);
+    var details;
+    function listener(event) {
+        off(details);
+        if (callback.handleEvent) {
+            callback.handleEvent(event);
+        } else {
+            callback.call(element, event);
+        }
     }
-  }
-  if (arguments.length == 3) {
-    callback = eventTypes;
-    eventTypes = selector;
-    selector = undefined;
-  }
-  details = on(element, selector, eventTypes, listener);
+    if (arguments.length == 3) {
+        callback = eventTypes;
+        eventTypes = selector;
+        selector = undefined;
+    }
+    details = on(element, selector, eventTypes, listener);
 }
 
 module.exports = {
-  one: one,
-  on: on,
-  off: off
+    one: one,
+    on: on,
+    off: off,
 };
 
 
@@ -237,195 +238,202 @@ var events = __webpack_require__(3);
 var build = __webpack_require__(17);
 
 function parser(on) {
-  if (on === 'enter') {
-    on = 'mouseenter';
-  } else if (on === 'leave') {
-    on = 'mouseleave';
-  }
-  return on;
+    if (on === 'enter') {
+        on = 'mouseenter';
+    } else if (on === 'leave') {
+        on = 'mouseleave';
+    }
+    return on;
 }
 
 module.exports = {
-  getState: function() {
-    return this.currentState;
-  },
-  init: function(options) {
+    getState: function() {
+        return this.currentState;
+    },
+    init: function(options) {
+        var self = this,
+            triggers = options.triggers;
 
-    var self = this,
-	triggers = options.triggers;
+        self.states = options.states;
+        self.element = options.element;
+        self.jobs = [];
+        self.offs = [];
+        self.currentState = undefined;
+        self.running = undefined;
 
-    self.states = options.states;
-    self.element = options.element;
-    self.jobs = [];
-    self.offs = [];
-    self.currentState = undefined;
-    self.running = undefined;
+        function initTrigger(state, trigger) {
+            var tmp = trigger.split(' '),
+                selector = tmp[0],
+                on = parser(tmp[1]);
 
-    function initTrigger(state, trigger) {
-      var tmp = trigger.split(' '),
-	  selector = tmp[0],
-	  on = parser(tmp[1]);
+            [].forEach.call(document.querySelectorAll(selector), function(el) {
+                events.on(el, on, function() {
+                    self.changeState(state, true);
+                });
+            });
+        }
 
-      [].forEach.call(document.querySelectorAll(selector), function(el) {
-	events.on(el, on, function() {
-	  self.changeState(state, true);
-	});
-      });
-    }
+        for (var state in triggers) {
+            var trigger = triggers[state];
+            if (!trigger) {
+                continue;
+            }
+            initTrigger(state, trigger);
+        }
 
-    for(var state in triggers) {
-      var trigger = triggers[state];
-      if (!trigger) {
-	continue;
-      }
-      initTrigger(state, trigger);
-    }
+        self.changeState('default');
+        return self;
+    },
+    changeState: function(state, force) {
+        var self = this,
+            ACTIVE = 'active';
 
-    self.changeState('default');
-    return self;
-  },
-  changeState: function(state, force) {
+        function addQueue(job) {
+            self.jobs.push(job);
+            run();
+        }
 
-    var self = this,
-	ACTIVE = 'active';
+        function run() {
+            if (self.running) {
+                return;
+            }
+            var job = self.jobs[0];
+            if (!job) {
+                return;
+            }
+            self.running = true;
+            job.run(function() {
+                job.finish();
+                self.jobs.splice(0, 1);
+                self.running = false;
+                run();
+            });
+        }
 
-    function addQueue(job) {
-      self.jobs.push(job);
-      run();
-    }
+        function initState(state) {
+            if (!state) {
+                return;
+            }
 
-    function run() {
-      if (self.running) {
-	return;
-      }
-      var job = self.jobs[0];
-      if (!job) {
-	return;
-      }
-      self.running = true;
-      job.run(function() {
-	job.finish();
-	self.jobs.splice(0, 1);
-	self.running = false;
-	run();
-      });
-    }
+            var tmp = [];
+            for (var key in state) {
+                tmp.push(initEvent(state[key]));
+            }
+            return tmp;
+        }
 
-    function initState(state) {
-      if (!state) {
-	return;
-      }
+        function callFn(fn) {
+            fn = window[fn];
+            if (typeof fn === 'function') fn.apply(null, [self.element]);
+        }
 
-      var tmp = [];
-      for(var key in state) {
-	tmp.push(initEvent(state[key]));
-      }
-      return tmp;
-    }
+        function initEvent(event) {
+            var go = event.go,
+                before = event.before,
+                after = event.after,
+                wait = event.wait,
+                loop = event.loop,
+                eventParam = event.do,
+                on = parser(event.on),
+                releaseEvent;
 
-    function callFn(fn) {
-      fn = window[fn];					 
-      if (typeof fn === "function") fn.apply(null, [self.element]);
-    }
+            event.currentStep = event.currentStep || 0;
 
-    function initEvent(event) {
-      var go = event.go,
-	  before = event.before,
-	  after = event.after,
-	  wait = event.wait,
-	  loop = event.loop,
-	  eventParam = event.do,
-	  on = parser(event.on),
-	  releaseEvent;
+            function eventFn() {
+                if (before) callFn(before);
 
-      event.currentStep = event.currentStep || 0;
+                if (!eventParam) {
+                    goFn();
+                    return;
+                }
 
-      function eventFn() {
+                var params = eventParam.split(' '),
+                    param = params[0];
 
-	if (before) callFn(before);
-	
-	if (!eventParam) {
-	  goFn();
-	  return;
-	}
+                if (params) {
+                    if (param === ':animate') {
+                        event.currentStep += 1;
+                        if (event.currentStep >= params.length) {
+                            console.warn(
+                                'try to relaunch animation that is not finished'
+                            );
+                        } else {
+                            addQueue({
+                                run: build(
+                                    self.element,
+                                    param,
+                                    params[event.currentStep],
+                                    loop
+                                ),
+                                finish: finishSequence,
+                            });
+                        }
+                    } else {
+                        addQueue({
+                            run: build(self.element, param, params),
+                            finish: finish,
+                        });
+                    }
+                }
+            }
 
-	var params = eventParam.split(' '),
-	    param = params[0];
-	
-	if (params) {
-	  if (param === ':animate') {
-	    event.currentStep += 1;
-	    if (event.currentStep >= params.length) {
-	      console.warn('try to relaunch animation that is not finished');
-	    } else {
-	      addQueue({
-		run: build(self.element, param, params[event.currentStep], loop),
-		finish: finishSequence
-	      });	
-	    }												
-	  } else {
-	    addQueue({
-	      run: build(self.element, param, params),
-	      finish: finish
-	    });	
-	  } 
-	} 
-      }
+            function goFn() {
+                if (!go) {
+                    return;
+                }
 
-      function goFn() {
-	if (!go) {
-	  return;
-	}
+                if (on !== ACTIVE) {
+                    events.off(releaseEvent);
+                }
+                self.changeState(go);
+            }
 
-	if (on !== ACTIVE) {
-	  events.off(releaseEvent);
-	}
-	self.changeState(go);
-      }
+            function finish() {
+                goFn();
+                if (after) callFn(after);
+            }
 
-      function finish() {
-	goFn();
-	if (after) callFn(after);
-      }
+            function finishSequence() {
+                if (event.currentStep < eventParam.split(' ').length - 1) {
+                    frame(eventFn);
+                } else {
+                    event.currentStep = 0;
+                }
 
-      function finishSequence() {
-	if (event.currentStep < (eventParam.split(' ').length-1)) {
-	  frame(eventFn);
-	} else {
-	  event.currentStep = 0;
-	}
+                finish();
+            }
 
-	finish();
-      }
+            if (on === ACTIVE) {
+                // autostart animation
+                if (wait) {
+                    setTimeout(function() {
+                        frame(eventFn);
+                    }, wait);
+                } else {
+                    frame(eventFn);
+                }
+            } else {
+                releaseEvent = events.on(self.element, on, eventFn);
+            }
 
-      if (on === ACTIVE) { // autostart animation
-	if (wait) {
-	  setTimeout(function() { frame(eventFn); }, wait);
-	} else {
-	  frame(eventFn);
-	}
-      } else {
-	releaseEvent = events.on(self.element, on, eventFn);
-      }
-      
-      return function() {
-	if(releaseEvent) events.off(releaseEvent);
-      };
-    }
+            return function() {
+                if (releaseEvent) events.off(releaseEvent);
+            };
+        }
 
-    var sameState = self.currentState === state;
+        var sameState = self.currentState === state;
 
-    if (self.currentState && self.offs && !sameState) {
-      self.offs.forEach(function(off) {
-	off();
-      });
-    }
+        if (self.currentState && self.offs && !sameState) {
+            self.offs.forEach(function(off) {
+                off();
+            });
+        }
 
-    if (!sameState || force) {
-      self.currentState = state;
-      self.offs = initState(self.states[state]);
-    }
-  }
+        if (!sameState || force) {
+            self.currentState = state;
+            self.offs = initState(self.states[state]);
+        }
+    },
 };
 
 
@@ -433,15 +441,16 @@ module.exports = {
 /* 5 */
 /***/ (function(module, exports) {
 
-var frameFn = window.requestAnimationFrame ||
+var frameFn =
+    window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
     function(cb) {
-      window.setTimeout(cb, 1000/60);
+        window.setTimeout(cb, 1000 / 60);
     };
 
 module.exports = function frames(cb) {
-  frameFn.call(window, cb);
+    frameFn.call(window, cb);
 };
 
 
@@ -450,38 +459,36 @@ module.exports = function frames(cb) {
 /***/ (function(module, exports) {
 
 var ANIMATION_END_EVENTS = {
-  'WebkitAnimation': 'webkitAnimationEnd',
-  'OAnimation': 'oAnimationEnd',
-  'msAnimation': 'MSAnimationEnd',
-  'animation': 'animationend'
-},
+        WebkitAnimation: 'webkitAnimationEnd',
+        OAnimation: 'oAnimationEnd',
+        msAnimation: 'MSAnimationEnd',
+        animation: 'animationend',
+    },
     TRANSITION_END_EVENTS = {
-      'WebkitTransition': 'webkitTransitionEnd',
-      'OTransition': 'oTransitionEnd',
-      'msTransition': 'MSTransitionEnd',
-      'transition': 'transitionend'
+        WebkitTransition: 'webkitTransitionEnd',
+        OTransition: 'oTransitionEnd',
+        msTransition: 'MSTransitionEnd',
+        transition: 'transitionend',
     };
 
 function getPrefix(name) {
-  var b = document.body || document.documentElement,
-      s = b.style,
-      v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
-      p = name;
+    var b = document.body || document.documentElement,
+        s = b.style,
+        v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
+        p = name;
 
-  if(typeof s[p] == 'string')
-    return name;
+    if (typeof s[p] == 'string') return name;
 
-  p = p.charAt(0).toUpperCase() + p.substr(1);
-  for( var i=0; i<v.length; i++ ) {
-    if(typeof s[v[i] + p] == 'string')
-      return v[i] + p;
-  }
-  return false;
+    p = p.charAt(0).toUpperCase() + p.substr(1);
+    for (var i = 0; i < v.length; i++) {
+        if (typeof s[v[i] + p] == 'string') return v[i] + p;
+    }
+    return false;
 }
 
 module.exports = {
-  TRANSITION_END_EVENT: TRANSITION_END_EVENTS[getPrefix('transition')],
-  ANIMATION_END_EVENT: ANIMATION_END_EVENTS[getPrefix('animation')]
+    TRANSITION_END_EVENT: TRANSITION_END_EVENTS[getPrefix('transition')],
+    ANIMATION_END_EVENT: ANIMATION_END_EVENTS[getPrefix('animation')],
 };
 
 
@@ -490,43 +497,49 @@ module.exports = {
 /***/ (function(module, exports) {
 
 function getOffset(elm) {
-  var offsetTop = 0,
-      offsetLeft = 0;
+    var offsetTop = 0,
+        offsetLeft = 0;
 
-  do {
-    if (!isNaN(elm.offsetTop)) {
-      offsetTop += elm.offsetTop;
-    }	
-    if (!isNaN(elm.offsetLeft)) {
-      offsetLeft += elm.offsetLeft;
-    }
-  } while (elm == elm.offsetParent);
+    do {
+        if (!isNaN(elm.offsetTop)) {
+            offsetTop += elm.offsetTop;
+        }
+        if (!isNaN(elm.offsetLeft)) {
+            offsetLeft += elm.offsetLeft;
+        }
+    } while (elm == elm.offsetParent);
 
-  return {
-    top: offsetTop,
-    left: offsetLeft
-  };
+    return {
+        top: offsetTop,
+        left: offsetLeft,
+    };
 }
 
 function getViewportH() {
-  var client = window.document.documentElement.clientHeight,
-      inner = window.innerHeight;
+    var client = window.document.documentElement.clientHeight,
+        inner = window.innerHeight;
 
-  return (client < inner) ? inner : client;
+    return client < inner ? inner : client;
 }
 
 module.exports = {
-  isInside: function(elm, h) {
-    var scrolled = window.pageYOffset,
-	viewed = scrolled + getViewportH(),
-	elH = elm.offsetHeight,
-	elTop = getOffset(elm).top,
-	elBottom = elTop + elH;
+    isInside: function(elm, h) {
+        var scrolled = window.pageYOffset,
+            viewed = scrolled + getViewportH(),
+            elH = elm.offsetHeight,
+            elTop = getOffset(elm).top,
+            elBottom = elTop + elH;
 
-    h = h || 0.5;
+        h = h || 0.5;
 
-    return (elTop + elH * h) <= viewed && (elBottom) >= scrolled || (elm.currentStyle? elm.currentStyle : window.getComputedStyle(elm, null)).position == 'fixed';
-  }
+        return (
+            (elTop + elH * h <= viewed && elBottom >= scrolled) ||
+            (elm.currentStyle
+                ? elm.currentStyle
+                : window.getComputedStyle(elm, null)
+            ).position == 'fixed'
+        );
+    },
 };
 
 
@@ -538,73 +551,75 @@ var translate = __webpack_require__(2);
 var transition = __webpack_require__(1);
 
 function parse(words) {
-  var attrs = {},
-      param;
+    var attrs = {},
+        param;
 
-  words.forEach(function (word, i) {
-    param = words[i+1];
-    switch (word) {
-    case ":enter":
-      attrs.enter = param;
-      if (attrs.enter === 'top' || attrs.enter === 'bottom') {
-	attrs.axis = 'y';
-      } else {
-	attrs.axis = 'x';
-      }
-      return;
-    case "move":
-      attrs.move = param;
-      return;
-    case "after":
-    case "wait":
-      attrs.after = param;
-      return;
-    case "over":
-      attrs.over = param;
-      return;
-    case "easing":
-      attrs.easing = param;
-      return;
-    case 'scale':
-      attrs.scale = {};
-      if (param == 'up' || param == 'down') {
-	attrs.scale.direction = param;
-	attrs.scale.power    = words[i+2];
-      } else {
-	attrs.scale.power = param;
-      }
-      if (parseInt(attrs.scale.power) != 0) {
-	var delta = parseFloat(attrs.scale.power) * 0.01;
-	if (attrs.scale.direction == 'up') { delta = -delta; }
-	attrs.scale.value = 1 + delta;
-      }
-      return;
-    default:
-      return;
-    }
-  });
-  return attrs;
+    words.forEach(function(word, i) {
+        param = words[i + 1];
+        switch (word) {
+            case ':enter':
+                attrs.enter = param;
+                if (attrs.enter === 'top' || attrs.enter === 'bottom') {
+                    attrs.axis = 'y';
+                } else {
+                    attrs.axis = 'x';
+                }
+                return;
+            case 'move':
+                attrs.move = param;
+                return;
+            case 'after':
+            case 'wait':
+                attrs.after = param;
+                return;
+            case 'over':
+                attrs.over = param;
+                return;
+            case 'easing':
+                attrs.easing = param;
+                return;
+            case 'scale':
+                attrs.scale = {};
+                if (param == 'up' || param == 'down') {
+                    attrs.scale.direction = param;
+                    attrs.scale.power = words[i + 2];
+                } else {
+                    attrs.scale.power = param;
+                }
+                if (parseInt(attrs.scale.power) != 0) {
+                    var delta = parseFloat(attrs.scale.power) * 0.01;
+                    if (attrs.scale.direction == 'up') {
+                        delta = -delta;
+                    }
+                    attrs.scale.value = 1 + delta;
+                }
+                return;
+            default:
+                return;
+        }
+    });
+    return attrs;
 }
 
 module.exports = function enter(lang) {
+    var attrs = parse(lang),
+        enter = attrs.enter || 'left',
+        move =
+            enter !== 'left' && enter !== 'top' ? attrs.move : '-' + attrs.move,
+        over = attrs.over || '0.7s',
+        after = attrs.after || '0s',
+        easing = attrs.easing || 'ease-in-out',
+        tmp;
 
-  var attrs = parse(lang),
-      enter = attrs.enter || 'left',
-      move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
-      over = attrs.over || '0.7s',
-      after = attrs.after || '0s',
-      easing = attrs.easing || 'ease-in-out',
-      tmp;
-
-  return {
-    initial: translate({
-      axis: attrs.axis,
-      move: move,
-      scale: attrs.scale,
-      opacity: false
-    }),
-    transition: transition(over, easing, after)
-  };
+    return {
+        initial: translate({
+            axis: attrs.axis,
+            move: move,
+            scale: attrs.scale,
+            opacity: false,
+        }),
+        transition: transition(over, easing, after),
+    };
 };
 
 
@@ -616,74 +631,76 @@ var translate = __webpack_require__(2);
 var transition = __webpack_require__(1);
 
 function parse(words) {
-  var attrs = {},
-      param;
+    var attrs = {},
+        param;
 
-  words.forEach(function (word, i) {
-    param = words[i+1];
-    switch (word) {
-    case ":leave":
-      attrs.leave = param;
-      if (attrs.leave === 'top' || attrs.leave === 'bottom') {
-	attrs.axis = 'y';
-      } else {
-	attrs.axis = 'x';
-      }
-      return;
-    case "move":
-      attrs.move = param;
-      return;
-    case "after":
-    case "wait":
-      attrs.after = param;
-      return;
-    case "over":
-      attrs.over = param;
-      return;
-    case "easing":
-      attrs.easing = param;
-      return;
-    case 'scale':
-      attrs.scale = {};
-      if (param == 'up' || param == 'down') {
-	attrs.scale.direction = param;
-	attrs.scale.power    = words[i+2];
-      } else {
-	attrs.scale.power = param;
-      }
-      if (parseInt(attrs.scale.power) != 0) {
-	var delta = parseFloat(attrs.scale.power) * 0.01;
-	if (attrs.scale.direction == 'up') { delta = -delta; }
-	attrs.scale.value = 1 + delta;
-      }
-      return;
-    default:
-      return;
-    }
-  });
-  return attrs;
+    words.forEach(function(word, i) {
+        param = words[i + 1];
+        switch (word) {
+            case ':leave':
+                attrs.leave = param;
+                if (attrs.leave === 'top' || attrs.leave === 'bottom') {
+                    attrs.axis = 'y';
+                } else {
+                    attrs.axis = 'x';
+                }
+                return;
+            case 'move':
+                attrs.move = param;
+                return;
+            case 'after':
+            case 'wait':
+                attrs.after = param;
+                return;
+            case 'over':
+                attrs.over = param;
+                return;
+            case 'easing':
+                attrs.easing = param;
+                return;
+            case 'scale':
+                attrs.scale = {};
+                if (param == 'up' || param == 'down') {
+                    attrs.scale.direction = param;
+                    attrs.scale.power = words[i + 2];
+                } else {
+                    attrs.scale.power = param;
+                }
+                if (parseInt(attrs.scale.power) != 0) {
+                    var delta = parseFloat(attrs.scale.power) * 0.01;
+                    if (attrs.scale.direction == 'up') {
+                        delta = -delta;
+                    }
+                    attrs.scale.value = 1 + delta;
+                }
+                return;
+            default:
+                return;
+        }
+    });
+    return attrs;
 }
 
 module.exports = function leave(lang) {
+    // enter & leave merge possible
+    var attrs = parse(lang),
+        leave = attrs.leave || 'left',
+        move =
+            leave !== 'left' && leave !== 'top' ? attrs.move : '-' + attrs.move,
+        over = attrs.over || '0.7s',
+        after = attrs.after || '0s',
+        easing = attrs.easing || 'ease-in-out',
+        tmp;
 
-  // enter & leave merge possible
-  var attrs = parse(lang),
-      leave = attrs.leave || 'left',
-      move = (leave !== 'left' && leave !== 'top') ? attrs.move : '-' + attrs.move,
-      over = attrs.over || '0.7s',
-      after = attrs.after || '0s',
-      easing = attrs.easing || 'ease-in-out',
-      tmp;
-
-  return {
-    target: translate({
-      axis: attrs.axis,
-      move: move,
-      scale: attrs.scale,
-      opacity: false
-    }),
-    transition: transition(over, easing, after)
-  };
+    return {
+        target: translate({
+            axis: attrs.axis,
+            move: move,
+            scale: attrs.scale,
+            opacity: false,
+        }),
+        transition: transition(over, easing, after),
+    };
 };
 
 
@@ -695,130 +712,137 @@ var styles = __webpack_require__(0);
 var transition = __webpack_require__(1);
 
 function parse(words) {
-  var attrs = {},
-      param, ignoreNext;
+    var attrs = {},
+        param,
+        ignoreNext;
 
-  words.forEach(function (word, i) {
-    if (ignoreNext) {
-      ignoreNext = false;
-      return;
-    }
-    param = words[i+1];
-    switch (word) {
-    case "twist":
-      if (param === 'left') {
-	attrs.skewx = words[i+2];
-      } else if (param === 'right') {
-	attrs.skewx = '-' + words[i+2];
-      }
-      ignoreNext = true;
-      return;
-    case "rotate":
-      if (param === 'left') {
-	attrs.rotatey = '-' + words[i+2];
-      } else if (param === 'right') {
-	attrs.rotatey = words[i+2];
-      }
-      ignoreNext = true;
-      return;
-    case "move":
-      var param2 = words[i+2];
-      if (param === 'left') {
-	attrs.translatex = '-' + param2;
-      } else if (param === 'right') {
-	attrs.translatex = param2;
-      } else if (param === 'bottom') {
-	attrs.translatey = param2;
-      } else if (param === 'top') {
-	attrs.translatey = '-' + param2;
-      }
-      ignoreNext = true;
-      return;
-    case 'scale':
-      attrs.scale = {};
-      if (param == 'up' || param == 'down') {
-	attrs.scale.direction = param;
-	attrs.scale.power    = words[i+2];
-      } else {
-	attrs.scale.power = param;
-      }
-      if (parseInt(attrs.scale.power) != 0) {
-	var delta = parseFloat(attrs.scale.power) * 0.01;
-	if (attrs.scale.direction == 'up') { delta = -delta; }
-	attrs.scale.value = 1 + delta;
-      }
-      return;
-    case "after":
-    case "wait":
-      attrs.after = param;
-      return;
-    case "over":
-      attrs.over = param;
-      return;
-    default:
-      return;
-    }
-  });
-  return attrs;
+    words.forEach(function(word, i) {
+        if (ignoreNext) {
+            ignoreNext = false;
+            return;
+        }
+        param = words[i + 1];
+        switch (word) {
+            case 'twist':
+                if (param === 'left') {
+                    attrs.skewx = words[i + 2];
+                } else if (param === 'right') {
+                    attrs.skewx = '-' + words[i + 2];
+                }
+                ignoreNext = true;
+                return;
+            case 'rotate':
+                if (param === 'left') {
+                    attrs.rotatey = '-' + words[i + 2];
+                } else if (param === 'right') {
+                    attrs.rotatey = words[i + 2];
+                }
+                ignoreNext = true;
+                return;
+            case 'move':
+                var param2 = words[i + 2];
+                if (param === 'left') {
+                    attrs.translatex = '-' + param2;
+                } else if (param === 'right') {
+                    attrs.translatex = param2;
+                } else if (param === 'bottom') {
+                    attrs.translatey = param2;
+                } else if (param === 'top') {
+                    attrs.translatey = '-' + param2;
+                }
+                ignoreNext = true;
+                return;
+            case 'scale':
+                attrs.scale = {};
+                if (param == 'up' || param == 'down') {
+                    attrs.scale.direction = param;
+                    attrs.scale.power = words[i + 2];
+                } else {
+                    attrs.scale.power = param;
+                }
+                if (parseInt(attrs.scale.power) != 0) {
+                    var delta = parseFloat(attrs.scale.power) * 0.01;
+                    if (attrs.scale.direction == 'up') {
+                        delta = -delta;
+                    }
+                    attrs.scale.value = 1 + delta;
+                }
+                return;
+            case 'after':
+            case 'wait':
+                attrs.after = param;
+                return;
+            case 'over':
+                attrs.over = param;
+                return;
+            default:
+                return;
+        }
+    });
+    return attrs;
 }
 
 module.exports = function transform(lang) {
+    var attrs = parse(lang),
+        skewx = attrs.skewx,
+        skewy = attrs.skewy,
+        rotatey = attrs.rotatey,
+        translatex = attrs.translatex,
+        translatey = attrs.translatey,
+        scale = attrs.scale,
+        over = attrs.over || '1.0s',
+        after = attrs.after || '0s',
+        easing = attrs.easing || 'ease-in-out',
+        key = '',
+        tmp = '';
 
-  var attrs = parse(lang),
-      skewx = attrs.skewx,
-      skewy = attrs.skewy,
-      rotatey = attrs.rotatey,
-      translatex = attrs.translatex,
-      translatey = attrs.translatey,
-      scale = attrs.scale,
-      over = attrs.over || '1.0s',
-      after = attrs.after || '0s',
-      easing = attrs.easing || 'ease-in-out',
-      key = '',
-      tmp = '';
+    if (skewx) {
+        tmp += 'skewx(' + skewx + ') ';
+        key += 'skewx' + skewx;
+    }
 
-  if (skewx) {
-    tmp += 'skewx(' + skewx + ') ';
-    key += 'skewx' + skewx;
-  }
+    if (skewy) {
+        tmp += 'skewy(' + skewy + ') ';
+        key += 'skewy' + skewy;
+    }
 
-  if (skewy) {
-    tmp += 'skewy(' + skewy + ') ';
-    key += 'skewy' + skewy;
-  }
-  
-  if (translatex) {
-    tmp += 'translatex(' + translatex + ')';
-    key += 'translatex' + translatex;
-  }
+    if (translatex) {
+        tmp += 'translatex(' + translatex + ')';
+        key += 'translatex' + translatex;
+    }
 
-  if (translatey) {
-    tmp += 'translatey(' + translatey + ')';
-    key += 'translatey' + translatey;
-  }
+    if (translatey) {
+        tmp += 'translatey(' + translatey + ')';
+        key += 'translatey' + translatey;
+    }
 
-  if (rotatey) {
-    tmp += 'rotate(' + rotatey + ') ';
-    key += 'rotate' + rotatey;
-  }
+    if (rotatey) {
+        tmp += 'rotate(' + rotatey + ') ';
+        key += 'rotate' + rotatey;
+    }
 
-  if (scale) {
-    tmp += ' scale(' + scale.value + ')';
-    key += 'scale' + scale.value.toString().replace('.', '_');
-  }
+    if (scale) {
+        tmp += ' scale(' + scale.value + ')';
+        key += 'scale' + scale.value.toString().replace('.', '_');
+    }
 
-  var css =  '-webkit-transform: ' 	+ tmp + ' translateZ(0);' + 
-      'transform: '	+ tmp + ' translateZ(0);';
-  
-  //css += ';  -webkit-transform-origin: 50% 50% ; transform-origin: 50% 50%';
+    var css =
+        '-webkit-transform: ' +
+        tmp +
+        ' translateZ(0);' +
+        'transform: ' +
+        tmp +
+        ' translateZ(0);';
 
-  key = key.replace(/-/g, 'm');
+    //css += ';  -webkit-transform-origin: 50% 50% ; transform-origin: 50% 50%';
 
-  return {
-    target: styles(key, css),
-    reset: true,
-    transition: transition(over, easing, after)
-  };
+    key = key.replace(/-/g, 'm');
+
+    return {
+        target: styles(key, css),
+        reset: true,
+        transition: transition(over, easing, after),
+    };
 };
 
 
@@ -1305,60 +1329,60 @@ var ATTR = 'data-am',
     enterLeave;
 
 function enterLeaveFn() {
-  if (enterLeave) {
-    clearTimeout(enterLeave);
-  }
+    if (enterLeave) {
+        clearTimeout(enterLeave);
+    }
 
-  enterLeave = setTimeout(function() {
-    enterLeave = null;
+    enterLeave = setTimeout(function() {
+        enterLeave = null;
 
-    // check if element need to change state to enter or leave
-    (function () {
-      sequencers.forEach(function(s) {
-	if (s.states.enter || s.states.leave) {
-	  if (viewport.isInside(s.element)) {
-	    s.changeState('enter');
-	  } else {
-	    s.changeState('leave');
-	  }
-	}
-      });
-    })();
-
-  }, 10);	
+        // check if element need to change state to enter or leave
+        (function() {
+            sequencers.forEach(function(s) {
+                if (s.states.enter || s.states.leave) {
+                    if (viewport.isInside(s.element)) {
+                        s.changeState('enter');
+                    } else {
+                        s.changeState('leave');
+                    }
+                }
+            });
+        })();
+    }, 10);
 }
 
 events.on(window, 'scroll', enterLeaveFn);
 events.on(window, 'resize', enterLeaveFn);
 
 module.exports = function start() {
-  [].forEach.call(document.querySelectorAll('[' + ATTR + ']'), function(element) {
+    [].forEach.call(document.querySelectorAll('[' + ATTR + ']'), function(
+        element
+    ) {
+        var states = {},
+            triggers = {};
 
-    var states = {},
-	triggers = {};
+        [].forEach.call(element.attributes, function(attribute) {
+            if (attribute.name.indexOf(ATTR) !== -1) {
+                var state = attribute.name.replace(ATTR + '-', ''),
+                    input = attribute.value;
 
-    [].forEach.call(element.attributes, function(attribute) {
-      if (attribute.name.indexOf(ATTR) !== -1) {
+                if (state === ATTR) {
+                    state = DEFAULT;
+                }
 
-	var state = attribute.name.replace(ATTR + '-', ''),
-	    input = attribute.value;
+                states = parser.getStates(states, state, input);
+                triggers = parser.getTriggers(triggers, state, input);
+            }
+        });
 
-	if (state === ATTR) {
-	  state = DEFAULT;
-	}
-
-	states = parser.getStates(states, state, input);
-	triggers = parser.getTriggers(triggers, state, input);
-      }
+        sequencers.push(
+            Object.create(sequencer).init({
+                element: element,
+                states: states,
+                triggers: triggers,
+            })
+        );
     });
-
-    sequencers.push(
-      Object.create(sequencer).init({
-	element: element,
-	states: states,
-	triggers: triggers
-      }));
-  });
 };
 
 
@@ -1436,189 +1460,194 @@ var classie = __webpack_require__(11);
 var events = __webpack_require__(3);
 
 function hackStyle(elm) {
-  return window.getComputedStyle(elm, null).display;
+    return window.getComputedStyle(elm, null).display;
 }
 
 function doTransition(elm, initial, target, transition, cb) {
+    // hack: access style to apply transition
+    hackStyle(elm);
 
-  // hack: access style to apply transition
-  hackStyle(elm);
-
-  if (target) {
-    classie.add(elm, target);
-  }
-
-  var previousTarget = elm.getAttribute('data-previous-target');
-  if (classie.has(elm, previousTarget)) {
-    classie.remove(elm, previousTarget);
-  }
-
-  classie.add(elm, transition);
-
-  if (initial) {
-    classie.remove(elm, initial);
-  }
-  events.one(elm, prefix.TRANSITION_END_EVENT, function() {
-    classie.remove(elm, transition);
     if (target) {
-      elm.setAttribute('data-previous-target', target);
-    } else {
-      elm.removeAttribute('data-previous-target');
-      console.log(elm);
+        classie.add(elm, target);
     }
-    if(cb) cb();
-  });
+
+    var previousTarget = elm.getAttribute('data-previous-target');
+    if (classie.has(elm, previousTarget)) {
+        classie.remove(elm, previousTarget);
+    }
+
+    classie.add(elm, transition);
+
+    if (initial) {
+        classie.remove(elm, initial);
+    }
+    events.one(elm, prefix.TRANSITION_END_EVENT, function() {
+        classie.remove(elm, transition);
+        if (target) {
+            elm.setAttribute('data-previous-target', target);
+        } else {
+            elm.removeAttribute('data-previous-target');
+            console.log(elm);
+        }
+        if (cb) cb();
+    });
 }
 
 module.exports = function(elm, type, param, loop) {
-  var s, run, initial;
+    var s, run, initial;
 
-  //console.log('animation start ' + initial);
-  if (type === ':enter') {
-    return function(cb) {
-      s = enter(param);
-      classie.add(elm, s.initial);
-      doTransition(elm, s.initial, null, s.transition, function() {
-	if (cb) cb();
-      });
-    };
-  } if (type === ':leave') {
-    return function(cb) {
-      s = leave(param);
-      //classie.add(elm, s.initial);
-      doTransition(elm, null, s.target, s.transition, function() {
-	if (cb) cb();
-      });
-    };
-  } else if (type === ':transform') {
-    return function(cb) {
-      s = transform(param);
-      doTransition(elm, null, s.target, s.transition, function() {
-	if(cb) cb();
-      });
-    };
-  } else if (type === ':shake') {
-    return function(cb) {
+    //console.log('animation start ' + initial);
+    if (type === ':enter') {
+        return function(cb) {
+            s = enter(param);
+            classie.add(elm, s.initial);
+            doTransition(elm, s.initial, null, s.transition, function() {
+                if (cb) cb();
+            });
+        };
+    }
+    if (type === ':leave') {
+        return function(cb) {
+            s = leave(param);
+            //classie.add(elm, s.initial);
+            doTransition(elm, null, s.target, s.transition, function() {
+                if (cb) cb();
+            });
+        };
+    } else if (type === ':transform') {
+        return function(cb) {
+            s = transform(param);
+            doTransition(elm, null, s.target, s.transition, function() {
+                if (cb) cb();
+            });
+        };
+    } else if (type === ':shake') {
+        return function(cb) {
+            // duplicate code !!!!
+            hackStyle(elm);
 
-      // duplicate code !!!!
-      hackStyle(elm);
+            classie.add(elm, 'shake');
+            classie.add(elm, 'shake-constant');
+            if (param[1]) {
+                classie.add(elm, 'shake-' + param[1]);
+            }
+            events.one(elm, prefix.ANIMATION_END_EVENT, function() {
+                classie.remove(elm, 'shake');
+                classie.remove(elm, 'shake-constant');
+                if (param[1]) {
+                    classie.remove(elm, 'shake-' + param[1]);
+                }
+                if (cb) cb();
+            });
+        };
+    } else if (type === ':animate') {
+        return function(cb) {
+            var initial = param + ' animated';
 
-      classie.add(elm, 'shake');
-      classie.add(elm, 'shake-constant');
-      if (param[1]) {
-	classie.add(elm, 'shake-' + param[1]);
-      }
-      events.one(elm, prefix.ANIMATION_END_EVENT, function() {
-	classie.remove(elm, 'shake');
-	classie.remove(elm, 'shake-constant');
-	if (param[1]) {
-	  classie.remove(elm, 'shake-' + param[1]);
-	}
-	if(cb) cb();
-      });
-    };
-  } else if (type === ':animate') {
-    return function(cb) {
+            if (loop) {
+                initial += ' loop' + loop;
+            }
 
-      var initial = param + ' animated';
+            hackStyle(elm);
 
-      if (loop) {
-	initial += ' loop' + loop;
-      }
+            classie.add(elm, param);
+            classie.add(elm, 'animated');
 
-      hackStyle(elm);
-
-      classie.add(elm, param);
-      classie.add(elm, 'animated');
-
-      events.one(elm, prefix.ANIMATION_END_EVENT, function() {
-	classie.remove(elm, param);
-	classie.remove(elm, 'animated');
-	if(cb) cb();
-      });
-    };
-  } else { // only animate for now
-    return function(cb) {
-      alert('ERROR ' + type);
-    };
-  }
+            events.one(elm, prefix.ANIMATION_END_EVENT, function() {
+                classie.remove(elm, param);
+                classie.remove(elm, 'animated');
+                if (cb) cb();
+            });
+        };
+    } else {
+        // only animate for now
+        return function(cb) {
+            alert('ERROR ' + type);
+        };
+    }
 };
-
 
 
 /***/ }),
 /* 18 */
 /***/ (function(module, exports) {
 
-//function ltrim(s) { 
+//function ltrim(s) {
 //    return s.replace(/\s*((\S+\s*)*)/, "$1");
 //}
 
 function rtrim(s) {
-  return s.replace(/((\s*\S+)*)\s*/, "$1");
+    return s.replace(/((\s*\S+)*)\s*/, '$1');
 }
 
 function getValue(key, s) {
-  return rtrim(s.substring(key.length+1, s.length));
+    return rtrim(s.substring(key.length + 1, s.length));
 }
 
 function getState(input) {
-  var events = [],
-      e;
+    var events = [],
+        e;
 
-  if (input.indexOf(':on active') === -1) {
-    input = ':on active ' + input;
-  }
-
-  input.split(':o').forEach(function(sentence) {
-    if (sentence.length) {
-      e = {};
-      sentence.split(':').forEach(function (s) {
-	if (s.indexOf('n') === 0) {
-	  e.on = rtrim(s.substring(2, s.length));
-	} else if (s.indexOf('enter') === 0 ||
-                   s.indexOf('leave') === 0 ||
-                   s.indexOf('transform') === 0 ||
-                   s.indexOf('animate') === 0 ||
-                   s.indexOf('shake') === 0) {
-	  e.do = ':' + rtrim(s);
-	} else if (s.indexOf('go') === 0) {
-	  e.go = rtrim(s.substring(3, s.length));
-	} else if (s.indexOf('transform') === 0) {
-	  e.transform = getValue('transform', s);
-	} else if (s.indexOf('before') === 0) {
-	  e.before = rtrim(s.substring(7, s.length)).replace('()', '');
-	} else if (s.indexOf('after') === 0) {
-	  e.after = rtrim(s.substring(6, s.length)).replace('()', '');
-	} else if (s.indexOf('wait') === 0) {
-	  e.wait = +(rtrim(s.substring(5, s.length)).replace('s', '')) * 1000;
-	} else if (s.indexOf('loop') === 0) {
-	  e.loop = rtrim(s.substring(5, s.length));
-	}
-      });	
-      events.push(e);			
+    if (input.indexOf(':on active') === -1) {
+        input = ':on active ' + input;
     }
-  });
 
-  return events;
+    input.split(':o').forEach(function(sentence) {
+        if (sentence.length) {
+            e = {};
+            sentence.split(':').forEach(function(s) {
+                if (s.indexOf('n') === 0) {
+                    e.on = rtrim(s.substring(2, s.length));
+                } else if (
+                    s.indexOf('enter') === 0 ||
+                    s.indexOf('leave') === 0 ||
+                    s.indexOf('transform') === 0 ||
+                    s.indexOf('animate') === 0 ||
+                    s.indexOf('shake') === 0
+                ) {
+                    e.do = ':' + rtrim(s);
+                } else if (s.indexOf('go') === 0) {
+                    e.go = rtrim(s.substring(3, s.length));
+                } else if (s.indexOf('transform') === 0) {
+                    e.transform = getValue('transform', s);
+                } else if (s.indexOf('before') === 0) {
+                    e.before = rtrim(s.substring(7, s.length)).replace(
+                        '()',
+                        ''
+                    );
+                } else if (s.indexOf('after') === 0) {
+                    e.after = rtrim(s.substring(6, s.length)).replace('()', '');
+                } else if (s.indexOf('wait') === 0) {
+                    e.wait =
+                        +rtrim(s.substring(5, s.length)).replace('s', '') *
+                        1000;
+                } else if (s.indexOf('loop') === 0) {
+                    e.loop = rtrim(s.substring(5, s.length));
+                }
+            });
+            events.push(e);
+        }
+    });
+
+    return events;
 }
 
-module.exports = { 
-  getStates: function(states, state, input) {
-    states = states || {};
-    states[state] = getState(input);
-    return states;
-  },
-  getTriggers: function(triggers, state, input) {
-    triggers = triggers || {};
-    var idx = input.indexOf(':trigger');
+module.exports = {
+    getStates: function(states, state, input) {
+        states = states || {};
+        states[state] = getState(input);
+        return states;
+    },
+    getTriggers: function(triggers, state, input) {
+        triggers = triggers || {};
+        var idx = input.indexOf(':trigger');
 
-    if (idx !== -1) {
-      triggers[state] = rtrim(input.substring(idx+9, input.length));
-    }
+        if (idx !== -1) {
+            triggers[state] = rtrim(input.substring(idx + 9, input.length));
+        }
 
-    return triggers;
-  }
+        return triggers;
+    },
 };
 
 
@@ -1631,17 +1660,17 @@ module.exports = {
 __webpack_require__(11);
 
 var am = {
-  prefix: __webpack_require__(6),
-  viewport: __webpack_require__(7),
-  styles: __webpack_require__(0),
-  frame: __webpack_require__(5),
-  translate : __webpack_require__(2),
-  transition : __webpack_require__(1),
-  enter : __webpack_require__(8),
-  leave : __webpack_require__(9),
-  transform : __webpack_require__(10),
-  sequencer : __webpack_require__(4),
-  start : __webpack_require__(14)
+    prefix: __webpack_require__(6),
+    viewport: __webpack_require__(7),
+    styles: __webpack_require__(0),
+    frame: __webpack_require__(5),
+    translate: __webpack_require__(2),
+    transition: __webpack_require__(1),
+    enter: __webpack_require__(8),
+    leave: __webpack_require__(9),
+    transform: __webpack_require__(10),
+    sequencer: __webpack_require__(4),
+    start: __webpack_require__(14),
 };
 
 __webpack_require__(15);
