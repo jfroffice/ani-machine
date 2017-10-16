@@ -70,7 +70,7 @@ window["am"] =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 19);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -230,6 +230,614 @@ module.exports = {
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var frame = __webpack_require__(5);
+var events = __webpack_require__(3);
+var build = __webpack_require__(17);
+
+function parser(on) {
+  if (on === 'enter') {
+    on = 'mouseenter';
+  } else if (on === 'leave') {
+    on = 'mouseleave';
+  }
+  return on;
+}
+
+module.exports = {
+  getState: function() {
+    return this.currentState;
+  },
+  init: function(options) {
+
+    var self = this,
+	triggers = options.triggers;
+
+    self.states = options.states;
+    self.element = options.element;
+    self.jobs = [];
+    self.offs = [];
+    self.currentState = undefined;
+    self.running = undefined;
+
+    function initTrigger(state, trigger) {
+      var tmp = trigger.split(' '),
+	  selector = tmp[0],
+	  on = parser(tmp[1]);
+
+      [].forEach.call(document.querySelectorAll(selector), function(el) {
+	events.on(el, on, function() {
+	  self.changeState(state, true);
+	});
+      });
+    }
+
+    for(var state in triggers) {
+      var trigger = triggers[state];
+      if (!trigger) {
+	continue;
+      }
+      initTrigger(state, trigger);
+    }
+
+    self.changeState('default');
+    return self;
+  },
+  changeState: function(state, force) {
+
+    var self = this,
+	ACTIVE = 'active';
+
+    function addQueue(job) {
+      self.jobs.push(job);
+      run();
+    }
+
+    function run() {
+      if (self.running) {
+	return;
+      }
+      var job = self.jobs[0];
+      if (!job) {
+	return;
+      }
+      self.running = true;
+      job.run(function() {
+	job.finish();
+	self.jobs.splice(0, 1);
+	self.running = false;
+	run();
+      });
+    }
+
+    function initState(state) {
+      if (!state) {
+	return;
+      }
+
+      var tmp = [];
+      for(var key in state) {
+	tmp.push(initEvent(state[key]));
+      }
+      return tmp;
+    }
+
+    function callFn(fn) {
+      fn = window[fn];					 
+      if (typeof fn === "function") fn.apply(null, [self.element]);
+    }
+
+    function initEvent(event) {
+      var go = event.go,
+	  before = event.before,
+	  after = event.after,
+	  wait = event.wait,
+	  loop = event.loop,
+	  eventParam = event.do,
+	  on = parser(event.on),
+	  releaseEvent;
+
+      event.currentStep = event.currentStep || 0;
+
+      function eventFn() {
+
+	if (before) callFn(before);
+	
+	if (!eventParam) {
+	  goFn();
+	  return;
+	}
+
+	var params = eventParam.split(' '),
+	    param = params[0];
+	
+	if (params) {
+	  if (param === ':animate') {
+	    event.currentStep += 1;
+	    if (event.currentStep >= params.length) {
+	      console.warn('try to relaunch animation that is not finished');
+	    } else {
+	      addQueue({
+		run: build(self.element, param, params[event.currentStep], loop),
+		finish: finishSequence
+	      });	
+	    }												
+	  } else {
+	    addQueue({
+	      run: build(self.element, param, params),
+	      finish: finish
+	    });	
+	  } 
+	} 
+      }
+
+      function goFn() {
+	if (!go) {
+	  return;
+	}
+
+	if (on !== ACTIVE) {
+	  events.off(releaseEvent);
+	}
+	self.changeState(go);
+      }
+
+      function finish() {
+	goFn();
+	if (after) callFn(after);
+      }
+
+      function finishSequence() {
+	if (event.currentStep < (eventParam.split(' ').length-1)) {
+	  frame(eventFn);
+	} else {
+	  event.currentStep = 0;
+	}
+
+	finish();
+      }
+
+      if (on === ACTIVE) { // autostart animation
+	if (wait) {
+	  setTimeout(function() { frame(eventFn); }, wait);
+	} else {
+	  frame(eventFn);
+	}
+      } else {
+	releaseEvent = events.on(self.element, on, eventFn);
+      }
+      
+      return function() {
+	if(releaseEvent) events.off(releaseEvent);
+      };
+    }
+
+    var sameState = self.currentState === state;
+
+    if (self.currentState && self.offs && !sameState) {
+      self.offs.forEach(function(off) {
+	off();
+      });
+    }
+
+    if (!sameState || force) {
+      self.currentState = state;
+      self.offs = initState(self.states[state]);
+    }
+  }
+};
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+var frameFn = window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function(cb) {
+      window.setTimeout(cb, 1000/60);
+    };
+
+module.exports = function frames(cb) {
+  frameFn.call(window, cb);
+};
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+var ANIMATION_END_EVENTS = {
+  'WebkitAnimation': 'webkitAnimationEnd',
+  'OAnimation': 'oAnimationEnd',
+  'msAnimation': 'MSAnimationEnd',
+  'animation': 'animationend'
+},
+    TRANSITION_END_EVENTS = {
+      'WebkitTransition': 'webkitTransitionEnd',
+      'OTransition': 'oTransitionEnd',
+      'msTransition': 'MSTransitionEnd',
+      'transition': 'transitionend'
+    };
+
+function getPrefix(name) {
+  var b = document.body || document.documentElement,
+      s = b.style,
+      v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
+      p = name;
+
+  if(typeof s[p] == 'string')
+    return name;
+
+  p = p.charAt(0).toUpperCase() + p.substr(1);
+  for( var i=0; i<v.length; i++ ) {
+    if(typeof s[v[i] + p] == 'string')
+      return v[i] + p;
+  }
+  return false;
+}
+
+module.exports = {
+  TRANSITION_END_EVENT: TRANSITION_END_EVENTS[getPrefix('transition')],
+  ANIMATION_END_EVENT: ANIMATION_END_EVENTS[getPrefix('animation')]
+};
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+function getOffset(elm) {
+  var offsetTop = 0,
+      offsetLeft = 0;
+
+  do {
+    if (!isNaN(elm.offsetTop)) {
+      offsetTop += elm.offsetTop;
+    }	
+    if (!isNaN(elm.offsetLeft)) {
+      offsetLeft += elm.offsetLeft;
+    }
+  } while (elm == elm.offsetParent);
+
+  return {
+    top: offsetTop,
+    left: offsetLeft
+  };
+}
+
+function getViewportH() {
+  var client = window.document.documentElement.clientHeight,
+      inner = window.innerHeight;
+
+  return (client < inner) ? inner : client;
+}
+
+module.exports = {
+  isInside: function(elm, h) {
+    var scrolled = window.pageYOffset,
+	viewed = scrolled + getViewportH(),
+	elH = elm.offsetHeight,
+	elTop = getOffset(elm).top,
+	elBottom = elTop + elH;
+
+    h = h || 0.5;
+
+    return (elTop + elH * h) <= viewed && (elBottom) >= scrolled || (elm.currentStyle? elm.currentStyle : window.getComputedStyle(elm, null)).position == 'fixed';
+  }
+};
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var translate = __webpack_require__(2);
+var transition = __webpack_require__(1);
+
+function parse(words) {
+  var attrs = {},
+      param;
+
+  words.forEach(function (word, i) {
+    param = words[i+1];
+    switch (word) {
+    case ":enter":
+      attrs.enter = param;
+      if (attrs.enter === 'top' || attrs.enter === 'bottom') {
+	attrs.axis = 'y';
+      } else {
+	attrs.axis = 'x';
+      }
+      return;
+    case "move":
+      attrs.move = param;
+      return;
+    case "after":
+    case "wait":
+      attrs.after = param;
+      return;
+    case "over":
+      attrs.over = param;
+      return;
+    case "easing":
+      attrs.easing = param;
+      return;
+    case 'scale':
+      attrs.scale = {};
+      if (param == 'up' || param == 'down') {
+	attrs.scale.direction = param;
+	attrs.scale.power    = words[i+2];
+      } else {
+	attrs.scale.power = param;
+      }
+      if (parseInt(attrs.scale.power) != 0) {
+	var delta = parseFloat(attrs.scale.power) * 0.01;
+	if (attrs.scale.direction == 'up') { delta = -delta; }
+	attrs.scale.value = 1 + delta;
+      }
+      return;
+    default:
+      return;
+    }
+  });
+  return attrs;
+}
+
+module.exports = function enter(lang) {
+
+  var attrs = parse(lang),
+      enter = attrs.enter || 'left',
+      move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
+      over = attrs.over || '0.7s',
+      after = attrs.after || '0s',
+      easing = attrs.easing || 'ease-in-out',
+      tmp;
+
+  return {
+    initial: translate({
+      axis: attrs.axis,
+      move: move,
+      scale: attrs.scale,
+      opacity: false
+    }),
+    transition: transition(over, easing, after)
+  };
+};
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var translate = __webpack_require__(2);
+var transition = __webpack_require__(1);
+
+function parse(words) {
+  var attrs = {},
+      param;
+
+  words.forEach(function (word, i) {
+    param = words[i+1];
+    switch (word) {
+    case ":leave":
+      attrs.leave = param;
+      if (attrs.leave === 'top' || attrs.leave === 'bottom') {
+	attrs.axis = 'y';
+      } else {
+	attrs.axis = 'x';
+      }
+      return;
+    case "move":
+      attrs.move = param;
+      return;
+    case "after":
+    case "wait":
+      attrs.after = param;
+      return;
+    case "over":
+      attrs.over = param;
+      return;
+    case "easing":
+      attrs.easing = param;
+      return;
+    case 'scale':
+      attrs.scale = {};
+      if (param == 'up' || param == 'down') {
+	attrs.scale.direction = param;
+	attrs.scale.power    = words[i+2];
+      } else {
+	attrs.scale.power = param;
+      }
+      if (parseInt(attrs.scale.power) != 0) {
+	var delta = parseFloat(attrs.scale.power) * 0.01;
+	if (attrs.scale.direction == 'up') { delta = -delta; }
+	attrs.scale.value = 1 + delta;
+      }
+      return;
+    default:
+      return;
+    }
+  });
+  return attrs;
+}
+
+module.exports = function leave(lang) {
+
+  // enter & leave merge possible
+  var attrs = parse(lang),
+      leave = attrs.leave || 'left',
+      move = (leave !== 'left' && leave !== 'top') ? attrs.move : '-' + attrs.move,
+      over = attrs.over || '0.7s',
+      after = attrs.after || '0s',
+      easing = attrs.easing || 'ease-in-out',
+      tmp;
+
+  return {
+    target: translate({
+      axis: attrs.axis,
+      move: move,
+      scale: attrs.scale,
+      opacity: false
+    }),
+    transition: transition(over, easing, after)
+  };
+};
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var styles = __webpack_require__(0);
+var transition = __webpack_require__(1);
+
+function parse(words) {
+  var attrs = {},
+      param, ignoreNext;
+
+  words.forEach(function (word, i) {
+    if (ignoreNext) {
+      ignoreNext = false;
+      return;
+    }
+    param = words[i+1];
+    switch (word) {
+    case "twist":
+      if (param === 'left') {
+	attrs.skewx = words[i+2];
+      } else if (param === 'right') {
+	attrs.skewx = '-' + words[i+2];
+      }
+      ignoreNext = true;
+      return;
+    case "rotate":
+      if (param === 'left') {
+	attrs.rotatey = '-' + words[i+2];
+      } else if (param === 'right') {
+	attrs.rotatey = words[i+2];
+      }
+      ignoreNext = true;
+      return;
+    case "move":
+      var param2 = words[i+2];
+      if (param === 'left') {
+	attrs.translatex = '-' + param2;
+      } else if (param === 'right') {
+	attrs.translatex = param2;
+      } else if (param === 'bottom') {
+	attrs.translatey = param2;
+      } else if (param === 'top') {
+	attrs.translatey = '-' + param2;
+      }
+      ignoreNext = true;
+      return;
+    case 'scale':
+      attrs.scale = {};
+      if (param == 'up' || param == 'down') {
+	attrs.scale.direction = param;
+	attrs.scale.power    = words[i+2];
+      } else {
+	attrs.scale.power = param;
+      }
+      if (parseInt(attrs.scale.power) != 0) {
+	var delta = parseFloat(attrs.scale.power) * 0.01;
+	if (attrs.scale.direction == 'up') { delta = -delta; }
+	attrs.scale.value = 1 + delta;
+      }
+      return;
+    case "after":
+    case "wait":
+      attrs.after = param;
+      return;
+    case "over":
+      attrs.over = param;
+      return;
+    default:
+      return;
+    }
+  });
+  return attrs;
+}
+
+module.exports = function transform(lang) {
+
+  var attrs = parse(lang),
+      skewx = attrs.skewx,
+      skewy = attrs.skewy,
+      rotatey = attrs.rotatey,
+      translatex = attrs.translatex,
+      translatey = attrs.translatey,
+      scale = attrs.scale,
+      over = attrs.over || '1.0s',
+      after = attrs.after || '0s',
+      easing = attrs.easing || 'ease-in-out',
+      key = '',
+      tmp = '';
+
+  if (skewx) {
+    tmp += 'skewx(' + skewx + ') ';
+    key += 'skewx' + skewx;
+  }
+
+  if (skewy) {
+    tmp += 'skewy(' + skewy + ') ';
+    key += 'skewy' + skewy;
+  }
+  
+  if (translatex) {
+    tmp += 'translatex(' + translatex + ')';
+    key += 'translatex' + translatex;
+  }
+
+  if (translatey) {
+    tmp += 'translatey(' + translatey + ')';
+    key += 'translatey' + translatey;
+  }
+
+  if (rotatey) {
+    tmp += 'rotate(' + rotatey + ') ';
+    key += 'rotate' + rotatey;
+  }
+
+  if (scale) {
+    tmp += ' scale(' + scale.value + ')';
+    key += 'scale' + scale.value.toString().replace('.', '_');
+  }
+
+  var css =  '-webkit-transform: ' 	+ tmp + ' translateZ(0);' + 
+      'transform: '	+ tmp + ' translateZ(0);';
+  
+  //css += ';  -webkit-transform-origin: 50% 50% ; transform-origin: 50% 50%';
+
+  key = key.replace(/-/g, 'm');
+
+  return {
+    target: styles(key, css),
+    reset: true,
+    transition: transition(over, easing, after)
+  };
+};
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+ * classie
+ * http://github.amexpub.com/modules/classie
+ *
+ * Copyright (c) 2013 AmexPub. All rights reserved.
+ */
+
+module.exports = __webpack_require__(21);
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 /*
@@ -311,7 +919,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 5 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -367,7 +975,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(26);
+var	fixUrls = __webpack_require__(24);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -683,621 +1291,13 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var frame = __webpack_require__(7);
-var events = __webpack_require__(3);
-var build = __webpack_require__(18);
-
-function parser(on) {
-  if (on === 'enter') {
-    on = 'mouseenter';
-  } else if (on === 'leave') {
-    on = 'mouseleave';
-  }
-  return on;
-}
-
-module.exports = {
-  getState: function() {
-    return this.currentState;
-  },
-  init: function(options) {
-
-    var self = this,
-	triggers = options.triggers;
-
-    self.states = options.states;
-    self.element = options.element;
-    self.jobs = [];
-    self.offs = [];
-    self.currentState = undefined;
-    self.running = undefined;
-
-    function initTrigger(state, trigger) {
-      var tmp = trigger.split(' '),
-	  selector = tmp[0],
-	  on = parser(tmp[1]);
-
-      [].forEach.call(document.querySelectorAll(selector), function(el) {
-	events.on(el, on, function() {
-	  self.changeState(state, true);
-	});
-      });
-    }
-
-    for(var state in triggers) {
-      var trigger = triggers[state];
-      if (!trigger) {
-	continue;
-      }
-      initTrigger(state, trigger);
-    }
-
-    self.changeState('default');
-    return self;
-  },
-  changeState: function(state, force) {
-
-    var self = this,
-	ACTIVE = 'active';
-
-    function addQueue(job) {
-      self.jobs.push(job);
-      run();
-    }
-
-    function run() {
-      if (self.running) {
-	return;
-      }
-      var job = self.jobs[0];
-      if (!job) {
-	return;
-      }
-      self.running = true;
-      job.run(function() {
-	job.finish();
-	self.jobs.splice(0, 1);
-	self.running = false;
-	run();
-      });
-    }
-
-    function initState(state) {
-      if (!state) {
-	return;
-      }
-
-      var tmp = [];
-      for(var key in state) {
-	tmp.push(initEvent(state[key]));
-      }
-      return tmp;
-    }
-
-    function callFn(fn) {
-      fn = window[fn];					 
-      if (typeof fn === "function") fn.apply(null, [self.element]);
-    }
-
-    function initEvent(event) {
-      var go = event.go,
-	  before = event.before,
-	  after = event.after,
-	  wait = event.wait,
-	  loop = event.loop,
-	  eventParam = event.do,
-	  on = parser(event.on),
-	  releaseEvent;
-
-      event.currentStep = event.currentStep || 0;
-
-      function eventFn() {
-
-	if (before) callFn(before);
-	
-	if (!eventParam) {
-	  goFn();
-	  return;
-	}
-
-	var params = eventParam.split(' '),
-	    param = params[0];
-	
-	if (params) {
-	  if (param === ':animate') {
-	    event.currentStep += 1;
-	    if (event.currentStep >= params.length) {
-	      console.warn('try to relaunch animation that is not finished');
-	    } else {
-	      addQueue({
-		run: build(self.element, param, params[event.currentStep], loop),
-		finish: finishSequence
-	      });	
-	    }												
-	  } else {
-	    addQueue({
-	      run: build(self.element, param, params),
-	      finish: finish
-	    });	
-	  } 
-	} 
-      }
-
-      function goFn() {
-	if (!go) {
-	  return;
-	}
-
-	if (on !== ACTIVE) {
-	  events.off(releaseEvent);
-	}
-	self.changeState(go);
-      }
-
-      function finish() {
-	goFn();
-	if (after) callFn(after);
-      }
-
-      function finishSequence() {
-	if (event.currentStep < (eventParam.split(' ').length-1)) {
-	  frame(eventFn);
-	} else {
-	  event.currentStep = 0;
-	}
-
-	finish();
-      }
-
-      if (on === ACTIVE) { // autostart animation
-	if (wait) {
-	  setTimeout(function() { frame(eventFn); }, wait);
-	} else {
-	  frame(eventFn);
-	}
-      } else {
-	releaseEvent = events.on(self.element, on, eventFn);
-      }
-      
-      return function() {
-	if(releaseEvent) events.off(releaseEvent);
-      };
-    }
-
-    var sameState = self.currentState === state;
-
-    if (self.currentState && self.offs && !sameState) {
-      self.offs.forEach(function(off) {
-	off();
-      });
-    }
-
-    if (!sameState || force) {
-      self.currentState = state;
-      self.offs = initState(self.states[state]);
-    }
-  }
-};
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-var frameFn = window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    function(cb) {
-      window.setTimeout(cb, 1000/60);
-    };
-
-module.exports = function frames(cb) {
-  frameFn.call(window, cb);
-};
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-var ANIMATION_END_EVENTS = {
-  'WebkitAnimation': 'webkitAnimationEnd',
-  'OAnimation': 'oAnimationEnd',
-  'msAnimation': 'MSAnimationEnd',
-  'animation': 'animationend'
-},
-    TRANSITION_END_EVENTS = {
-      'WebkitTransition': 'webkitTransitionEnd',
-      'OTransition': 'oTransitionEnd',
-      'msTransition': 'MSTransitionEnd',
-      'transition': 'transitionend'
-    };
-
-function getPrefix(name) {
-  var b = document.body || document.documentElement,
-      s = b.style,
-      v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
-      p = name;
-
-  if(typeof s[p] == 'string')
-    return name;
-
-  p = p.charAt(0).toUpperCase() + p.substr(1);
-  for( var i=0; i<v.length; i++ ) {
-    if(typeof s[v[i] + p] == 'string')
-      return v[i] + p;
-  }
-  return false;
-}
-
-module.exports = {
-  TRANSITION_END_EVENT: TRANSITION_END_EVENTS[getPrefix('transition')],
-  ANIMATION_END_EVENT: ANIMATION_END_EVENTS[getPrefix('animation')]
-};
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-function getOffset(elm) {
-  var offsetTop = 0,
-      offsetLeft = 0;
-
-  do {
-    if (!isNaN(elm.offsetTop)) {
-      offsetTop += elm.offsetTop;
-    }	
-    if (!isNaN(elm.offsetLeft)) {
-      offsetLeft += elm.offsetLeft;
-    }
-  } while (elm == elm.offsetParent);
-
-  return {
-    top: offsetTop,
-    left: offsetLeft
-  };
-}
-
-function getViewportH() {
-  var client = window.document.documentElement.clientHeight,
-      inner = window.innerHeight;
-
-  return (client < inner) ? inner : client;
-}
-
-module.exports = {
-  isInside: function(elm, h) {
-    var scrolled = window.pageYOffset,
-	viewed = scrolled + getViewportH(),
-	elH = elm.offsetHeight,
-	elTop = getOffset(elm).top,
-	elBottom = elTop + elH;
-
-    h = h || 0.5;
-
-    return (elTop + elH * h) <= viewed && (elBottom) >= scrolled || (elm.currentStyle? elm.currentStyle : window.getComputedStyle(elm, null)).position == 'fixed';
-  }
-};
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var translate = __webpack_require__(2);
-var transition = __webpack_require__(1);
-
-function parse(words) {
-  var attrs = {},
-      param;
-
-  words.forEach(function (word, i) {
-    param = words[i+1];
-    switch (word) {
-    case ":enter":
-      attrs.enter = param;
-      if (attrs.enter === 'top' || attrs.enter === 'bottom') {
-	attrs.axis = 'y';
-      } else {
-	attrs.axis = 'x';
-      }
-      return;
-    case "move":
-      attrs.move = param;
-      return;
-    case "after":
-    case "wait":
-      attrs.after = param;
-      return;
-    case "over":
-      attrs.over = param;
-      return;
-    case "easing":
-      attrs.easing = param;
-      return;
-    case 'scale':
-      attrs.scale = {};
-      if (param == 'up' || param == 'down') {
-	attrs.scale.direction = param;
-	attrs.scale.power    = words[i+2];
-      } else {
-	attrs.scale.power = param;
-      }
-      if (parseInt(attrs.scale.power) != 0) {
-	var delta = parseFloat(attrs.scale.power) * 0.01;
-	if (attrs.scale.direction == 'up') { delta = -delta; }
-	attrs.scale.value = 1 + delta;
-      }
-      return;
-    default:
-      return;
-    }
-  });
-  return attrs;
-}
-
-module.exports = function enter(lang) {
-
-  var attrs = parse(lang),
-      enter = attrs.enter || 'left',
-      move = (enter !== 'left' && enter !== 'top') ? attrs.move : '-' + attrs.move,
-      over = attrs.over || '0.7s',
-      after = attrs.after || '0s',
-      easing = attrs.easing || 'ease-in-out',
-      tmp;
-
-  return {
-    initial: translate({
-      axis: attrs.axis,
-      move: move,
-      scale: attrs.scale,
-      opacity: false
-    }),
-    transition: transition(over, easing, after)
-  };
-};
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var translate = __webpack_require__(2);
-var transition = __webpack_require__(1);
-
-function parse(words) {
-  var attrs = {},
-      param;
-
-  words.forEach(function (word, i) {
-    param = words[i+1];
-    switch (word) {
-    case ":leave":
-      attrs.leave = param;
-      if (attrs.leave === 'top' || attrs.leave === 'bottom') {
-	attrs.axis = 'y';
-      } else {
-	attrs.axis = 'x';
-      }
-      return;
-    case "move":
-      attrs.move = param;
-      return;
-    case "after":
-    case "wait":
-      attrs.after = param;
-      return;
-    case "over":
-      attrs.over = param;
-      return;
-    case "easing":
-      attrs.easing = param;
-      return;
-    case 'scale':
-      attrs.scale = {};
-      if (param == 'up' || param == 'down') {
-	attrs.scale.direction = param;
-	attrs.scale.power    = words[i+2];
-      } else {
-	attrs.scale.power = param;
-      }
-      if (parseInt(attrs.scale.power) != 0) {
-	var delta = parseFloat(attrs.scale.power) * 0.01;
-	if (attrs.scale.direction == 'up') { delta = -delta; }
-	attrs.scale.value = 1 + delta;
-      }
-      return;
-    default:
-      return;
-    }
-  });
-  return attrs;
-}
-
-module.exports = function leave(lang) {
-
-  // enter & leave merge possible
-  var attrs = parse(lang),
-      leave = attrs.leave || 'left',
-      move = (leave !== 'left' && leave !== 'top') ? attrs.move : '-' + attrs.move,
-      over = attrs.over || '0.7s',
-      after = attrs.after || '0s',
-      easing = attrs.easing || 'ease-in-out',
-      tmp;
-
-  return {
-    target: translate({
-      axis: attrs.axis,
-      move: move,
-      scale: attrs.scale,
-      opacity: false
-    }),
-    transition: transition(over, easing, after)
-  };
-};
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var styles = __webpack_require__(0);
-var transition = __webpack_require__(1);
-
-function parse(words) {
-  var attrs = {},
-      param, ignoreNext;
-
-  words.forEach(function (word, i) {
-    if (ignoreNext) {
-      ignoreNext = false;
-      return;
-    }
-    param = words[i+1];
-    switch (word) {
-    case "twist":
-      if (param === 'left') {
-	attrs.skewx = words[i+2];
-      } else if (param === 'right') {
-	attrs.skewx = '-' + words[i+2];
-      }
-      ignoreNext = true;
-      return;
-    case "rotate":
-      if (param === 'left') {
-	attrs.rotatey = '-' + words[i+2];
-      } else if (param === 'right') {
-	attrs.rotatey = words[i+2];
-      }
-      ignoreNext = true;
-      return;
-    case "move":
-      var param2 = words[i+2];
-      if (param === 'left') {
-	attrs.translatex = '-' + param2;
-      } else if (param === 'right') {
-	attrs.translatex = param2;
-      } else if (param === 'bottom') {
-	attrs.translatey = param2;
-      } else if (param === 'top') {
-	attrs.translatey = '-' + param2;
-      }
-      ignoreNext = true;
-      return;
-    case 'scale':
-      attrs.scale = {};
-      if (param == 'up' || param == 'down') {
-	attrs.scale.direction = param;
-	attrs.scale.power    = words[i+2];
-      } else {
-	attrs.scale.power = param;
-      }
-      if (parseInt(attrs.scale.power) != 0) {
-	var delta = parseFloat(attrs.scale.power) * 0.01;
-	if (attrs.scale.direction == 'up') { delta = -delta; }
-	attrs.scale.value = 1 + delta;
-      }
-      return;
-    case "after":
-    case "wait":
-      attrs.after = param;
-      return;
-    case "over":
-      attrs.over = param;
-      return;
-    default:
-      return;
-    }
-  });
-  return attrs;
-}
-
-module.exports = function transform(lang) {
-
-  var attrs = parse(lang),
-      skewx = attrs.skewx,
-      skewy = attrs.skewy,
-      rotatey = attrs.rotatey,
-      translatex = attrs.translatex,
-      translatey = attrs.translatey,
-      scale = attrs.scale,
-      over = attrs.over || '1.0s',
-      after = attrs.after || '0s',
-      easing = attrs.easing || 'ease-in-out',
-      key = '',
-      tmp = '';
-
-  if (skewx) {
-    tmp += 'skewx(' + skewx + ') ';
-    key += 'skewx' + skewx;
-  }
-
-  if (skewy) {
-    tmp += 'skewy(' + skewy + ') ';
-    key += 'skewy' + skewy;
-  }
-  
-  if (translatex) {
-    tmp += 'translatex(' + translatex + ')';
-    key += 'translatex' + translatex;
-  }
-
-  if (translatey) {
-    tmp += 'translatey(' + translatey + ')';
-    key += 'translatey' + translatey;
-  }
-
-  if (rotatey) {
-    tmp += 'rotate(' + rotatey + ') ';
-    key += 'rotate' + rotatey;
-  }
-
-  if (scale) {
-    tmp += ' scale(' + scale.value + ')';
-    key += 'scale' + scale.value.toString().replace('.', '_');
-  }
-
-  var css =  '-webkit-transform: ' 	+ tmp + ' translateZ(0);' + 
-      'transform: '	+ tmp + ' translateZ(0);';
-  
-  //css += ';  -webkit-transform-origin: 50% 50% ; transform-origin: 50% 50%';
-
-  key = key.replace(/-/g, 'm');
-
-  return {
-    target: styles(key, css),
-    reset: true,
-    transition: transition(over, easing, after)
-  };
-};
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
- * classie
- * http://github.amexpub.com/modules/classie
- *
- * Copyright (c) 2013 AmexPub. All rights reserved.
- */
-
-module.exports = __webpack_require__(22);
-
-
-/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var sequencer = __webpack_require__(6);
-var viewport = __webpack_require__(9);
+var sequencer = __webpack_require__(4);
+var viewport = __webpack_require__(7);
 var events = __webpack_require__(3);
-var parser = __webpack_require__(19);
+var parser = __webpack_require__(18);
 
 var ATTR = 'data-am',
     DEFAULT = 'default',
@@ -1369,7 +1369,7 @@ module.exports = function start() {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(23);
+var content = __webpack_require__(22);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -1377,7 +1377,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(13)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -1400,7 +1400,7 @@ if(false) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(24);
+var content = __webpack_require__(23);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -1408,7 +1408,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(13)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -1428,42 +1428,11 @@ if(false) {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(25);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {"hmr":true}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(5)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../css-loader/index.js!./csshake.min.css", function() {
-			var newContent = require("!!../../css-loader/index.js!./csshake.min.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var prefix = __webpack_require__(8);
-var enter = __webpack_require__(10);
-var leave = __webpack_require__(11);
-var transform = __webpack_require__(12);
-var classie = __webpack_require__(13);
+var prefix = __webpack_require__(6);
+var enter = __webpack_require__(8);
+var leave = __webpack_require__(9);
+var transform = __webpack_require__(10);
+var classie = __webpack_require__(11);
 var events = __webpack_require__(3);
 
 function hackStyle(elm) {
@@ -1578,7 +1547,7 @@ module.exports = function(elm, type, param, loop) {
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports) {
 
 //function ltrim(s) { 
@@ -1654,36 +1623,35 @@ module.exports = {
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // require('js/am/build.js');
 
-__webpack_require__(13);
+__webpack_require__(11);
 
 var am = {
-  prefix: __webpack_require__(8),
-  viewport: __webpack_require__(9),
+  prefix: __webpack_require__(6),
+  viewport: __webpack_require__(7),
   styles: __webpack_require__(0),
-  frame: __webpack_require__(7),
+  frame: __webpack_require__(5),
   translate : __webpack_require__(2),
   transition : __webpack_require__(1),
-  enter : __webpack_require__(10),
-  leave : __webpack_require__(11),
-  transform : __webpack_require__(12),
-  sequencer : __webpack_require__(6),
+  enter : __webpack_require__(8),
+  leave : __webpack_require__(9),
+  transform : __webpack_require__(10),
+  sequencer : __webpack_require__(4),
   start : __webpack_require__(14)
 };
 
 __webpack_require__(15);
-__webpack_require__(17);
 __webpack_require__(16);
 
 module.exports = am;
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /* 
@@ -1909,7 +1877,7 @@ if ("document" in self) {
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1928,7 +1896,7 @@ if ("document" in self) {
 
 
 // class helper functions from bonzo https://github.com/ded/bonzo
-var classList = __webpack_require__(21),
+var classList = __webpack_require__(20),
     classie;
 
 function classReg(className) {
@@ -2022,13 +1990,13 @@ if (typeof module === "object" && module && typeof module.exports === "object") 
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)(module)))
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(undefined);
+exports = module.exports = __webpack_require__(12)(undefined);
 // imports
 
 
@@ -2039,10 +2007,10 @@ exports.push([module.i, "body {\n\tpadding: 50px;\n\tcolor: #AAA;\n\tfont: 17px 
 
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(undefined);
+exports = module.exports = __webpack_require__(12)(undefined);
 // imports
 
 
@@ -2053,21 +2021,7 @@ exports.push([module.i, "@charset \"UTF-8\";\n\n/*!\n * animate.css -http://dane
 
 
 /***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "/*! * * * * * * * * * * * * * * * * * * * *\\  \n  CSShake :: Package\n  v1.5.0\n  CSS classes to move your DOM\n  (c) 2015 @elrumordelaluz\n  http://elrumordelaluz.github.io/csshake/\n  Licensed under MIT\n\\* * * * * * * * * * * * * * * * * * * * */.shake,.shake-little,.shake-slow,.shake-hard,.shake-horizontal,.shake-vertical,.shake-rotate,.shake-opacity,.shake-crazy,.shake-chunk{display:inline-block;transform-origin:center center}.shake-freeze,.shake-constant.shake-constant--hover:hover,.shake-trigger:hover .shake-constant.shake-constant--hover{animation-play-state:paused}.shake-freeze:hover,.shake-trigger:hover .shake-freeze,.shake:hover,.shake-trigger:hover .shake,.shake-little:hover,.shake-trigger:hover .shake-little,.shake-slow:hover,.shake-trigger:hover .shake-slow,.shake-hard:hover,.shake-trigger:hover .shake-hard,.shake-horizontal:hover,.shake-trigger:hover .shake-horizontal,.shake-vertical:hover,.shake-trigger:hover .shake-vertical,.shake-rotate:hover,.shake-trigger:hover .shake-rotate,.shake-opacity:hover,.shake-trigger:hover .shake-opacity,.shake-crazy:hover,.shake-trigger:hover .shake-crazy,.shake-chunk:hover,.shake-trigger:hover .shake-chunk{animation-play-state:running}@keyframes shake{2%{transform:translate(.5px, 1.5px) rotate(1.5deg)}4%{transform:translate(.5px, 1.5px) rotate(1.5deg)}6%{transform:translate(-1.5px, -1.5px) rotate(-.5deg)}8%{transform:translate(.5px, -.5px) rotate(.5deg)}10%{transform:translate(.5px, 2.5px) rotate(.5deg)}12%{transform:translate(2.5px, 1.5px) rotate(-.5deg)}14%{transform:translate(-1.5px, 2.5px) rotate(-.5deg)}16%{transform:translate(-.5px, .5px) rotate(.5deg)}18%{transform:translate(.5px, 2.5px) rotate(1.5deg)}20%{transform:translate(-.5px, -.5px) rotate(.5deg)}22%{transform:translate(2.5px, .5px) rotate(-.5deg)}24%{transform:translate(-1.5px, -1.5px) rotate(.5deg)}26%{transform:translate(2.5px, -.5px) rotate(-.5deg)}28%{transform:translate(1.5px, -.5px) rotate(.5deg)}30%{transform:translate(.5px, .5px) rotate(-.5deg)}32%{transform:translate(-1.5px, .5px) rotate(-.5deg)}34%{transform:translate(.5px, 2.5px) rotate(-.5deg)}36%{transform:translate(-.5px, -.5px) rotate(1.5deg)}38%{transform:translate(-1.5px, -1.5px) rotate(.5deg)}40%{transform:translate(-1.5px, 1.5px) rotate(1.5deg)}42%{transform:translate(.5px, -1.5px) rotate(1.5deg)}44%{transform:translate(.5px, .5px) rotate(.5deg)}46%{transform:translate(-1.5px, -1.5px) rotate(1.5deg)}48%{transform:translate(.5px, -1.5px) rotate(.5deg)}50%{transform:translate(2.5px, .5px) rotate(-.5deg)}52%{transform:translate(-.5px, 2.5px) rotate(-.5deg)}54%{transform:translate(.5px, .5px) rotate(.5deg)}56%{transform:translate(-1.5px, 2.5px) rotate(.5deg)}58%{transform:translate(2.5px, .5px) rotate(.5deg)}60%{transform:translate(-1.5px, 2.5px) rotate(.5deg)}62%{transform:translate(1.5px, -.5px) rotate(-.5deg)}64%{transform:translate(1.5px, -1.5px) rotate(1.5deg)}66%{transform:translate(1.5px, -1.5px) rotate(-.5deg)}68%{transform:translate(.5px, 2.5px) rotate(-.5deg)}70%{transform:translate(1.5px, -1.5px) rotate(1.5deg)}72%{transform:translate(1.5px, 1.5px) rotate(-.5deg)}74%{transform:translate(-.5px, 1.5px) rotate(1.5deg)}76%{transform:translate(1.5px, 2.5px) rotate(.5deg)}78%{transform:translate(-.5px, .5px) rotate(.5deg)}80%{transform:translate(-1.5px, 2.5px) rotate(.5deg)}82%{transform:translate(.5px, 2.5px) rotate(-.5deg)}84%{transform:translate(2.5px, -.5px) rotate(.5deg)}86%{transform:translate(1.5px, .5px) rotate(.5deg)}88%{transform:translate(-.5px, -1.5px) rotate(-.5deg)}90%{transform:translate(1.5px, -.5px) rotate(1.5deg)}92%{transform:translate(.5px, 2.5px) rotate(.5deg)}94%{transform:translate(2.5px, .5px) rotate(-.5deg)}96%{transform:translate(.5px, 2.5px) rotate(.5deg)}98%{transform:translate(2.5px, -1.5px) rotate(1.5deg)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake:hover,.shake-trigger:hover .shake,.shake.shake-freeze,.shake.shake-constant{animation-name:shake;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-little{2%{transform:translate(1px, 1px) rotate(.5deg)}4%{transform:translate(1px, 1px) rotate(.5deg)}6%{transform:translate(1px, 1px) rotate(.5deg)}8%{transform:translate(1px, 0px) rotate(.5deg)}10%{transform:translate(1px, 1px) rotate(.5deg)}12%{transform:translate(1px, 1px) rotate(.5deg)}14%{transform:translate(0px, 0px) rotate(.5deg)}16%{transform:translate(1px, 1px) rotate(.5deg)}18%{transform:translate(0px, 1px) rotate(.5deg)}20%{transform:translate(0px, 0px) rotate(.5deg)}22%{transform:translate(1px, 1px) rotate(.5deg)}24%{transform:translate(0px, 1px) rotate(.5deg)}26%{transform:translate(0px, 1px) rotate(.5deg)}28%{transform:translate(0px, 1px) rotate(.5deg)}30%{transform:translate(0px, 0px) rotate(.5deg)}32%{transform:translate(1px, 1px) rotate(.5deg)}34%{transform:translate(0px, 0px) rotate(.5deg)}36%{transform:translate(0px, 0px) rotate(.5deg)}38%{transform:translate(1px, 1px) rotate(.5deg)}40%{transform:translate(0px, 1px) rotate(.5deg)}42%{transform:translate(0px, 0px) rotate(.5deg)}44%{transform:translate(1px, 0px) rotate(.5deg)}46%{transform:translate(0px, 0px) rotate(.5deg)}48%{transform:translate(0px, 1px) rotate(.5deg)}50%{transform:translate(0px, 1px) rotate(.5deg)}52%{transform:translate(0px, 0px) rotate(.5deg)}54%{transform:translate(0px, 1px) rotate(.5deg)}56%{transform:translate(1px, 0px) rotate(.5deg)}58%{transform:translate(1px, 0px) rotate(.5deg)}60%{transform:translate(1px, 1px) rotate(.5deg)}62%{transform:translate(0px, 1px) rotate(.5deg)}64%{transform:translate(0px, 0px) rotate(.5deg)}66%{transform:translate(0px, 1px) rotate(.5deg)}68%{transform:translate(0px, 1px) rotate(.5deg)}70%{transform:translate(0px, 1px) rotate(.5deg)}72%{transform:translate(1px, 0px) rotate(.5deg)}74%{transform:translate(0px, 1px) rotate(.5deg)}76%{transform:translate(0px, 1px) rotate(.5deg)}78%{transform:translate(0px, 1px) rotate(.5deg)}80%{transform:translate(0px, 0px) rotate(.5deg)}82%{transform:translate(1px, 0px) rotate(.5deg)}84%{transform:translate(1px, 0px) rotate(.5deg)}86%{transform:translate(0px, 0px) rotate(.5deg)}88%{transform:translate(0px, 0px) rotate(.5deg)}90%{transform:translate(1px, 0px) rotate(.5deg)}92%{transform:translate(0px, 1px) rotate(.5deg)}94%{transform:translate(1px, 1px) rotate(.5deg)}96%{transform:translate(1px, 0px) rotate(.5deg)}98%{transform:translate(1px, 0px) rotate(.5deg)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-little:hover,.shake-trigger:hover .shake-little,.shake-little.shake-freeze,.shake-little.shake-constant{animation-name:shake-little;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-slow{2%{transform:translate(4px, -9px) rotate(-2.5deg)}4%{transform:translate(6px, 8px) rotate(2.5deg)}6%{transform:translate(-5px, 6px) rotate(-.5deg)}8%{transform:translate(-1px, 1px) rotate(-.5deg)}10%{transform:translate(5px, 8px) rotate(2.5deg)}12%{transform:translate(-7px, 0px) rotate(2.5deg)}14%{transform:translate(6px, -4px) rotate(1.5deg)}16%{transform:translate(-2px, 6px) rotate(3.5deg)}18%{transform:translate(0px, 10px) rotate(.5deg)}20%{transform:translate(9px, 1px) rotate(1.5deg)}22%{transform:translate(5px, 4px) rotate(2.5deg)}24%{transform:translate(-1px, -9px) rotate(-2.5deg)}26%{transform:translate(-1px, 3px) rotate(.5deg)}28%{transform:translate(8px, -3px) rotate(-2.5deg)}30%{transform:translate(4px, 10px) rotate(.5deg)}32%{transform:translate(7px, 1px) rotate(2.5deg)}34%{transform:translate(7px, -4px) rotate(-1.5deg)}36%{transform:translate(-4px, 9px) rotate(-.5deg)}38%{transform:translate(8px, 10px) rotate(1.5deg)}40%{transform:translate(7px, 9px) rotate(3.5deg)}42%{transform:translate(-7px, -5px) rotate(1.5deg)}44%{transform:translate(5px, 3px) rotate(-1.5deg)}46%{transform:translate(-7px, 0px) rotate(-.5deg)}48%{transform:translate(-6px, -9px) rotate(-1.5deg)}50%{transform:translate(-9px, -4px) rotate(-2.5deg)}52%{transform:translate(8px, -1px) rotate(3.5deg)}54%{transform:translate(-1px, 2px) rotate(3.5deg)}56%{transform:translate(1px, -5px) rotate(-2.5deg)}58%{transform:translate(-3px, -5px) rotate(-1.5deg)}60%{transform:translate(-3px, 3px) rotate(-1.5deg)}62%{transform:translate(9px, 3px) rotate(1.5deg)}64%{transform:translate(-3px, 4px) rotate(3.5deg)}66%{transform:translate(0px, 10px) rotate(2.5deg)}68%{transform:translate(-5px, 6px) rotate(-.5deg)}70%{transform:translate(-8px, -4px) rotate(-.5deg)}72%{transform:translate(-9px, 2px) rotate(1.5deg)}74%{transform:translate(0px, 3px) rotate(1.5deg)}76%{transform:translate(4px, 6px) rotate(-.5deg)}78%{transform:translate(-2px, 1px) rotate(.5deg)}80%{transform:translate(-1px, 2px) rotate(-2.5deg)}82%{transform:translate(-9px, 2px) rotate(.5deg)}84%{transform:translate(-8px, -7px) rotate(3.5deg)}86%{transform:translate(5px, -5px) rotate(.5deg)}88%{transform:translate(-4px, 1px) rotate(3.5deg)}90%{transform:translate(0px, 0px) rotate(3.5deg)}92%{transform:translate(5px, -8px) rotate(3.5deg)}94%{transform:translate(-3px, -2px) rotate(-.5deg)}96%{transform:translate(8px, -5px) rotate(-1.5deg)}98%{transform:translate(-1px, 9px) rotate(-1.5deg)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-slow:hover,.shake-trigger:hover .shake-slow,.shake-slow.shake-freeze,.shake-slow.shake-constant{animation-name:shake-slow;animation-duration:5s;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-hard{2%{transform:translate(2px, 2px) rotate(1.5deg)}4%{transform:translate(-4px, 9px) rotate(-1.5deg)}6%{transform:translate(-5px, 6px) rotate(3.5deg)}8%{transform:translate(-3px, -3px) rotate(3.5deg)}10%{transform:translate(-5px, -6px) rotate(.5deg)}12%{transform:translate(-3px, -9px) rotate(.5deg)}14%{transform:translate(-7px, -8px) rotate(-1.5deg)}16%{transform:translate(-4px, 6px) rotate(-2.5deg)}18%{transform:translate(-5px, 10px) rotate(-2.5deg)}20%{transform:translate(4px, -8px) rotate(-1.5deg)}22%{transform:translate(1px, -2px) rotate(2.5deg)}24%{transform:translate(8px, -3px) rotate(.5deg)}26%{transform:translate(-8px, 8px) rotate(-.5deg)}28%{transform:translate(3px, -2px) rotate(-1.5deg)}30%{transform:translate(1px, -9px) rotate(.5deg)}32%{transform:translate(7px, 1px) rotate(.5deg)}34%{transform:translate(-1px, -5px) rotate(.5deg)}36%{transform:translate(3px, 10px) rotate(2.5deg)}38%{transform:translate(-8px, -7px) rotate(2.5deg)}40%{transform:translate(5px, 7px) rotate(-1.5deg)}42%{transform:translate(0px, 10px) rotate(-2.5deg)}44%{transform:translate(-2px, 1px) rotate(-1.5deg)}46%{transform:translate(5px, 2px) rotate(-1.5deg)}48%{transform:translate(-6px, -8px) rotate(.5deg)}50%{transform:translate(-9px, 1px) rotate(.5deg)}52%{transform:translate(1px, 5px) rotate(.5deg)}54%{transform:translate(-1px, 0px) rotate(-.5deg)}56%{transform:translate(-8px, 7px) rotate(1.5deg)}58%{transform:translate(10px, 6px) rotate(.5deg)}60%{transform:translate(-4px, 3px) rotate(-2.5deg)}62%{transform:translate(-7px, 9px) rotate(.5deg)}64%{transform:translate(-1px, -1px) rotate(-2.5deg)}66%{transform:translate(-6px, -8px) rotate(-1.5deg)}68%{transform:translate(-6px, 5px) rotate(-.5deg)}70%{transform:translate(1px, -8px) rotate(-1.5deg)}72%{transform:translate(1px, 9px) rotate(-.5deg)}74%{transform:translate(9px, -8px) rotate(-.5deg)}76%{transform:translate(5px, 6px) rotate(-1.5deg)}78%{transform:translate(10px, 5px) rotate(-.5deg)}80%{transform:translate(7px, 9px) rotate(-2.5deg)}82%{transform:translate(7px, -9px) rotate(3.5deg)}84%{transform:translate(1px, 8px) rotate(-.5deg)}86%{transform:translate(-1px, 9px) rotate(1.5deg)}88%{transform:translate(-5px, -3px) rotate(3.5deg)}90%{transform:translate(-2px, 5px) rotate(3.5deg)}92%{transform:translate(0px, 9px) rotate(-1.5deg)}94%{transform:translate(5px, 4px) rotate(.5deg)}96%{transform:translate(-4px, 0px) rotate(3.5deg)}98%{transform:translate(-6px, 1px) rotate(-2.5deg)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-hard:hover,.shake-trigger:hover .shake-hard,.shake-hard.shake-freeze,.shake-hard.shake-constant{animation-name:shake-hard;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-horizontal{2%{transform:translate(7px, 0) rotate(0)}4%{transform:translate(-3px, 0) rotate(0)}6%{transform:translate(9px, 0) rotate(0)}8%{transform:translate(2px, 0) rotate(0)}10%{transform:translate(10px, 0) rotate(0)}12%{transform:translate(-5px, 0) rotate(0)}14%{transform:translate(-2px, 0) rotate(0)}16%{transform:translate(2px, 0) rotate(0)}18%{transform:translate(-9px, 0) rotate(0)}20%{transform:translate(0px, 0) rotate(0)}22%{transform:translate(3px, 0) rotate(0)}24%{transform:translate(9px, 0) rotate(0)}26%{transform:translate(6px, 0) rotate(0)}28%{transform:translate(-1px, 0) rotate(0)}30%{transform:translate(-7px, 0) rotate(0)}32%{transform:translate(-8px, 0) rotate(0)}34%{transform:translate(-3px, 0) rotate(0)}36%{transform:translate(-3px, 0) rotate(0)}38%{transform:translate(3px, 0) rotate(0)}40%{transform:translate(2px, 0) rotate(0)}42%{transform:translate(-7px, 0) rotate(0)}44%{transform:translate(-1px, 0) rotate(0)}46%{transform:translate(-2px, 0) rotate(0)}48%{transform:translate(3px, 0) rotate(0)}50%{transform:translate(10px, 0) rotate(0)}52%{transform:translate(0px, 0) rotate(0)}54%{transform:translate(6px, 0) rotate(0)}56%{transform:translate(6px, 0) rotate(0)}58%{transform:translate(-2px, 0) rotate(0)}60%{transform:translate(-5px, 0) rotate(0)}62%{transform:translate(-2px, 0) rotate(0)}64%{transform:translate(-8px, 0) rotate(0)}66%{transform:translate(-2px, 0) rotate(0)}68%{transform:translate(-9px, 0) rotate(0)}70%{transform:translate(3px, 0) rotate(0)}72%{transform:translate(-9px, 0) rotate(0)}74%{transform:translate(7px, 0) rotate(0)}76%{transform:translate(-7px, 0) rotate(0)}78%{transform:translate(4px, 0) rotate(0)}80%{transform:translate(-4px, 0) rotate(0)}82%{transform:translate(1px, 0) rotate(0)}84%{transform:translate(5px, 0) rotate(0)}86%{transform:translate(-5px, 0) rotate(0)}88%{transform:translate(-5px, 0) rotate(0)}90%{transform:translate(9px, 0) rotate(0)}92%{transform:translate(7px, 0) rotate(0)}94%{transform:translate(-1px, 0) rotate(0)}96%{transform:translate(-1px, 0) rotate(0)}98%{transform:translate(-6px, 0) rotate(0)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-horizontal:hover,.shake-trigger:hover .shake-horizontal,.shake-horizontal.shake-freeze,.shake-horizontal.shake-constant{animation-name:shake-horizontal;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-vertical{2%{transform:translate(0, 1px) rotate(0)}4%{transform:translate(0, 5px) rotate(0)}6%{transform:translate(0, -8px) rotate(0)}8%{transform:translate(0, -5px) rotate(0)}10%{transform:translate(0, -9px) rotate(0)}12%{transform:translate(0, -1px) rotate(0)}14%{transform:translate(0, 5px) rotate(0)}16%{transform:translate(0, 6px) rotate(0)}18%{transform:translate(0, -1px) rotate(0)}20%{transform:translate(0, -9px) rotate(0)}22%{transform:translate(0, -6px) rotate(0)}24%{transform:translate(0, 6px) rotate(0)}26%{transform:translate(0, -9px) rotate(0)}28%{transform:translate(0, 8px) rotate(0)}30%{transform:translate(0, 9px) rotate(0)}32%{transform:translate(0, -1px) rotate(0)}34%{transform:translate(0, -8px) rotate(0)}36%{transform:translate(0, 3px) rotate(0)}38%{transform:translate(0, 2px) rotate(0)}40%{transform:translate(0, 6px) rotate(0)}42%{transform:translate(0, -2px) rotate(0)}44%{transform:translate(0, 4px) rotate(0)}46%{transform:translate(0, -9px) rotate(0)}48%{transform:translate(0, 9px) rotate(0)}50%{transform:translate(0, 3px) rotate(0)}52%{transform:translate(0, 0px) rotate(0)}54%{transform:translate(0, -6px) rotate(0)}56%{transform:translate(0, 8px) rotate(0)}58%{transform:translate(0, -7px) rotate(0)}60%{transform:translate(0, -9px) rotate(0)}62%{transform:translate(0, -5px) rotate(0)}64%{transform:translate(0, -9px) rotate(0)}66%{transform:translate(0, 1px) rotate(0)}68%{transform:translate(0, 3px) rotate(0)}70%{transform:translate(0, 3px) rotate(0)}72%{transform:translate(0, 3px) rotate(0)}74%{transform:translate(0, -3px) rotate(0)}76%{transform:translate(0, 2px) rotate(0)}78%{transform:translate(0, 7px) rotate(0)}80%{transform:translate(0, 8px) rotate(0)}82%{transform:translate(0, -2px) rotate(0)}84%{transform:translate(0, 7px) rotate(0)}86%{transform:translate(0, -3px) rotate(0)}88%{transform:translate(0, -3px) rotate(0)}90%{transform:translate(0, -8px) rotate(0)}92%{transform:translate(0, 0px) rotate(0)}94%{transform:translate(0, 3px) rotate(0)}96%{transform:translate(0, 5px) rotate(0)}98%{transform:translate(0, -3px) rotate(0)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-vertical:hover,.shake-trigger:hover .shake-vertical,.shake-vertical.shake-freeze,.shake-vertical.shake-constant{animation-name:shake-vertical;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-rotate{2%{transform:translate(0, 0) rotate(-5.5deg)}4%{transform:translate(0, 0) rotate(4.5deg)}6%{transform:translate(0, 0) rotate(6.5deg)}8%{transform:translate(0, 0) rotate(-6.5deg)}10%{transform:translate(0, 0) rotate(7.5deg)}12%{transform:translate(0, 0) rotate(-1.5deg)}14%{transform:translate(0, 0) rotate(-1.5deg)}16%{transform:translate(0, 0) rotate(6.5deg)}18%{transform:translate(0, 0) rotate(.5deg)}20%{transform:translate(0, 0) rotate(1.5deg)}22%{transform:translate(0, 0) rotate(-3.5deg)}24%{transform:translate(0, 0) rotate(1.5deg)}26%{transform:translate(0, 0) rotate(-5.5deg)}28%{transform:translate(0, 0) rotate(2.5deg)}30%{transform:translate(0, 0) rotate(-1.5deg)}32%{transform:translate(0, 0) rotate(-.5deg)}34%{transform:translate(0, 0) rotate(1.5deg)}36%{transform:translate(0, 0) rotate(3.5deg)}38%{transform:translate(0, 0) rotate(-1.5deg)}40%{transform:translate(0, 0) rotate(.5deg)}42%{transform:translate(0, 0) rotate(-1.5deg)}44%{transform:translate(0, 0) rotate(7.5deg)}46%{transform:translate(0, 0) rotate(-5.5deg)}48%{transform:translate(0, 0) rotate(5.5deg)}50%{transform:translate(0, 0) rotate(5.5deg)}52%{transform:translate(0, 0) rotate(4.5deg)}54%{transform:translate(0, 0) rotate(1.5deg)}56%{transform:translate(0, 0) rotate(3.5deg)}58%{transform:translate(0, 0) rotate(6.5deg)}60%{transform:translate(0, 0) rotate(-4.5deg)}62%{transform:translate(0, 0) rotate(-6.5deg)}64%{transform:translate(0, 0) rotate(4.5deg)}66%{transform:translate(0, 0) rotate(-6.5deg)}68%{transform:translate(0, 0) rotate(3.5deg)}70%{transform:translate(0, 0) rotate(-6.5deg)}72%{transform:translate(0, 0) rotate(-1.5deg)}74%{transform:translate(0, 0) rotate(-.5deg)}76%{transform:translate(0, 0) rotate(-3.5deg)}78%{transform:translate(0, 0) rotate(7.5deg)}80%{transform:translate(0, 0) rotate(5.5deg)}82%{transform:translate(0, 0) rotate(4.5deg)}84%{transform:translate(0, 0) rotate(2.5deg)}86%{transform:translate(0, 0) rotate(-2.5deg)}88%{transform:translate(0, 0) rotate(-6.5deg)}90%{transform:translate(0, 0) rotate(-1.5deg)}92%{transform:translate(0, 0) rotate(5.5deg)}94%{transform:translate(0, 0) rotate(1.5deg)}96%{transform:translate(0, 0) rotate(1.5deg)}98%{transform:translate(0, 0) rotate(5.5deg)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-rotate:hover,.shake-trigger:hover .shake-rotate,.shake-rotate.shake-freeze,.shake-rotate.shake-constant{animation-name:shake-rotate;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-opacity{10%{transform:translate(3px, 3px) rotate(.5deg);opacity:.05}20%{transform:translate(-1px, 0px) rotate(-.5deg);opacity:.74}30%{transform:translate(-1px, -3px) rotate(-1.5deg);opacity:.53}40%{transform:translate(3px, -2px) rotate(.5deg);opacity:.46}50%{transform:translate(0px, 1px) rotate(.5deg);opacity:.77}60%{transform:translate(0px, -3px) rotate(-1.5deg);opacity:.72}70%{transform:translate(0px, -4px) rotate(.5deg);opacity:.39}80%{transform:translate(-3px, -1px) rotate(.5deg);opacity:.16}90%{transform:translate(-4px, 2px) rotate(.5deg);opacity:.61}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-opacity:hover,.shake-trigger:hover .shake-opacity,.shake-opacity.shake-freeze,.shake-opacity.shake-constant{animation-name:shake-opacity;animation-duration:.5s;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-crazy{10%{transform:translate(3px, 5px) rotate(4deg);opacity:.31}20%{transform:translate(16px, -11px) rotate(0deg);opacity:.72}30%{transform:translate(0px, -9px) rotate(10deg);opacity:.14}40%{transform:translate(13px, -9px) rotate(-1deg);opacity:.72}50%{transform:translate(-6px, -3px) rotate(0deg);opacity:.78}60%{transform:translate(14px, 9px) rotate(-9deg);opacity:.74}70%{transform:translate(16px, 3px) rotate(-4deg);opacity:.38}80%{transform:translate(-5px, 10px) rotate(6deg);opacity:.25}90%{transform:translate(-13px, -15px) rotate(8deg);opacity:.04}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-crazy:hover,.shake-trigger:hover .shake-crazy,.shake-crazy.shake-freeze,.shake-crazy.shake-constant{animation-name:shake-crazy;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}@keyframes shake-chunk{2%{transform:translate(0px, -8px) rotate(8deg)}4%{transform:translate(1px, 5px) rotate(-12deg)}6%{transform:translate(10px, 11px) rotate(7deg)}8%{transform:translate(6px, -10px) rotate(0deg)}10%{transform:translate(8px, -10px) rotate(-13deg)}12%{transform:translate(5px, -12px) rotate(10deg)}14%{transform:translate(-4px, 2px) rotate(10deg)}16%{transform:translate(-8px, -13px) rotate(-14deg)}18%{transform:translate(-1px, -11px) rotate(13deg)}20%{transform:translate(-7px, 11px) rotate(6deg)}22%{transform:translate(-1px, -1px) rotate(3deg)}24%{transform:translate(15px, -12px) rotate(3deg)}26%{transform:translate(-9px, -9px) rotate(8deg)}28%{transform:translate(3px, -8px) rotate(6deg)}30%{transform:translate(-4px, 14px) rotate(7deg)}32%{transform:translate(3px, 3px) rotate(10deg)}34%{transform:translate(-9px, -6px) rotate(-5deg)}36%{transform:translate(9px, -8px) rotate(5deg)}38%{transform:translate(-4px, 7px) rotate(10deg)}0%,40%,100%{transform:translate(0, 0) rotate(0)}}.shake-chunk:hover,.shake-trigger:hover .shake-chunk,.shake-chunk.shake-freeze,.shake-chunk.shake-constant{animation-name:shake-chunk;animation-duration:4s;animation-timing-function:ease-in-out;animation-iteration-count:infinite}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 26 */
+/* 24 */
 /***/ (function(module, exports) {
 
 
@@ -2162,7 +2116,7 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 27 */
+/* 25 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {

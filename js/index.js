@@ -17,7 +17,6 @@ var am = {
 };
 
 require('css/light.css');
-require('csshake/dist/csshake.min.css');
 require('animate.css/animate.min.css');
 
 module.exports = am;
