@@ -7,7 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/webpack",
     "dev": "./node_modules/.bin/webpack --watch",
-    "jshint": "./node_modules/.bin/jshint ./js/"
   },
   "repository": {
     "type": "git",
@@ -25,7 +24,6 @@
     "classie": "^1.0.0",
     "css-loader": "^0.28.7",
     "csshake": "^1.5.2",
-    "jshint": "^2.9.5",
     "postcss-loader": "^2.0.8",
     "style-loader": "^0.19.0",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.2",
