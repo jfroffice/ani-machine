@@ -24,7 +24,10 @@ At the end of DOM
 AniMachine CDN
 ------------
 ```html
-<script src="https://cdn.rawgit.com/jfroffice/ani-machine/v0.1.10/dist/ani-machine.min.js"></script>
+<!-- Non-minified -->
+<script src="https://cdn.rawgit.com/jfroffice/ani-machine/master/dist/ani-machine.js"></script>
+<!-- Minified (recommended for production) -->
+<script src="https://cdn.rawgit.com/jfroffice/ani-machine/master/dist/ani-machine.min.js"></script>
 ```
 Change the version tag position in the URL (`".../ani-machine/{VERSION}/dist/..."`) to your desired version.
 
