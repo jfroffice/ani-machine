@@ -21,6 +21,13 @@ At the end of DOM
 ```html
 <script>am.start();</script>
 ```
+AniMachine CDN
+------------
+```html
+<script src="https://cdn.rawgit.com/jfroffice/ani-machine/v0.1.10/dist/ani-machine.min.js"></script>
+```
+Change the version tag position in the URL (`".../ani-machine/{VERSION}/dist/..."`) to your desired version.
+
 
 Enter Animation
 ---------------
